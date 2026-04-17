@@ -30,7 +30,7 @@ export default function ComplianceOverview() {
       setUser(me);
       
       // Check if user is regional lead
-      const regionalLeads = await base44.asServiceRole.entities.RegionalLead.filter({
+      const regionalLeads = await base44.entities.RegionalLead.filter({
         user_email: me.email
       });
       if (regionalLeads.length > 0) {
@@ -42,17 +42,17 @@ export default function ComplianceOverview() {
 
   const { data: records = [] } = useQuery({
     queryKey: ['compliance-records'],
-    queryFn: () => base44.asServiceRole.entities.ComplianceRecord.list(),
+    queryFn: () => base44.entities.ComplianceRecord.list(),
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ['branches'],
-    queryFn: () => base44.asServiceRole.entities.BranchConfig.list(),
+    queryFn: () => base44.entities.BranchConfig.list(),
   });
 
   const { data: regionalLeads = [] } = useQuery({
     queryKey: ['regional-leads'],
-    queryFn: () => base44.asServiceRole.entities.RegionalLead.list(),
+    queryFn: () => base44.entities.RegionalLead.list(),
   });
 
   // Filter records based on user role
