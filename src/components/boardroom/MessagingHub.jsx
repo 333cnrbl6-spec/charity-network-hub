@@ -14,8 +14,10 @@ import {
   Lock,
   MessageSquare,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  MoreVertical
 } from 'lucide-react';
+import AIEnhancementsPanel from './AIEnhancementsPanel';
 
 const CHANNELS = [
   {
@@ -126,7 +128,7 @@ export default function MessagingHub() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Channel Sidebar */}
-      <div className="lg:col-span-1">
+      <div className="lg:col-span-1 space-y-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Channels</CardTitle>
@@ -160,7 +162,7 @@ export default function MessagingHub() {
         </Card>
 
         {/* AI Members */}
-        <Card className="mt-4">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
@@ -177,6 +179,12 @@ export default function MessagingHub() {
             </div>
           </CardContent>
         </Card>
+
+        {/* AI Enhancements */}
+        <AIEnhancementsPanel 
+          channelName={selectedChannel}
+          aiMembers={currentChannel?.members || []}
+        />
       </div>
 
       {/* Main Chat Area */}
