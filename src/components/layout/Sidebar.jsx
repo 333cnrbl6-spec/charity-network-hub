@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
+import { playClick, playCover } from '@/lib/audio';
 
 
 
@@ -14,6 +15,7 @@ export default function Sidebar() {
   const [viewMode, setViewMode] = React.useState('national'); // 'national', 'regional', 'branch'
 
   const handleRegionChange = (region) => {
+    playClick();
     setCurrentRegion(region);
     setViewMode(region === 'national' ? 'national' : 'regional');
     sessionStorage.setItem('selectedRegion', region);
@@ -24,6 +26,7 @@ export default function Sidebar() {
   };
 
   const handleBranchChange = (branch) => {
+    playClick();
     setCurrentBranch(branch);
     setViewMode('branch');
     sessionStorage.setItem('selectedBranch', JSON.stringify(branch));
@@ -61,8 +64,8 @@ export default function Sidebar() {
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
       { icon: Globe, label: 'Network Overview', path: '/network' },
       { icon: Map, label: 'Network Map', path: '/map' },
-      { icon: Network, label: 'Branches & Regions', path: '/sync-log' },
-      { icon: Zap, label: 'System Status', path: '/sync-log' },
+      { icon: Network, label: 'Compliance', path: '/compliance' },
+      { icon: Zap, label: 'Sync Log', path: '/sync-log' },
     ];
   };
 
@@ -88,24 +91,25 @@ export default function Sidebar() {
 
       <nav className="flex-1 p-4 space-y-1">
         {getNavItems().map((item) => {
-          const isActive = location.pathname === item.path || 
-            (item.path !== '/' && location.pathname.startsWith(item.path));
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-              )}
-            >
-              <item.icon className="w-4.5 h-4.5" />
-              {item.label}
-            </Link>
-          );
-        })}
+           const isActive = location.pathname === item.path || 
+             (item.path !== '/' && location.pathname.startsWith(item.path));
+           return (
+             <Link
+               key={item.path}
+               to={item.path}
+               onClick={playClick}
+               className={cn(
+                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                 isActive
+                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                   : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+               )}
+             >
+               <item.icon className="w-4.5 h-4.5" />
+               {item.label}
+             </Link>
+           );
+         })}
       </nav>
 
       <div className="p-4 border-t border-sidebar-border">

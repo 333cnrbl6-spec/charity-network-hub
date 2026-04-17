@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle, Network, CheckCircle2 } from 'lucide-react';
+import LoadingIndicator from '@/components/ui/LoadingIndicator';
+import StatusLight from '@/components/ui/StatusLight';
+import { playClick, playLoading, playSuccess } from '@/lib/audio';
 
 export default function Dashboard() {
   const [syncLoading, setSyncLoading] = useState(false);
@@ -55,8 +58,10 @@ export default function Dashboard() {
 
   const handleManualSync = async () => {
     setSyncLoading(true);
+    playLoading();
     try {
       await base44.functions.invoke('syncToHub', {});
+      playSuccess();
     } catch (error) {
       console.error('Sync failed:', error);
     } finally {
@@ -101,9 +106,17 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">{getTitle()}</h1>
-        <p className="text-muted-foreground mt-1">{selectedBranch ? 'Branch Operations' : 'Network Overview'}</p>
+      <LoadingIndicator isLoading={syncLoading} message="Syncing network..." />
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">{getTitle()}</h1>
+          <p className="text-muted-foreground mt-1">{selectedBranch ? 'Branch Operations' : 'Network Overview'}</p>
+        </div>
+        <StatusLight 
+          status={syncLoading ? 'loading' : (lastSync?.status === 'success' ? 'success' : 'idle')} 
+          label={syncLoading ? 'Syncing' : (lastSync?.status === 'success' ? 'Online' : 'Ready')}
+          size="md"
+        />
       </div>
 
       {lastSync && (
