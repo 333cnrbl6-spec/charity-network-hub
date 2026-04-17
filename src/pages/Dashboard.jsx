@@ -61,6 +61,11 @@ export default function Dashboard() {
     queryFn: () => base44.entities.BranchReport.list(),
   });
 
+  const { data: compliance = [] } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceRecord.list(),
+  });
+
   const handleManualSync = async () => {
     setSyncLoading(true);
     playLoading();
@@ -88,6 +93,12 @@ export default function Dashboard() {
   }).length;
   const awardedGrants = grants.filter(g => g.status === 'awarded');
   const grantsValue = awardedGrants.reduce((sum, g) => sum + (g.amount_awarded || 0), 0);
+  
+  const complianceStatus = {
+    compliant: compliance.filter(c => c.status === 'compliant').length,
+    at_risk: compliance.filter(c => c.status === 'at_risk').length,
+    non_compliant: compliance.filter(c => c.status === 'non_compliant').length,
+  };
 
   const lastSync = syncLogs.length > 0 ? syncLogs[syncLogs.length - 1] : null;
 
@@ -151,67 +162,80 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Active Clients
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{activeClients}</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <Users className="w-4 h-4" />
+               Active Clients
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold">{activeClients}</p>
+           </CardContent>
+         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Users2 className="w-4 h-4" />
-              Active Volunteers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{activeVolunteers}</p>
-          </CardContent>
-        </Card>
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <Users2 className="w-4 h-4" />
+               Active Volunteers
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold">{activeVolunteers}</p>
+           </CardContent>
+         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Briefcase className="w-4 h-4" />
-              Jobs This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{thisMonthJobs}</p>
-          </CardContent>
-        </Card>
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <Briefcase className="w-4 h-4" />
+               Jobs This Month
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold">{thisMonthJobs}</p>
+           </CardContent>
+         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Sessions This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{thisMonthSessions}</p>
-          </CardContent>
-        </Card>
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <Zap className="w-4 h-4" />
+               Sessions This Month
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold">{thisMonthSessions}</p>
+           </CardContent>
+         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Gift className="w-4 h-4" />
-              Grants Value
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">£{grantsValue.toFixed(0)}</p>
-          </CardContent>
-        </Card>
-      </div>
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <Gift className="w-4 h-4" />
+               Grants Value
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold">£{grantsValue.toLocaleString()}</p>
+           </CardContent>
+         </Card>
+
+         <Card>
+           <CardHeader className="pb-3">
+             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+               <CheckCircle2 className="w-4 h-4" />
+               Compliance
+             </CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-3xl font-bold text-green-600">{complianceStatus.compliant}</p>
+             <p className="text-xs text-muted-foreground mt-1">{complianceStatus.at_risk} at risk</p>
+           </CardContent>
+         </Card>
+       </div>
 
       {selectedRegion === 'national' && (
         <Card>

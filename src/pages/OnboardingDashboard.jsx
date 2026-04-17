@@ -46,6 +46,10 @@ export default function OnboardingDashboard() {
       const jobs = await base44.entities.Job.list();
       const sessions = await base44.entities.Session.list();
       const grants = await base44.entities.Grant.list();
+      const compliance = await base44.entities.ComplianceRecord.list();
+      
+      const grantValue = grants.filter(g => g.status === 'awarded')
+        .reduce((sum, g) => sum + (g.amount_awarded || 0), 0);
       
       return {
         totalClients: clients.length,
@@ -53,6 +57,8 @@ export default function OnboardingDashboard() {
         totalJobs: jobs.length,
         totalSessions: sessions.length,
         totalGrants: grants.length,
+        totalCompliance: compliance.length,
+        totalGrantValue: grantValue,
       };
     },
   });
@@ -108,7 +114,7 @@ export default function OnboardingDashboard() {
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground">Demo Branches</CardTitle>
@@ -143,12 +149,18 @@ export default function OnboardingDashboard() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground">Demo Data Records</CardTitle>
+            <CardTitle className="text-xs text-muted-foreground">Compliance Records</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">
-              {(stats.totalClients || 0) + (stats.totalJobs || 0) + (stats.totalSessions || 0) + (stats.totalGrants || 0)}
-            </p>
+            <p className="text-2xl font-bold">{stats.totalCompliance || 0}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs text-muted-foreground">Grant Value</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">£{(stats.totalGrantValue || 0).toLocaleString()}</p>
           </CardContent>
         </Card>
       </div>
@@ -285,19 +297,28 @@ export default function OnboardingDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-blue-900">
             <Zap className="w-5 h-5" />
-            Auto-Populate All Branches
+            Auto-Populate with Realistic Demo Data
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm">
-            Populate all 11 North West branches with standardized Bury demo data (10 clients, 5 volunteers, 8 jobs, 4 sessions, 3 grants each).
+            Populate all 11 North West branches with branch-specific, realistic data:
           </p>
+          <ul className="text-sm space-y-1 ml-4 list-disc text-muted-foreground">
+            <li>35–80 clients per branch (based on population demographics)</li>
+            <li>15–35 volunteers per branch with realistic roles and DBS status</li>
+            <li>65–150 jobs per branch with varied job types</li>
+            <li>20–45 sessions per branch across multiple session types</li>
+            <li>28–65 grants per branch from real UK funders (National Lottery, Age UK, local authorities)</li>
+            <li>Full compliance records from real UK regulators (DBS, HSE, Charity Commission, ICO)</li>
+          </ul>
           <Button 
             onClick={async () => {
               setActionLoading('auto-populate');
               try {
                 await base44.functions.invoke('autopopulateAllBranches', {});
-                alert('✅ All branches auto-populated with Bury standard');
+                queryClient.invalidateQueries({ queryKey: ['demoStats'] });
+                playSuccess();
               } catch (error) {
                 alert(`❌ Error: ${error.message}`);
               } finally {
@@ -307,7 +328,7 @@ export default function OnboardingDashboard() {
             disabled={actionLoading === 'auto-populate'}
             className="gap-2"
           >
-            {actionLoading === 'auto-populate' ? 'Populating...' : 'Auto-Populate All Branches'}
+            {actionLoading === 'auto-populate' ? 'Populating...' : 'Auto-Populate All 11 Branches'}
           </Button>
         </CardContent>
       </Card>
@@ -317,33 +338,37 @@ export default function OnboardingDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5" />
-            Onboarding Steps
+            Network Onboarding Workflow
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex gap-3">
             <span className="font-bold text-primary">1.</span>
-            <span>Sync branch location configs from the Locations page</span>
+            <span>Bootstrap or sync all 11 branch location configs (demographics, services, postcode areas)</span>
           </div>
           <div className="flex gap-3">
             <span className="font-bold text-primary">2.</span>
-            <span>Review demo data populated for each branch (clients, volunteers, jobs)</span>
+            <span>Auto-populate all branches with branch-specific realistic demo data and real compliance records</span>
           </div>
           <div className="flex gap-3">
             <span className="font-bold text-primary">3.</span>
-            <span>Collect real data from branch administrators</span>
+            <span>Review demo data across clients, volunteers, jobs, sessions, grants, and compliance</span>
           </div>
           <div className="flex gap-3">
             <span className="font-bold text-primary">4.</span>
-            <span>Import real data using data upload tools</span>
+            <span>Share credentials with regional leads; each branch standardized with unified navigation and modules</span>
           </div>
           <div className="flex gap-3">
             <span className="font-bold text-primary">5.</span>
-            <span>Purge demo records once real data is verified</span>
+            <span>Collect real operational data from branch administrators</span>
           </div>
           <div className="flex gap-3">
             <span className="font-bold text-primary">6.</span>
-            <span>Mark branch as ready for live operations</span>
+            <span>Import real data and purge demo records by branch</span>
+          </div>
+          <div className="flex gap-3">
+            <span className="font-bold text-primary">7.</span>
+            <span>Mark each branch ready for live operations</span>
           </div>
         </CardContent>
       </Card>
