@@ -28,6 +28,7 @@ import SubscriptionManagement from './pages/SubscriptionManagement';
 import SueBradleyOnboarding from './pages/SueBradleyOnboarding';
 import RoleOnboarding from './pages/RoleOnboarding';
 import ImpactDashboard from './pages/ImpactDashboard';
+import VolunteerOnboarding from './pages/VolunteerOnboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
       <Route path="/role-onboarding" element={<RoleOnboarding />} />
+      <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
