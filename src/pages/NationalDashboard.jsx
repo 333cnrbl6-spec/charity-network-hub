@@ -73,11 +73,31 @@ export default function NationalDashboard() {
     };
   };
 
+  // Fetch jobs and volunteers for impact metrics
+  const { data: jobs = [] } = useQuery({
+    queryKey: ['jobs'],
+    queryFn: () => base44.entities.Job.list(),
+  });
+
+  const { data: volunteers = [] } = useQuery({
+    queryKey: ['volunteers'],
+    queryFn: () => base44.entities.Volunteer.list(),
+  });
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients'],
+    queryFn: () => base44.entities.Client.list(),
+  });
+
   // Global stats
   const totalClients = branchReports.reduce((sum, r) => sum + (r.stats?.total_clients || 0), 0);
   const totalVolunteers = branchReports.reduce((sum, r) => sum + (r.stats?.active_volunteers || 0), 0);
   const totalJobs = branchReports.reduce((sum, r) => sum + (r.stats?.total_jobs || 0), 0);
   const totalGrants = branchReports.reduce((sum, r) => sum + (r.stats?.grants_total_value || 0), 0);
+  
+  // Impact metrics
+  const uniqueClientsServed = new Set(jobs.map(j => j.client_id)).size;
+  const totalVolunteerHours = volunteers.reduce((sum, v) => sum + (v.hours_contributed || 0), 0);
 
   const connectedBranches = BRANCHES.filter(b => {
     const status = getConnectionStatus(b.id);
@@ -169,23 +189,23 @@ export default function NationalDashboard() {
           <CardHeader className="pb-3">
             <CardTitle className="text-xs text-muted-foreground flex items-center gap-2">
               <Users className="w-4 h-4" />
-              Total Clients
+              Lives Touched
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{totalClients.toLocaleString()}</p>
+            <p className="text-3xl font-bold">{uniqueClientsServed.toLocaleString()}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-xs text-muted-foreground flex items-center gap-2">
-              <Users2 className="w-4 h-4" />
-              Total Volunteers
+              <Clock className="w-4 h-4" />
+              Volunteer Hours
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{totalVolunteers.toLocaleString()}</p>
+            <p className="text-3xl font-bold">{totalVolunteerHours.toLocaleString()}</p>
           </CardContent>
         </Card>
 
@@ -193,11 +213,11 @@ export default function NationalDashboard() {
           <CardHeader className="pb-3">
             <CardTitle className="text-xs text-muted-foreground flex items-center gap-2">
               <Briefcase className="w-4 h-4" />
-              Total Jobs
+              Jobs Completed
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{totalJobs.toLocaleString()}</p>
+            <p className="text-3xl font-bold">{jobs.filter(j => j.status === 'completed').length.toLocaleString()}</p>
           </CardContent>
         </Card>
 
