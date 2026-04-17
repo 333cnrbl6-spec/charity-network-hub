@@ -19,7 +19,7 @@ const REGIONS = {
 };
 
 const REGION_BRANCHES = {
-  north_west: ['manchester', 'salford', 'trafford', 'wigan', 'bury', 'bolton', 'stockport'],
+  north_west: ['manchester', 'salford', 'trafford', 'wigan', 'bury', 'bolton', 'stockport', 'lancashire', 'wirral', 'sefton', 'liverpool'],
 };
 
 export default function RegionalOverview() {

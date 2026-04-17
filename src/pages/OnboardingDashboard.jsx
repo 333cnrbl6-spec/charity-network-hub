@@ -256,6 +256,38 @@ export default function OnboardingDashboard() {
         </Card>
       )}
 
+      {/* Auto-Populate All Branches */}
+      <Card className="border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            <Zap className="w-5 h-5" />
+            Auto-Populate All Branches
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm">
+            Populate all 11 North West branches with standardized Bury demo data (10 clients, 5 volunteers, 8 jobs, 4 sessions, 3 grants each).
+          </p>
+          <Button 
+            onClick={async () => {
+              setActionLoading('auto-populate');
+              try {
+                await base44.functions.invoke('autopopulateAllBranches', {});
+                alert('✅ All branches auto-populated with Bury standard');
+              } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+              } finally {
+                setActionLoading(null);
+              }
+            }}
+            disabled={actionLoading === 'auto-populate'}
+            className="gap-2"
+          >
+            {actionLoading === 'auto-populate' ? 'Populating...' : 'Auto-Populate All Branches'}
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Instructions */}
       <Card>
         <CardHeader>
