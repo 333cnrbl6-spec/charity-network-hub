@@ -4,11 +4,7 @@ const REQUEST_TIMEOUT = 10000; // 10 seconds
 
 Deno.serve(async (req) => {
   try {
-    if (req.method !== 'POST') {
-      return Response.json({ error: 'Method not allowed' }, { status: 405 });
-    }
-
-    // CORS preflight
+    // CORS preflight - handle first
     if (req.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
@@ -17,6 +13,10 @@ Deno.serve(async (req) => {
           'Access-Control-Allow-Headers': 'Content-Type, X-Branch-API-Key',
         },
       });
+    }
+
+    if (req.method !== 'POST') {
+      return Response.json({ error: 'Method not allowed' }, { status: 405 });
     }
 
     const apiKey = req.headers.get('X-Branch-API-Key');

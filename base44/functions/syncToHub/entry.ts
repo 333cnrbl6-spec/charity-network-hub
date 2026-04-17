@@ -14,6 +14,7 @@ async function syncWithRetry(url, payload, apiKey, attempt = 0) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), SYNC_TIMEOUT);
 
+    // Send with CORS headers
     const response = await fetch(url, {
       method: 'POST',
       headers: {
