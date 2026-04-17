@@ -14,6 +14,24 @@ export default function Sidebar() {
   const [currentBranch, setCurrentBranch] = React.useState(null);
   const [viewMode, setViewMode] = React.useState('national'); // 'national', 'regional', 'branch'
 
+  // Sync sidebar state with URL changes
+  React.useEffect(() => {
+    if (location.pathname.startsWith('/regional/')) {
+      const region = location.pathname.split('/')[2];
+      setCurrentRegion(region);
+      setViewMode('regional');
+      sessionStorage.setItem('selectedRegion', region);
+    } else if (location.pathname.startsWith('/branch/')) {
+      const branchId = location.pathname.split('/')[2];
+      setViewMode('branch');
+      setCurrentRegion('branch');
+    } else if (location.pathname === '/') {
+      setCurrentRegion('national');
+      setViewMode('national');
+      sessionStorage.setItem('selectedRegion', 'national');
+    }
+  }, [location.pathname]);
+
   const handleRegionChange = (region) => {
     playClick();
     setCurrentRegion(region);

@@ -30,7 +30,7 @@ export default function RegionalOverview() {
   const { data: branches = [] } = useQuery({
     queryKey: ['branches', region],
     queryFn: async () => {
-      const all = await base44.asServiceRole.entities.BranchConfig.list();
+      const all = await base44.entities.BranchConfig.list();
       return all.filter(b => branchIds.includes(b.branch_id));
     },
   });
@@ -38,7 +38,7 @@ export default function RegionalOverview() {
   const { data: reports = [] } = useQuery({
     queryKey: ['reports', region],
     queryFn: async () => {
-      const all = await base44.asServiceRole.entities.BranchReport.list();
+      const all = await base44.entities.BranchReport.list();
       return all.filter(r => branchIds.includes(r.branch_id));
     },
   });
