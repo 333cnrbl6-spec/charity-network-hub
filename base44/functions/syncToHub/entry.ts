@@ -1,15 +1,30 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// This is a hub function - called via syncAllBranchesToHub
+// It queries local branch data and sends to hub
 const HUB_URL = 'https://app.base44.com/api/apps/69e20cef658590cb2c64169c/functions/receiveBranchSync';
-const BRANCH_API_KEY = 'auk_MCR_mAnCh3st3r_2026_hub_k3y_x9z';
-const BRANCH_ID = 'manchester';
-const BRANCH_NAME = 'Age UK Manchester';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const body = await req.json().catch(() => ({}));
+    const branchId = body.branch_id;
+
+    if (!branchId) {
+      return Response.json({ error: 'Missing branch_id in request' }, { status: 400 });
+    }
+
+    // Get branch config for API key
+    const branches = await base44.asServiceRole.entities.BranchConfig.filter({ branch_id: branchId });
+    if (!branches?.length) {
+      return Response.json({ error: `Branch ${branchId} not found` }, { status: 404 });
+    }
+
+    const branch = branches[0];
+    const BRANCH_API_KEY = branch.api_key;
 
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -62,8 +77,11 @@ Deno.serve(async (req) => {
       stats_snapshot: stats,
     });
 
+    console.log(`[syncToHub] Branch ${branchId} synced: ${hubResponse.ok ? 'success' : 'failed'}`);
+
     return Response.json({ success: hubResponse.ok, stats, hub_response: hubData });
   } catch (error) {
+    console.error('syncToHub error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
