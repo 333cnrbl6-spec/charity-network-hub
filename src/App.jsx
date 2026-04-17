@@ -20,6 +20,7 @@ import Grants from './pages/Grants';
 import SyncLog from './pages/SyncLog';
 import ComplianceOverview from './pages/ComplianceOverview';
 import BranchComplianceDetail from './pages/BranchComplianceDetail';
+import LocationManagement from './pages/LocationManagement';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/sync-log" element={<SyncLog />} />
         <Route path="/compliance" element={<ComplianceOverview />} />
         <Route path="/branch/:branchId/compliance" element={<BranchComplianceDetail />} />
+        <Route path="/locations" element={<LocationManagement />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

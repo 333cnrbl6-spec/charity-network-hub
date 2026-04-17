@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
@@ -82,6 +82,7 @@ export default function Sidebar() {
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
       { icon: Globe, label: 'Network Overview', path: '/network' },
       { icon: Map, label: 'Network Map', path: '/map' },
+      { icon: MapPin, label: 'Locations', path: '/locations' },
       { icon: Network, label: 'Compliance', path: '/compliance' },
       { icon: Zap, label: 'Sync Log', path: '/sync-log' },
     ];

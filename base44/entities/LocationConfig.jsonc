@@ -1,0 +1,174 @@
+{
+  "name": "LocationConfig",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Unique branch identifier (e.g., manchester, bury, stockport)"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Display name of the branch"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "north_west",
+        "london",
+        "south_east",
+        "south_west",
+        "midlands",
+        "north_east",
+        "yorkshire",
+        "east_midlands",
+        "east",
+        "wales"
+      ],
+      "description": "Region code"
+    },
+    "location_type": {
+      "type": "string",
+      "enum": [
+        "urban",
+        "suburban",
+        "rural"
+      ],
+      "description": "Type of location"
+    },
+    "postcode_area": {
+      "type": "string",
+      "description": "Primary postcode district (e.g., M1, BL9, SK2)"
+    },
+    "catchment_area": {
+      "type": "string",
+      "description": "Human-readable catchment area description"
+    },
+    "demographics": {
+      "type": "object",
+      "description": "ONS demographic data",
+      "properties": {
+        "population_65_plus": {
+          "type": "number"
+        },
+        "population_85_plus": {
+          "type": "number"
+        },
+        "total_population": {
+          "type": "number"
+        },
+        "deprivation_index": {
+          "type": "string"
+        },
+        "life_expectancy": {
+          "type": "number"
+        },
+        "carers_percentage": {
+          "type": "number"
+        },
+        "data_year": {
+          "type": "number"
+        }
+      }
+    },
+    "services": {
+      "type": "array",
+      "description": "Age UK services available in this location",
+      "items": {
+        "type": "object",
+        "properties": {
+          "service_name": {
+            "type": "string"
+          },
+          "service_type": {
+            "type": "string",
+            "enum": [
+              "befriending",
+              "transport",
+              "digital-help",
+              "shopping-assist",
+              "benefits-advice",
+              "home-visit",
+              "telephone-check",
+              "session",
+              "grants",
+              "other"
+            ]
+          },
+          "delivery_method": {
+            "type": "string"
+          },
+          "target_group": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "staff_roles": {
+      "type": "array",
+      "description": "Typical staff structure for this location",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "typical_count": {
+            "type": "number"
+          },
+          "responsibilities": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "typical_sessions": {
+      "type": "array",
+      "description": "Session types typically run at this location",
+      "items": {
+        "type": "object",
+        "properties": {
+          "session_name": {
+            "type": "string"
+          },
+          "session_type": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "typical_attendance": {
+            "type": "number"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sample_clients_count": {
+      "type": "number",
+      "description": "Number of demo clients to generate"
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": true,
+      "description": "Flag indicating this is template/demo data"
+    },
+    "onboarded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the branch has onboarded with real data"
+    }
+  },
+  "required": [
+    "branch_id",
+    "branch_name",
+    "region",
+    "postcode_area",
+    "demographics",
+    "is_demo"
+  ]
+}
