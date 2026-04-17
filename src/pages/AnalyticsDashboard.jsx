@@ -18,7 +18,8 @@ import {
   Users,
   Target,
   Clock,
-  Zap
+  Zap,
+  AlertTriangle
 } from 'lucide-react';
 import {
   Select,
