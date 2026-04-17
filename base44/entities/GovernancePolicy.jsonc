@@ -1,0 +1,57 @@
+{
+  "name": "GovernancePolicy",
+  "type": "object",
+  "properties": {
+    "policy_name": {
+      "type": "string",
+      "description": "Name of the governance policy"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "compliance",
+        "security",
+        "data_protection",
+        "operational",
+        "financial"
+      ],
+      "description": "Policy category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed policy description and requirements"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Policy violation severity"
+    },
+    "applicable_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Products this policy applies to (empty = all)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this policy is currently enforced"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "policy_name",
+    "category",
+    "description"
+  ]
+}

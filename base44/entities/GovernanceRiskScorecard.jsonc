@@ -1,0 +1,90 @@
+{
+  "name": "GovernanceRiskScorecard",
+  "type": "object",
+  "properties": {
+    "scan_week": {
+      "type": "string",
+      "description": "Week identifier (e.g., 2026-W16)"
+    },
+    "overall_risk_score": {
+      "type": "number",
+      "description": "Overall governance risk score (0-100, lower is better)"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Overall risk classification"
+    },
+    "products_assessed": {
+      "type": "array",
+      "description": "Per-product risk assessment",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_name": {
+            "type": "string"
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "violations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "policy_name": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "severity": {
+                  "type": "string"
+                },
+                "finding": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "compliant": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "critical_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of critical policy violations requiring immediate attention"
+    },
+    "policy_coverage": {
+      "type": "number",
+      "description": "Percentage of policies being met (0-100)"
+    },
+    "mitigation_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Risk mitigation action items"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "scan_week",
+    "overall_risk_score",
+    "risk_level",
+    "products_assessed"
+  ]
+}
