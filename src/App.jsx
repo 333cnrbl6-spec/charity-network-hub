@@ -8,10 +8,12 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import AppLayout from './components/layout/AppLayout';
 import Dashboard from './pages/Dashboard';
-import BranchDetail from './pages/BranchDetail';
-import ComparisonView from './pages/ComparisonView';
-import BranchRegistry from './pages/BranchRegistry';
-import AlertsLog from './pages/AlertsLog';
+import Clients from './pages/Clients';
+import Volunteers from './pages/Volunteers';
+import Jobs from './pages/Jobs';
+import Sessions from './pages/Sessions';
+import Grants from './pages/Grants';
+import SyncLog from './pages/SyncLog';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -37,10 +39,12 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/branch/:branchId" element={<BranchDetail />} />
-        <Route path="/comparison" element={<ComparisonView />} />
-        <Route path="/branches" element={<BranchRegistry />} />
-        <Route path="/alerts" element={<AlertsLog />} />
+        <Route path="/clients" element={<Clients />} />
+        <Route path="/volunteers" element={<Volunteers />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/sessions" element={<Sessions />} />
+        <Route path="/grants" element={<Grants />} />
+        <Route path="/sync-log" element={<SyncLog />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

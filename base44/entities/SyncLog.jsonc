@@ -1,0 +1,61 @@
+{
+  "name": "SyncLog",
+  "type": "object",
+  "properties": {
+    "report_period": {
+      "type": "string",
+      "description": "Report period e.g. 2026-04"
+    },
+    "synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of sync"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "error"
+      ],
+      "default": "success",
+      "description": "Sync status"
+    },
+    "response_message": {
+      "type": "string",
+      "description": "Response from hub"
+    },
+    "stats_snapshot": {
+      "type": "object",
+      "description": "Statistics sent in sync",
+      "properties": {
+        "total_clients": {
+          "type": "number"
+        },
+        "new_clients": {
+          "type": "number"
+        },
+        "active_volunteers": {
+          "type": "number"
+        },
+        "total_jobs": {
+          "type": "number"
+        },
+        "completed_jobs": {
+          "type": "number"
+        },
+        "total_sessions": {
+          "type": "number"
+        },
+        "grants_awarded": {
+          "type": "number"
+        },
+        "grants_total_value": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "report_period"
+  ]
+}

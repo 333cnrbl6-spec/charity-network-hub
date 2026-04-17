@@ -1,0 +1,71 @@
+{
+  "name": "Volunteer",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Volunteer's full name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "befriender",
+        "driver",
+        "admin",
+        "reception",
+        "digital-champion",
+        "men-in-sheds",
+        "ageing-well-facilitator",
+        "shop",
+        "trustee",
+        "other"
+      ],
+      "description": "Volunteer role"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Current status"
+    },
+    "dbs_checked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether DBS check has been completed"
+    },
+    "dbs_expiry": {
+      "type": "string",
+      "format": "date",
+      "description": "DBS expiry date"
+    },
+    "date_joined": {
+      "type": "string",
+      "format": "date",
+      "description": "Date joined"
+    },
+    "hours_contributed": {
+      "type": "number",
+      "default": 0,
+      "description": "Total hours contributed"
+    },
+    "area": {
+      "type": "string",
+      "description": "Manchester area or neighbourhood served"
+    }
+  },
+  "required": [
+    "full_name"
+  ]
+}

@@ -1,75 +1,207 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Users, Briefcase, HeartHandshake, CalendarCheck, PoundSterling } from 'lucide-react';
-import KPICard from '../components/dashboard/KPICard';
-import BranchStatusTable from '../components/dashboard/BranchStatusTable';
-import NetworkTrendChart from '../components/dashboard/NetworkTrendChart';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle } from 'lucide-react';
 
 export default function Dashboard() {
-  const { data: reports = [], isLoading: loadingReports } = useQuery({
-    queryKey: ['branchReports'],
-    queryFn: () => base44.entities.BranchReport.list('-report_period', 200),
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+
+  useEffect(() => {
+    const branch = JSON.parse(sessionStorage.getItem('selectedBranch') || '{}');
+    setSelectedBranch(branch);
+  }, []);
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients'],
+    queryFn: () => base44.entities.Client.list(),
   });
 
-  const { data: branches = [], isLoading: loadingBranches } = useQuery({
-    queryKey: ['branchConfigs'],
-    queryFn: () => base44.entities.BranchConfig.list(),
+  const { data: volunteers = [] } = useQuery({
+    queryKey: ['volunteers'],
+    queryFn: () => base44.entities.Volunteer.list(),
   });
 
-  const { data: alerts = [] } = useQuery({
-    queryKey: ['networkAlerts'],
-    queryFn: () => base44.entities.NetworkAlert.filter({ resolved: false }),
+  const { data: jobs = [] } = useQuery({
+    queryKey: ['jobs'],
+    queryFn: () => base44.entities.Job.list(),
   });
 
-  // Aggregate KPIs from latest reports per branch
-  const latestByBranch = {};
-  reports.forEach((r) => {
-    if (!latestByBranch[r.branch_id] || r.report_period > latestByBranch[r.branch_id].report_period) {
-      latestByBranch[r.branch_id] = r;
+  const { data: sessions = [] } = useQuery({
+    queryKey: ['sessions'],
+    queryFn: () => base44.entities.Session.list(),
+  });
+
+  const { data: grants = [] } = useQuery({
+    queryKey: ['grants'],
+    queryFn: () => base44.entities.Grant.list(),
+  });
+
+  const { data: syncLogs = [] } = useQuery({
+    queryKey: ['syncLogs'],
+    queryFn: () => base44.entities.SyncLog.list(),
+  });
+
+  const handleManualSync = async () => {
+    setSyncLoading(true);
+    try {
+      await base44.functions.invoke('syncToHub', {});
+    } catch (error) {
+      console.error('Sync failed:', error);
+    } finally {
+      setSyncLoading(false);
     }
-  });
-  const latestReports = Object.values(latestByBranch);
+  };
 
-  const totalClients = latestReports.reduce((s, r) => s + (r.stats?.total_clients || 0), 0);
-  const totalJobs = latestReports.reduce((s, r) => s + (r.stats?.total_jobs || 0), 0);
-  const totalVolunteers = latestReports.reduce((s, r) => s + (r.stats?.active_volunteers || 0), 0);
-  const totalSessions = latestReports.reduce((s, r) => s + (r.stats?.total_sessions || 0), 0);
-  const totalGrants = latestReports.reduce((s, r) => s + (r.stats?.grants_total_value || 0), 0);
+  const activeClients = clients.filter(c => c.status === 'active').length;
+  const activeVolunteers = volunteers.filter(v => v.status === 'active').length;
+  const thisMonthJobs = jobs.filter(j => {
+    const jobDate = new Date(j.created_date);
+    const now = new Date();
+    return jobDate.getMonth() === now.getMonth() && jobDate.getFullYear() === now.getFullYear();
+  }).length;
+  const thisMonthSessions = sessions.filter(s => {
+    const sessionDate = new Date(s.created_date);
+    const now = new Date();
+    return sessionDate.getMonth() === now.getMonth() && sessionDate.getFullYear() === now.getFullYear();
+  }).length;
+  const awardedGrants = grants.filter(g => g.status === 'awarded');
+  const grantsValue = awardedGrants.reduce((sum, g) => sum + (g.amount_awarded || 0), 0);
 
-  if (loadingReports || loadingBranches) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const lastSync = syncLogs.length > 0 ? syncLogs[syncLogs.length - 1] : null;
 
   return (
-    <div className="space-y-8">
+    <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold">Network Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Federation-wide overview across {branches.length} branch{branches.length !== 1 ? 'es' : ''}
-          {alerts.length > 0 && (
-            <span className="ml-2 text-amber-600 font-medium">• {alerts.length} active alert{alerts.length !== 1 ? 's' : ''}</span>
-          )}
-        </p>
+        <h1 className="text-3xl font-bold text-foreground">Age UK Manchester</h1>
+        <p className="text-muted-foreground mt-1">Operations Dashboard</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <KPICard title="Total Clients" value={totalClients.toLocaleString()} icon={Users} />
-        <KPICard title="Total Jobs" value={totalJobs.toLocaleString()} icon={Briefcase} />
-        <KPICard title="Volunteers" value={totalVolunteers.toLocaleString()} icon={HeartHandshake} />
-        <KPICard title="Sessions" value={totalSessions.toLocaleString()} icon={CalendarCheck} />
-        <KPICard title="Grants Value" value={`£${totalGrants.toLocaleString()}`} icon={PoundSterling} />
+      {lastSync && (
+        <Card className={lastSync.status === 'success' ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
+          <CardContent className="p-4 flex items-center gap-3">
+            {lastSync.status === 'success' ? (
+              <div className="flex items-center gap-3 flex-1">
+                <Zap className="w-5 h-5 text-green-600" />
+                <div>
+                  <p className="text-sm font-semibold text-green-900">Last Sync Successful</p>
+                  <p className="text-xs text-green-700">{lastSync.report_period} • {new Date(lastSync.synced_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 flex-1">
+                <AlertCircle className="w-5 h-5 text-red-600" />
+                <div>
+                  <p className="text-sm font-semibold text-red-900">Last Sync Failed</p>
+                  <p className="text-xs text-red-700">{lastSync.response_message}</p>
+                </div>
+              </div>
+            )}
+            <Button size="sm" onClick={handleManualSync} disabled={syncLoading}>
+              {syncLoading ? 'Syncing...' : 'Sync Now'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Active Clients
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{activeClients}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Users2 className="w-4 h-4" />
+              Active Volunteers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{activeVolunteers}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Briefcase className="w-4 h-4" />
+              Jobs This Month
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{thisMonthJobs}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Zap className="w-4 h-4" />
+              Sessions This Month
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{thisMonthSessions}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Gift className="w-4 h-4" />
+              Grants Value
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">£{grantsValue.toFixed(0)}</p>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <NetworkTrendChart reports={reports} />
-        </div>
-        <BranchStatusTable branches={branches} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Jobs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {jobs.slice(-5).reverse().map(job => (
+                <div key={job.id} className="border-b pb-3 last:border-0">
+                  <p className="font-medium text-sm">{job.client_name}</p>
+                  <p className="text-xs text-muted-foreground">{job.job_type} • {job.status}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(job.scheduled_date).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Sessions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {sessions.filter(s => s.status === 'scheduled').slice(0, 5).map(session => (
+                <div key={session.id} className="border-b pb-3 last:border-0">
+                  <p className="font-medium text-sm">{session.session_name}</p>
+                  <p className="text-xs text-muted-foreground">{session.location}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(session.scheduled_date).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

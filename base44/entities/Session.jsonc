@@ -1,0 +1,65 @@
+{
+  "name": "Session",
+  "type": "object",
+  "properties": {
+    "session_name": {
+      "type": "string",
+      "description": "Name of the session"
+    },
+    "session_type": {
+      "type": "string",
+      "enum": [
+        "stretch-and-flex",
+        "men-in-sheds",
+        "tea-and-tinker",
+        "out-in-the-city",
+        "digital-inclusion",
+        "scams-awareness",
+        "information-advice",
+        "ageing-well",
+        "hospital-aftercare",
+        "other"
+      ],
+      "description": "Type of session"
+    },
+    "location": {
+      "type": "string",
+      "description": "Session location"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled date and time"
+    },
+    "attendees_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of attendees"
+    },
+    "max_capacity": {
+      "type": "number",
+      "description": "Maximum capacity"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled",
+      "description": "Current status"
+    },
+    "facilitator": {
+      "type": "string",
+      "description": "Session facilitator name"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "session_name"
+  ]
+}

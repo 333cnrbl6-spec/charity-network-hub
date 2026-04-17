@@ -1,0 +1,63 @@
+{
+  "name": "Grant",
+  "type": "object",
+  "properties": {
+    "grant_name": {
+      "type": "string",
+      "description": "Name of grant or benefit"
+    },
+    "funder": {
+      "type": "string",
+      "description": "Funding organisation"
+    },
+    "amount_awarded": {
+      "type": "number",
+      "description": "Amount awarded in GBP"
+    },
+    "date_awarded": {
+      "type": "string",
+      "format": "date",
+      "description": "Date awarded"
+    },
+    "grant_type": {
+      "type": "string",
+      "enum": [
+        "attendance-allowance",
+        "pension-credit",
+        "warm-homes",
+        "energy-support",
+        "housing",
+        "carers-support",
+        "dementia-support",
+        "general",
+        "other"
+      ],
+      "description": "Type of grant"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Reference to client"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name for reference"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "applied",
+        "awarded",
+        "rejected"
+      ],
+      "default": "applied",
+      "description": "Grant status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "grant_name"
+  ]
+}

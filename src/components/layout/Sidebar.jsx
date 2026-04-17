@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building2, GitCompareArrows, Settings, AlertTriangle, Network, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/branches', label: 'Branch Registry', icon: Building2 },
-  { path: '/comparison', label: 'Comparison', icon: GitCompareArrows },
-  { path: '/alerts', label: 'Alerts', icon: AlertTriangle },
+  { path: '/clients', label: 'Clients', icon: Users },
+  { path: '/volunteers', label: 'Volunteers', icon: Users2 },
+  { path: '/jobs', label: 'Jobs', icon: Briefcase },
+  { path: '/sessions', label: 'Sessions', icon: Zap },
+  { path: '/grants', label: 'Grants', icon: Gift },
+  { path: '/sync-log', label: 'Sync Log', icon: Network },
 ];
 
 export default function Sidebar() {

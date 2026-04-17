@@ -1,0 +1,66 @@
+{
+  "name": "Job",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Reference to client"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name for reference"
+    },
+    "volunteer_id": {
+      "type": "string",
+      "description": "Assigned volunteer"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Volunteer name for reference"
+    },
+    "job_type": {
+      "type": "string",
+      "enum": [
+        "home-visit",
+        "telephone-check",
+        "transport",
+        "shopping-assist",
+        "benefits-advice",
+        "digital-help",
+        "befriending",
+        "scams-advice",
+        "hospital-discharge",
+        "other"
+      ],
+      "description": "Type of support"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled date and time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled",
+        "no-answer"
+      ],
+      "default": "scheduled",
+      "description": "Current status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the job"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Duration in minutes"
+    }
+  },
+  "required": [
+    "client_id",
+    "client_name"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Client's full name"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth"
+    },
+    "address": {
+      "type": "string",
+      "description": "Residential address"
+    },
+    "postcode": {
+      "type": "string",
+      "description": "UK postcode"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email"
+    },
+    "referral_source": {
+      "type": "string",
+      "enum": [
+        "self-referral",
+        "nhs",
+        "social-care",
+        "family",
+        "gp",
+        "community-partner",
+        "other"
+      ],
+      "default": "self-referral",
+      "description": "How the client was referred"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "deceased"
+      ],
+      "default": "active",
+      "description": "Current status"
+    },
+    "date_registered": {
+      "type": "string",
+      "format": "date",
+      "description": "Registration date"
+    },
+    "key_worker": {
+      "type": "string",
+      "description": "Assigned volunteer or staff member"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the client"
+    }
+  },
+  "required": [
+    "full_name"
+  ]
+}
