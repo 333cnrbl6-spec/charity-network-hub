@@ -1,0 +1,39 @@
+{
+  "name": "HubInstance",
+  "type": "object",
+  "properties": {
+    "hub_name": {
+      "type": "string",
+      "description": "Name of the hub instance (e.g., 'Age UK National Hub')"
+    },
+    "hub_type": {
+      "type": "string",
+      "enum": [
+        "national",
+        "regional"
+      ],
+      "default": "national",
+      "description": "Whether this is a national or regional hub"
+    },
+    "region": {
+      "type": "string",
+      "description": "Region code if regional hub (e.g., 'north_west')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Hub description and purpose"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "hub_name",
+    "hub_type"
+  ]
+}

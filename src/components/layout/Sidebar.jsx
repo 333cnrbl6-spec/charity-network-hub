@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
 
-const navItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/clients', label: 'Clients', icon: Users },
-  { path: '/volunteers', label: 'Volunteers', icon: Users2 },
-  { path: '/jobs', label: 'Jobs', icon: Briefcase },
-  { path: '/sessions', label: 'Sessions', icon: Zap },
-  { path: '/grants', label: 'Grants', icon: Gift },
-  { path: '/sync-log', label: 'Sync Log', icon: Network },
-];
+
 
 export default function Sidebar() {
   const location = useLocation();
   const [currentRegion, setCurrentRegion] = React.useState('national');
   const [currentBranch, setCurrentBranch] = React.useState(null);
+  const [viewMode, setViewMode] = React.useState('national'); // 'national', 'regional', 'branch'
 
   const handleRegionChange = (region) => {
     setCurrentRegion(region);
+    setViewMode(region === 'national' ? 'national' : 'regional');
     sessionStorage.setItem('selectedRegion', region);
     if (region === 'national') {
       sessionStorage.removeItem('selectedBranch');
@@ -31,8 +25,45 @@ export default function Sidebar() {
 
   const handleBranchChange = (branch) => {
     setCurrentBranch(branch);
+    setViewMode('branch');
     sessionStorage.setItem('selectedBranch', JSON.stringify(branch));
     sessionStorage.setItem('selectedRegion', 'branch');
+  };
+
+  // Navigation items based on view mode
+  const getNavItems = () => {
+    if (viewMode === 'branch' && currentBranch) {
+      // Branch view - only branch-specific data
+      return [
+        { icon: LayoutDashboard, label: 'Overview', path: `/branch/${currentBranch.branch_id}` },
+        { icon: Users, label: 'Clients', path: '/clients' },
+        { icon: Users2, label: 'Volunteers', path: '/volunteers' },
+        { icon: Briefcase, label: 'Jobs', path: '/jobs' },
+        { icon: Zap, label: 'Sessions', path: '/sessions' },
+        { icon: Gift, label: 'Grants', path: '/grants' },
+        { icon: Network, label: 'Sync Log', path: '/sync-log' },
+      ];
+    }
+    
+    if (viewMode === 'regional') {
+      // Regional view - aggregate regional data
+      return [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Globe, label: 'Regional View', path: `/regional/${currentRegion}` },
+        { icon: Map, label: 'Network Map', path: '/map' },
+        { icon: Network, label: 'Network Overview', path: '/network' },
+        { icon: Network, label: 'Sync Status', path: '/sync-log' },
+      ];
+    }
+
+    // National view - all aggregates
+    return [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+      { icon: Globe, label: 'Network Overview', path: '/network' },
+      { icon: Map, label: 'Network Map', path: '/map' },
+      { icon: Network, label: 'Branches & Regions', path: '/sync-log' },
+      { icon: Zap, label: 'System Status', path: '/sync-log' },
+    ];
   };
 
   return (
@@ -56,7 +87,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => {
+        {getNavItems().map((item) => {
           const isActive = location.pathname === item.path || 
             (item.path !== '/' && location.pathname.startsWith(item.path));
           return (

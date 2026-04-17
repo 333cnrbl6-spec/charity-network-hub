@@ -40,6 +40,12 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
           }
         });
         setBranchByRegion(mapping);
+
+        // Restore previous selection
+        const savedRegion = sessionStorage.getItem('selectedRegion');
+        if (savedRegion && savedRegion !== 'branch') {
+          setSelectedRegion(savedRegion);
+        }
       } catch (error) {
         console.log('Could not fetch branches');
       }
