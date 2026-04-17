@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, CheckCircle2, TrendingDown, Zap } from 'lucide-react';
+import { AlertCircle, CheckCircle2, TrendingDown, Zap, MessageCircle } from 'lucide-react';
+import CommunicationModule from '@/components/communication/CommunicationModule';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -198,6 +199,31 @@ export default function HealthReportViewer() {
           Generate Report Now
         </Button>
       </div>
+
+      {/* Real-time Communication Module */}
+      {latestReport && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircle className="w-5 h-5" />
+              Discuss Report Findings
+            </CardTitle>
+            <CardDescription>Thread discussions on metrics and recommendations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CommunicationModule
+              contextType="health_report"
+              contextId={latestReport.id}
+              contextData={{
+                report_week: latestReport.report_week,
+                collective_score: latestReport.collective_health_score,
+                flagged: latestReport.flagged_products.length > 0,
+                flagged_products: latestReport.flagged_products
+              }}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Report History */}
       {reports.length > 1 && (

@@ -1,0 +1,64 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "discussion_id": {
+      "type": "string",
+      "description": "Reference to parent discussion"
+    },
+    "author": {
+      "type": "string",
+      "description": "Comment author name or email"
+    },
+    "content": {
+      "type": "string",
+      "description": "Comment text content"
+    },
+    "mentioned_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Users mentioned via @mention in this comment"
+    },
+    "linked_data": {
+      "type": "object",
+      "description": "References to dashboard data (report ID, metric, alert)",
+      "properties": {
+        "report_id": {
+          "type": "string"
+        },
+        "metric_name": {
+          "type": "string"
+        },
+        "data_url": {
+          "type": "string",
+          "description": "Deep link to dashboard view"
+        }
+      }
+    },
+    "parent_comment_id": {
+      "type": "string",
+      "description": "ID of parent comment if this is a reply"
+    },
+    "reply_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of direct replies"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "edited_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last edit timestamp"
+    }
+  },
+  "required": [
+    "discussion_id",
+    "author",
+    "content"
+  ]
+}

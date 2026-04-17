@@ -1,0 +1,78 @@
+{
+  "name": "Discussion",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Discussion title"
+    },
+    "context_type": {
+      "type": "string",
+      "enum": [
+        "health_report",
+        "product_metric",
+        "performance_alert"
+      ],
+      "description": "Type of context this discussion relates to"
+    },
+    "context_id": {
+      "type": "string",
+      "description": "ID of the report, metric, or alert being discussed"
+    },
+    "context_data": {
+      "type": "object",
+      "description": "Snapshot of related data (report week, product name, etc.)",
+      "additionalProperties": true
+    },
+    "initiator": {
+      "type": "string",
+      "description": "User who started the discussion"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "resolved",
+        "archived"
+      ],
+      "default": "active",
+      "description": "Discussion status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "Discussion priority based on context"
+    },
+    "comment_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of comments"
+    },
+    "mentioned_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Users mentioned in the discussion"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_activity": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "context_type",
+    "context_id",
+    "initiator"
+  ]
+}
