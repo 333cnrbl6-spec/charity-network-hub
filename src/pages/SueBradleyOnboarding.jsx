@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Shield, Lock, Users, Calendar, TrendingUp, ChevronRight } from 'lucide-react';
+import { CheckCircle2, Shield, Lock, Users, Calendar, TrendingUp, ChevronRight, BadgeCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,14 @@ export default function SueBradleyOnboarding() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      {/* Pre-Authorization Banner */}
+      <div className="bg-green-50 border-b border-green-200">
+        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-2 text-sm text-green-900">
+          <BadgeCheck className="w-5 h-5 flex-shrink-0 text-green-600" />
+          <span><strong>Pre-authorized by William Mark Bradley</strong> — Age UK Leadership. This is a secure, approved setup.</span>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
