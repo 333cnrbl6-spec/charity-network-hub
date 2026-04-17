@@ -117,12 +117,12 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        {getNavItems().map((item) => {
+        {getNavItems().map((item, index) => {
            const isActive = location.pathname === item.path || 
              (item.path !== '/' && location.pathname.startsWith(item.path));
            return (
              <Link
-               key={item.path}
+               key={`${item.label}-${index}`}
                to={item.path}
                onClick={playClick}
                className={cn(

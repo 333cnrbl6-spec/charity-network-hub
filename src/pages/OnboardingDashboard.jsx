@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,22 @@ export default function OnboardingDashboard() {
   const queryClient = useQueryClient();
   const [actionLoading, setActionLoading] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  useEffect(() => {
+    // Auto-bootstrap configs on first load if empty
+    const bootstrap = async () => {
+      const locs = await base44.entities.LocationConfig.list();
+      if (locs.length === 0) {
+        try {
+          await base44.functions.invoke('bootstrapBranchConfigs', {});
+          queryClient.invalidateQueries({ queryKey: ['locationConfigs'] });
+        } catch (error) {
+          console.error('Bootstrap error:', error);
+        }
+      }
+    };
+    bootstrap();
+  }, [queryClient]);
 
   const { data: locations = [] } = useQuery({
     queryKey: ['locationConfigs'],
