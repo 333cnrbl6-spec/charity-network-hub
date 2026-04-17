@@ -1,7 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
-import 'leaflet/dist/leaflet.css';
+
+// Load ArcGIS Maps SDK
+if (typeof window !== 'undefined' && !window.esriLoaded) {
+  const script = document.createElement('script');
+  script.src = 'https://js.arcgis.com/4.27/';
+  script.onload = () => {
+    window.esriLoaded = true;
+  };
+  document.head.appendChild(script);
+  
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://js.arcgis.com/4.27/esri/themes/light/main.css';
+  document.head.appendChild(link);
+}
 
 // Branch coordinates (UK locations)
 const BRANCH_COORDS = {
@@ -32,6 +45,9 @@ const REGIONS = {
 };
 
 export default function BranchLocationMap({ branches, selectedRegion = 'all', onSelectBranch }) {
+  const mapContainer = useRef(null);
+  const mapView = useRef(null);
+
   const filteredBranches = useMemo(() => {
     return Object.entries(BRANCH_COORDS).filter(([branchId]) => {
       if (selectedRegion === 'all') return true;
@@ -47,56 +63,97 @@ export default function BranchLocationMap({ branches, selectedRegion = 'all', on
     });
   }, [branches, selectedRegion]);
 
-  // Calculate map bounds based on visible branches
-  const mapCenter = filteredBranches.length > 0 
-    ? [
-        filteredBranches.reduce((sum, b) => sum + b.lat, 0) / filteredBranches.length,
-        filteredBranches.reduce((sum, b) => sum + b.lng, 0) / filteredBranches.length
-      ]
-    : [54.5973, -3.4360]; // UK center
+  useEffect(() => {
+    if (!window.esri || !mapContainer.current) return;
+
+    const { Map, MapView, Graphic, GraphicsLayer, SimpleMarkerSymbol, Point } = window.esri;
+
+    const initMap = async () => {
+      // Create map
+      const map = new window.esri.Map({
+        basemap: 'arcgis-streets-relief'
+      });
+
+      // Calculate center
+      const mapCenter = filteredBranches.length > 0 
+        ? {
+            longitude: filteredBranches.reduce((sum, b) => sum + b.lng, 0) / filteredBranches.length,
+            latitude: filteredBranches.reduce((sum, b) => sum + b.lat, 0) / filteredBranches.length
+          }
+        : { longitude: -3.4360, latitude: 54.5973 };
+
+      // Create view
+      const view = new window.esri.MapView({
+        container: mapContainer.current,
+        map: map,
+        center: [mapCenter.longitude, mapCenter.latitude],
+        zoom: selectedRegion === 'all' ? 6 : 10
+      });
+
+      // Create graphics layer
+      const graphicsLayer = new window.esri.GraphicsLayer();
+      map.add(graphicsLayer);
+
+      // Add branch markers
+      filteredBranches.forEach(branch => {
+        const symbol = new window.esri.SimpleMarkerSymbol({
+          color: branch.isOnline ? [34, 197, 94] : [239, 68, 68],
+          outline: {
+            color: branch.isOnline ? [22, 163, 74] : [220, 38, 38],
+            width: 2
+          },
+          size: branch.isOnline ? 12 : 9
+        });
+
+        const point = new window.esri.Point({
+          longitude: branch.lng,
+          latitude: branch.lat
+        });
+
+        const graphic = new window.esri.Graphic({
+          geometry: point,
+          symbol: symbol,
+          attributes: {
+            id: branch.id,
+            name: branch.id,
+            status: branch.isOnline ? 'Online' : 'Offline'
+          },
+          popupTemplate: {
+            title: '<strong class="capitalize">{name}</strong>',
+            content: [
+              {
+                type: 'fields',
+                fieldInfos: [
+                  { fieldName: 'status', label: 'Status' }
+                ]
+              }
+            ]
+          }
+        });
+
+        graphic.addEventListener('click', () => {
+          onSelectBranch?.(branch.id);
+        });
+
+        graphicsLayer.add(graphic);
+      });
+
+      mapView.current = view;
+    };
+
+    initMap();
+
+    return () => {
+      if (mapView.current) {
+        mapView.current.destroy();
+      }
+    };
+  }, [filteredBranches, selectedRegion, onSelectBranch]);
 
   return (
-    <div className="w-full h-96 rounded-lg border overflow-hidden">
-      <MapContainer
-        center={mapCenter}
-        zoom={selectedRegion === 'all' ? 6 : 10}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
-        />
-
-        {filteredBranches.map(branch => (
-          <CircleMarker
-            key={branch.id}
-            center={[branch.lat, branch.lng]}
-            radius={branch.isOnline ? 10 : 7}
-            fillColor={branch.isOnline ? '#22c55e' : '#ef4444'}
-            color={branch.isOnline ? '#16a34a' : '#dc2626'}
-            weight={2}
-            opacity={1}
-            fillOpacity={0.7}
-            eventHandlers={{
-              click: () => onSelectBranch?.(branch.id)
-            }}
-          >
-            <Popup>
-              <div className="p-2 space-y-1">
-                <p className="font-semibold capitalize text-sm">{branch.id}</p>
-                <Badge variant={branch.isOnline ? 'default' : 'destructive'} className="text-xs">
-                  {branch.isOnline ? 'Online' : 'Offline'}
-                </Badge>
-                {branch.branchData && (
-                  <p className="text-xs text-muted-foreground">
-                    Status: {branch.branchData.status}
-                  </p>
-                )}
-              </div>
-            </Popup>
-          </CircleMarker>
-        ))}
-      </MapContainer>
-    </div>
+    <div 
+      ref={mapContainer}
+      className="w-full h-96 rounded-lg border overflow-hidden bg-white"
+    />
   );
 }
