@@ -328,7 +328,7 @@ Deno.serve(async (req) => {
       }
     ];
 
-    // Bulk create all configs
+    // Use service role to bypass auth issues and bulk create
     const created = await base44.asServiceRole.entities.LocationConfig.bulkCreate(locationConfigs);
 
     console.log(`[bootstrapBranchConfigs] Created ${created.length}/${locationConfigs.length} location configs`);
@@ -340,7 +340,10 @@ Deno.serve(async (req) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('bootstrapBranchConfigs error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[bootstrapBranchConfigs] Error:', error.message);
+    return Response.json({ 
+      error: error.message,
+      details: error.stack 
+    }, { status: 500 });
   }
 });
