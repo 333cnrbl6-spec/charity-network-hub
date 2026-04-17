@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle, Network, CheckCircle2 } from 'lucide-react';
 
 export default function Dashboard() {
   const [syncLoading, setSyncLoading] = useState(false);
@@ -42,6 +43,11 @@ export default function Dashboard() {
   const { data: syncLogs = [] } = useQuery({
     queryKey: ['syncLogs'],
     queryFn: () => base44.entities.SyncLog.list(),
+  });
+
+  const { data: branchReports = [] } = useQuery({
+    queryKey: ['branchReports'],
+    queryFn: () => base44.asServiceRole.entities.BranchReport.list().catch(() => []),
   });
 
   const handleManualSync = async () => {
@@ -167,6 +173,41 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Network className="w-5 h-5" />
+            Network Status - All Branches
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {branchReports.length > 0 ? (
+              branchReports.reduce((acc, report) => {
+                const existing = acc.find(b => b.branch_id === report.branch_id);
+                if (!existing || new Date(report.received_at) > new Date(existing.received_at)) {
+                  return [...acc.filter(b => b.branch_id !== report.branch_id), report];
+                }
+                return acc;
+              }, []).map(report => (
+                <div key={report.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                  <div className="flex items-center gap-3 flex-1">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                    <div>
+                      <p className="font-medium text-sm">{report.branch_name}</p>
+                      <p className="text-xs text-muted-foreground">Last report: {new Date(report.received_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-green-100 text-green-800">Online</Badge>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground p-3">No branch reports received yet</div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
