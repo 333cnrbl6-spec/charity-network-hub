@@ -45,6 +45,7 @@ export default function ProjectTasks() {
   const queryClient = useQueryClient();
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
+  const [filterAIPriority, setFilterAIPriority] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
 
@@ -83,8 +84,9 @@ export default function ProjectTasks() {
   const filteredTasks = allTasks.filter(task => {
     const statusMatch = filterStatus === 'all' || task.status === filterStatus;
     const priorityMatch = filterPriority === 'all' || task.priority === filterPriority;
+    const aiPriorityMatch = filterAIPriority === 'all' || task.ai_assigned_priority === filterAIPriority;
     const searchMatch = !searchTerm || task.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return statusMatch && priorityMatch && searchMatch;
+    return statusMatch && priorityMatch && aiPriorityMatch && searchMatch;
   });
 
   // Group tasks by status
@@ -157,46 +159,60 @@ export default function ProjectTasks() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex gap-4 flex-wrap items-end">
-            <div className="flex-1 min-w-64">
-              <Input
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="w-40">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="backlog">Backlog</SelectItem>
-                  <SelectItem value="todo">To Do</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="review">Review</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="w-40">
-              <Select value={filterPriority} onValueChange={setFilterPriority}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Priority</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
+       <CardContent className="pt-6">
+         <div className="flex gap-4 flex-wrap items-end">
+           <div className="flex-1 min-w-64">
+             <Input
+               placeholder="Search tasks..."
+               value={searchTerm}
+               onChange={(e) => setSearchTerm(e.target.value)}
+             />
+           </div>
+           <div className="w-40">
+             <Select value={filterStatus} onValueChange={setFilterStatus}>
+               <SelectTrigger>
+                 <SelectValue placeholder="Filter by status" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="all">All Status</SelectItem>
+                 <SelectItem value="backlog">Backlog</SelectItem>
+                 <SelectItem value="todo">To Do</SelectItem>
+                 <SelectItem value="in_progress">In Progress</SelectItem>
+                 <SelectItem value="review">Review</SelectItem>
+                 <SelectItem value="completed">Completed</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+           <div className="w-40">
+             <Select value={filterPriority} onValueChange={setFilterPriority}>
+               <SelectTrigger>
+                 <SelectValue placeholder="Filter by priority" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="all">All Priority</SelectItem>
+                 <SelectItem value="critical">Critical</SelectItem>
+                 <SelectItem value="high">High</SelectItem>
+                 <SelectItem value="medium">Medium</SelectItem>
+                 <SelectItem value="low">Low</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+           <div className="w-40">
+             <Select value={filterAIPriority} onValueChange={setFilterAIPriority}>
+               <SelectTrigger>
+                 <SelectValue placeholder="AI Priority" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="all">All AI Priority</SelectItem>
+                 <SelectItem value="critical">Critical</SelectItem>
+                 <SelectItem value="high">High</SelectItem>
+                 <SelectItem value="medium">Medium</SelectItem>
+                 <SelectItem value="low">Low</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+       </CardContent>
       </Card>
 
       {/* Kanban-style Task Columns */}
@@ -228,17 +244,37 @@ export default function ProjectTasks() {
                       onClick={() => setSelectedTask(task)}
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-medium text-sm flex-1">{task.title}</p>
-                        <Badge className={PRIORITY_CONFIG[task.priority]?.color || ''} variant="outline">
-                          {task.priority}
-                        </Badge>
-                      </div>
-                      {task.source === 'ai_identified' && (
-                        <Badge variant="outline" className="text-xs mb-2">
-                          <Zap className="w-3 h-3 mr-1" />
-                          AI
-                        </Badge>
-                      )}
+                         <p className="font-medium text-sm flex-1">{task.title}</p>
+                         <div className="flex gap-1">
+                           {task.ai_assigned_priority && (
+                             <Badge className={PRIORITY_CONFIG[task.ai_assigned_priority]?.color || ''}>
+                               {task.ai_assigned_priority}
+                             </Badge>
+                           )}
+                         </div>
+                       </div>
+                       {task.source === 'ai_identified' && (
+                         <div className="flex gap-2 items-start flex-wrap mb-2">
+                           <Badge variant="outline" className="text-xs">
+                             <Zap className="w-3 h-3 mr-1" />
+                             AI
+                           </Badge>
+                           {task.ai_priority_keywords && task.ai_priority_keywords.length > 0 && (
+                             <div className="flex gap-1 flex-wrap">
+                               {task.ai_priority_keywords.slice(0, 2).map(keyword => (
+                                 <Badge key={keyword} variant="secondary" className="text-xs">
+                                   {keyword}
+                                 </Badge>
+                               ))}
+                               {task.ai_priority_keywords.length > 2 && (
+                                 <Badge variant="secondary" className="text-xs">
+                                   +{task.ai_priority_keywords.length - 2}
+                                 </Badge>
+                               )}
+                             </div>
+                           )}
+                         </div>
+                       )}
                       {task.source_channel && (
                         <p className="text-xs text-muted-foreground mb-2">#{task.source_channel}</p>
                       )}
@@ -307,6 +343,28 @@ export default function ProjectTasks() {
                   </Badge>
                 </div>
               </div>
+              {selectedTask.ai_assigned_priority && (
+                <div>
+                  <Label className="text-xs">AI Assigned Priority</Label>
+                  <div className="mt-1">
+                    <Badge className={PRIORITY_CONFIG[selectedTask.ai_assigned_priority].color}>
+                      {selectedTask.ai_assigned_priority}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+              {selectedTask.ai_priority_keywords && selectedTask.ai_priority_keywords.length > 0 && (
+                <div className="col-span-2">
+                  <Label className="text-xs">Priority Keywords</Label>
+                  <div className="flex gap-1 flex-wrap mt-1">
+                    {selectedTask.ai_priority_keywords.map(keyword => (
+                      <Badge key={keyword} variant="outline" className="text-xs">
+                        {keyword}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
               {selectedTask.due_date && (
                 <div>
                   <Label className="text-xs">Due Date</Label>

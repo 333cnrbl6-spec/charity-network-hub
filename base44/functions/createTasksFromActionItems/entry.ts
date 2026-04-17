@@ -1,5 +1,40 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// Priority keywords detection
+const PRIORITY_KEYWORDS = {
+  critical: ['critical', 'urgent', 'asap', 'immediately', 'blocking', 'show-stopper', 'emergency'],
+  high: ['high priority', 'important', 'soon', 'quickly', 'pressing', 'priority'],
+  medium: ['moderate', 'standard'],
+  low: ['low priority', 'nice to have', 'eventually', 'backlog']
+};
+
+// Detect priority from text and extract keywords found
+function detectAIPriority(text) {
+  const lowerText = text.toLowerCase();
+  const foundKeywords = [];
+  let priority = 'medium';
+
+  for (const [level, keywords] of Object.entries(PRIORITY_KEYWORDS)) {
+    for (const keyword of keywords) {
+      if (lowerText.includes(keyword)) {
+        foundKeywords.push(keyword);
+        if (level === 'critical' || level === 'high') {
+          priority = level;
+        }
+      }
+    }
+  }
+
+  // Priority escalation: if critical keyword found, set to critical
+  if (foundKeywords.some(k => PRIORITY_KEYWORDS.critical.includes(k))) {
+    priority = 'critical';
+  } else if (foundKeywords.some(k => PRIORITY_KEYWORDS.high.includes(k))) {
+    priority = 'high';
+  }
+
+  return { priority, keywords: [...new Set(foundKeywords)] };
+}
+
 // Parse action items and create tasks
 async function parseAndCreateTasks(base44, actionItemsText, channel, sourceId) {
   const lines = actionItemsText.split('\n').filter(line => line.trim());
@@ -18,13 +53,8 @@ async function parseAndCreateTasks(base44, actionItemsText, channel, sourceId) {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 7);
 
-    // Determine priority based on keywords
-    let priority = 'medium';
-    if (description.toLowerCase().includes('critical') || description.toLowerCase().includes('urgent')) {
-      priority = 'critical';
-    } else if (description.toLowerCase().includes('asap') || description.toLowerCase().includes('high priority')) {
-      priority = 'high';
-    }
+    // AI-based priority detection
+    const { priority, keywords } = detectAIPriority(description);
 
     const taskData = {
       title: description.trim(),
@@ -34,6 +64,8 @@ async function parseAndCreateTasks(base44, actionItemsText, channel, sourceId) {
       source_channel: channel,
       status: 'backlog',
       priority,
+      ai_assigned_priority: priority,
+      ai_priority_keywords: keywords,
       assignee: isUnassigned ? null : ownerTrimmed,
       assignee_name: isUnassigned ? null : owner.trim(),
       due_date: dueDate.toISOString().split('T')[0],

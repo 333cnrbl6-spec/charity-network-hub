@@ -52,6 +52,23 @@
       "default": "medium",
       "description": "Task priority"
     },
+    "ai_assigned_priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Priority automatically assigned by AI based on keywords"
+    },
+    "ai_priority_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keywords detected that influenced AI priority assignment"
+    },
     "assignee": {
       "type": "string",
       "description": "Email of assigned user"
