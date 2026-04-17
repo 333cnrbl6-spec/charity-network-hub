@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-// Real ONS demographic data (2023-2024) + Age UK service mapping
+// Centralized location configs with real ONS demographics + Age UK service mapping
+// This should sync with lib/locationData.js
 const LOCATION_CONFIGS = {
   manchester: {
     branch_id: 'manchester',
@@ -196,7 +197,7 @@ const LOCATION_CONFIGS = {
   },
   salford: {
     branch_id: 'salford',
-    branch_name: 'Age UK Salford',
+    branch_name: 'Age UK Salford & Trafford',
     region: 'north_west',
     location_type: 'urban',
     postcode_area: 'M5-M7',
@@ -212,10 +213,10 @@ const LOCATION_CONFIGS = {
     },
     services: [
       { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'Weekly contact', target_group: 'Isolated seniors', capacity: 105 },
+      { service_name: 'Memory Loss Advice Service', service_type: 'benefits-advice', delivery_method: 'Dedicated support', target_group: 'Dementia sufferers & carers', capacity: 60 },
       { service_name: 'Digital Skills Training', service_type: 'digital-help', delivery_method: 'Group & individual', target_group: 'Ages 60+', capacity: 55 },
-      { service_name: 'Salford Community Transport', service_type: 'transport', delivery_method: 'Flexible minibus', target_group: 'General public 60+', capacity: 190 },
-      { service_name: 'Support & Shopping Service', service_type: 'shopping-assist', delivery_method: 'Volunteer-led', target_group: 'Housebound clients', capacity: 80 },
-      { service_name: 'Welfare Rights Advice', service_type: 'benefits-advice', delivery_method: 'Drop-in & appointments', target_group: 'All eligible seniors', capacity: 85 }
+      { service_name: 'Community Transport', service_type: 'transport', delivery_method: 'Flexible minibus', target_group: 'General public 60+', capacity: 190 },
+      { service_name: 'Support & Shopping Service', service_type: 'shopping-assist', delivery_method: 'Volunteer-led', target_group: 'Housebound clients', capacity: 80 }
     ],
     staff_roles: [
       { role: 'Operations Lead', typical_count: 1, responsibilities: 'Operations, quality, partnerships' },
@@ -223,12 +224,206 @@ const LOCATION_CONFIGS = {
       { role: 'Administrative Support', typical_count: 1, responsibilities: 'Admin, data, communications' }
     ],
     typical_sessions: [
-      { session_name: 'Salford Digital Hub', session_type: 'digital-inclusion', frequency: 'Weekly (Friday 2pm)', typical_attendance: 19, location: 'Salford Library' },
+      { session_name: 'Memory Café', session_type: 'ageing-well', frequency: 'Fortnightly', typical_attendance: 20, location: 'Salford Library' },
       { session_name: 'Social & Craft Group', session_type: 'ageing-well', frequency: 'Weekly', typical_attendance: 26, location: 'Eccles Community Centre' },
-      { session_name: 'Health & Wellness Sessions', session_type: 'stretch-and-flex', frequency: 'Twice weekly', typical_attendance: 30, location: 'Salford Leisure Centre' },
-      { session_name: 'Dementia Friendly Café', session_type: 'ageing-well', frequency: 'Fortnightly', typical_attendance: 18, location: 'Community Café' }
+      { session_name: 'Health & Wellness Sessions', session_type: 'stretch-and-flex', frequency: 'Twice weekly', typical_attendance: 30, location: 'Salford Leisure Centre' }
     ],
     sample_clients_count: 190,
+    is_demo: true,
+    onboarded: false
+  },
+  bolton: {
+    branch_id: 'bolton',
+    branch_name: 'Age UK Bolton',
+    region: 'north_west',
+    location_type: 'urban',
+    postcode_area: 'BL1-BL7',
+    catchment_area: 'Bolton town centre and surrounding wards',
+    demographics: {
+      population_65_plus: 64500,
+      population_85_plus: 9200,
+      total_population: 286627,
+      deprivation_index: '23.5 (above average deprivation)',
+      life_expectancy: 77.9,
+      carers_percentage: 9.1,
+      data_year: 2023
+    },
+    services: [
+      { service_name: 'Dementia Support Programme', service_type: 'ageing-well', delivery_method: 'Dedicated support & activities', target_group: 'Dementia sufferers & carers', capacity: 85 },
+      { service_name: 'Handyperson Service', service_type: 'home-visit', delivery_method: 'Small repairs & maintenance', target_group: 'Homeowners 60+', capacity: 120 },
+      { service_name: 'Community Café', service_type: 'ageing-well', delivery_method: 'Social gathering space', target_group: 'Older adults & carers', capacity: 150 },
+      { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'Regular visits & calls', target_group: 'Isolated seniors', capacity: 100 },
+      { service_name: 'Benefits & Grants Advice', service_type: 'benefits-advice', delivery_method: 'Appointments & drop-in', target_group: 'Low-income pensioners', capacity: 70 }
+    ],
+    staff_roles: [
+      { role: 'Service Manager', typical_count: 1, responsibilities: 'Branch management, partnerships' },
+      { role: 'Service Coordinator', typical_count: 2, responsibilities: 'Client services, volunteer management' },
+      { role: 'Handyperson Supervisor', typical_count: 1, responsibilities: 'Repairs scheduling, quality assurance' },
+      { role: 'Admin Assistant', typical_count: 1, responsibilities: 'Reception, bookings, records' }
+    ],
+    typical_sessions: [
+      { session_name: 'Dementia Café', session_type: 'ageing-well', frequency: 'Weekly', typical_attendance: 18, location: 'Bolton Community Centre' },
+      { session_name: 'Craft Sessions', session_type: 'ageing-well', frequency: 'Twice weekly', typical_attendance: 25, location: 'Age UK Centre' },
+      { session_name: 'Gentle Exercise', session_type: 'stretch-and-flex', frequency: 'Twice weekly', typical_attendance: 28, location: 'Bolton Leisure Centre' },
+      { session_name: 'Handyperson Info Sessions', session_type: 'ageing-well', frequency: 'Monthly', typical_attendance: 20, location: 'Community Venues' }
+    ],
+    sample_clients_count: 240,
+    is_demo: true,
+    onboarded: false
+  },
+  lancashire: {
+    branch_id: 'lancashire',
+    branch_name: 'Age UK Lancashire',
+    region: 'north_west',
+    location_type: 'rural',
+    postcode_area: 'PR1-PR9, LA1-LA10',
+    catchment_area: 'Across Lancashire county including Preston, Lancaster, Ribble Valley',
+    demographics: {
+      population_65_plus: 142000,
+      population_85_plus: 18500,
+      total_population: 748203,
+      deprivation_index: '19.2 (moderate deprivation)',
+      life_expectancy: 78.8,
+      carers_percentage: 8.7,
+      data_year: 2023
+    },
+    services: [
+      { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'In-home visits & calls', target_group: 'Isolated older adults', capacity: 180 },
+      { service_name: 'Community Transport', service_type: 'transport', delivery_method: 'Minibus across county', target_group: 'Seniors across Lancashire', capacity: 300 },
+      { service_name: 'Digital Inclusion', service_type: 'digital-help', delivery_method: 'Group sessions & 1-to-1', target_group: 'Ages 60+', capacity: 90 },
+      { service_name: 'Shopping & Errand Assistance', service_type: 'shopping-assist', delivery_method: 'Volunteer-supported', target_group: 'Homebound & disabled', capacity: 140 },
+      { service_name: 'Advice & Support Services', service_type: 'benefits-advice', delivery_method: 'Multi-location clinics', target_group: 'All eligible older adults', capacity: 110 }
+    ],
+    staff_roles: [
+      { role: 'County Manager', typical_count: 1, responsibilities: 'Strategic leadership, partnerships' },
+      { role: 'Regional Coordinator', typical_count: 3, responsibilities: 'Area coordination, service delivery' },
+      { role: 'Transport Manager', typical_count: 1, responsibilities: 'Fleet management, driver support' },
+      { role: 'Administrative Team', typical_count: 2, responsibilities: 'Admin support, communications' }
+    ],
+    typical_sessions: [
+      { session_name: 'Digital Cafés', session_type: 'digital-inclusion', frequency: 'Weekly (multiple locations)', typical_attendance: 16, location: 'Various community centres' },
+      { session_name: 'Stretch & Flex Classes', session_type: 'stretch-and-flex', frequency: 'Twice weekly', typical_attendance: 32, location: 'Across county venues' },
+      { session_name: 'Information & Advice Sessions', session_type: 'information-advice', frequency: 'Weekly', typical_attendance: 24, location: 'Community hubs' },
+      { session_name: 'Social Outings', session_type: 'ageing-well', frequency: 'Monthly', typical_attendance: 35, location: 'Various attractions' }
+    ],
+    sample_clients_count: 350,
+    is_demo: true,
+    onboarded: false
+  },
+  wirral: {
+    branch_id: 'wirral',
+    branch_name: 'Age UK Wirral',
+    region: 'north_west',
+    location_type: 'suburban',
+    postcode_area: 'CH41-CH64',
+    catchment_area: 'Wirral borough including West Kirby, Bebington, Wallasey',
+    demographics: {
+      population_65_plus: 58700,
+      population_85_plus: 8100,
+      total_population: 327943,
+      deprivation_index: '17.8 (moderate deprivation)',
+      life_expectancy: 79.8,
+      carers_percentage: 8.4,
+      data_year: 2023
+    },
+    services: [
+      { service_name: 'Charity Shops Network', service_type: 'ageing-well', delivery_method: 'Multiple locations', target_group: 'General public & volunteers', capacity: 200 },
+      { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'Regular visits & calls', target_group: 'Isolated seniors', capacity: 110 },
+      { service_name: 'Community Transport', service_type: 'transport', delivery_method: 'Minibus service', target_group: 'Mobility-limited', capacity: 160 },
+      { service_name: 'Digital Support', service_type: 'digital-help', delivery_method: 'Group & individual training', target_group: 'Ages 60+', capacity: 65 },
+      { service_name: 'Benefits & Grants Advice', service_type: 'benefits-advice', delivery_method: 'Drop-in & appointments', target_group: 'Low-income pensioners', capacity: 75 }
+    ],
+    staff_roles: [
+      { role: 'Branch Manager', typical_count: 1, responsibilities: 'Branch leadership, charity shops oversight' },
+      { role: 'Service Coordinator', typical_count: 2, responsibilities: 'Client services, volunteer management' },
+      { role: 'Shops Manager', typical_count: 1, responsibilities: 'Charity shop operations' },
+      { role: 'Admin Support', typical_count: 1, responsibilities: 'Administration, communications' }
+    ],
+    typical_sessions: [
+      { session_name: 'Charity Shop Volunteer Sessions', session_type: 'ageing-well', frequency: 'Daily', typical_attendance: 40, location: 'Various shop locations' },
+      { session_name: 'Digital Café', session_type: 'digital-inclusion', frequency: 'Weekly', typical_attendance: 18, location: 'Wirral Community Centre' },
+      { session_name: 'Social Groups', session_type: 'ageing-well', frequency: 'Twice weekly', typical_attendance: 28, location: 'Community venues' },
+      { session_name: 'Gentle Movement', session_type: 'stretch-and-flex', frequency: 'Weekly', typical_attendance: 24, location: 'Various leisure centres' }
+    ],
+    sample_clients_count: 210,
+    is_demo: true,
+    onboarded: false
+  },
+  sefton: {
+    branch_id: 'sefton',
+    branch_name: 'Age UK Sefton',
+    region: 'north_west',
+    location_type: 'suburban',
+    postcode_area: 'L29-L37',
+    catchment_area: 'Sefton borough including Southport, Formby, Crosby',
+    demographics: {
+      population_65_plus: 54300,
+      population_85_plus: 7400,
+      total_population: 281298,
+      deprivation_index: '18.5 (moderate deprivation)',
+      life_expectancy: 79.3,
+      carers_percentage: 8.3,
+      data_year: 2023
+    },
+    services: [
+      { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'Regular visits & calls', target_group: 'Isolated older adults', capacity: 105 },
+      { service_name: 'Charity Shops', service_type: 'ageing-well', delivery_method: 'Community shops', target_group: 'General public & volunteers', capacity: 80 },
+      { service_name: 'Community Minibus', service_type: 'transport', delivery_method: 'Scheduled routes', target_group: 'Seniors & disabled', capacity: 140 },
+      { service_name: 'Digital Inclusion Programme', service_type: 'digital-help', delivery_method: 'Group sessions', target_group: 'Ages 60+', capacity: 55 },
+      { service_name: 'Support & Information Service', service_type: 'benefits-advice', delivery_method: 'Clinics & appointments', target_group: 'Eligible seniors', capacity: 70 }
+    ],
+    staff_roles: [
+      { role: 'Service Manager', typical_count: 1, responsibilities: 'Strategic leadership, operations' },
+      { role: 'Service Coordinator', typical_count: 2, responsibilities: 'Client care, volunteer support' },
+      { role: 'Charity Shop Coordinator', typical_count: 1, responsibilities: 'Shop operations, volunteer management' },
+      { role: 'Admin Officer', typical_count: 1, responsibilities: 'Administration, communications' }
+    ],
+    typical_sessions: [
+      { session_name: 'Charity Shop Volunteering', session_type: 'ageing-well', frequency: 'Daily', typical_attendance: 25, location: 'Shop locations' },
+      { session_name: 'Tech Support Sessions', session_type: 'digital-inclusion', frequency: 'Weekly', typical_attendance: 15, location: 'Sefton Library' },
+      { session_name: 'Wellbeing Groups', session_type: 'ageing-well', frequency: 'Twice weekly', typical_attendance: 22, location: 'Community centres' },
+      { session_name: 'Exercise & Movement', session_type: 'stretch-and-flex', frequency: 'Weekly', typical_attendance: 26, location: 'Leisure venues' }
+    ],
+    sample_clients_count: 195,
+    is_demo: true,
+    onboarded: false
+  },
+  liverpool: {
+    branch_id: 'liverpool',
+    branch_name: 'Age UK Liverpool',
+    region: 'north_west',
+    location_type: 'urban',
+    postcode_area: 'L1-L19',
+    catchment_area: 'Liverpool city centre and surrounding areas',
+    demographics: {
+      population_65_plus: 82600,
+      population_85_plus: 11400,
+      total_population: 481785,
+      deprivation_index: '31.2 (high deprivation)',
+      life_expectancy: 76.8,
+      carers_percentage: 10.5,
+      data_year: 2023
+    },
+    services: [
+      { service_name: 'Befriending Service', service_type: 'befriending', delivery_method: 'In-home visits & calls', target_group: 'Isolated seniors', capacity: 140 },
+      { service_name: 'Community Support Services', service_type: 'ageing-well', delivery_method: 'Multi-service hubs', target_group: 'All older adults', capacity: 200 },
+      { service_name: 'City Transport Service', service_type: 'transport', delivery_method: 'Minibus network', target_group: 'Seniors across city', capacity: 250 },
+      { service_name: 'Digital Skills Programme', service_type: 'digital-help', delivery_method: 'Group & 1-to-1 sessions', target_group: 'Ages 60+', capacity: 85 },
+      { service_name: 'Benefits & Grants Advisory', service_type: 'benefits-advice', delivery_method: 'Drop-in & appointments', target_group: 'Low-income pensioners', capacity: 100 }
+    ],
+    staff_roles: [
+      { role: 'City Operations Manager', typical_count: 1, responsibilities: 'Strategic management, partnerships' },
+      { role: 'Service Leads', typical_count: 3, responsibilities: 'Service delivery, team management' },
+      { role: 'Transport Coordinator', typical_count: 1, responsibilities: 'Fleet & driver management' },
+      { role: 'Administrative Team', typical_count: 2, responsibilities: 'Admin support, communications' }
+    ],
+    typical_sessions: [
+      { session_name: 'Digital Cafés', session_type: 'digital-inclusion', frequency: 'Weekly (multiple hubs)', typical_attendance: 20, location: 'Community centres' },
+      { session_name: 'Social Groups & Clubs', session_type: 'ageing-well', frequency: 'Twice weekly', typical_attendance: 30, location: 'Various venues' },
+      { session_name: 'Exercise Classes', session_type: 'stretch-and-flex', frequency: 'Twice weekly', typical_attendance: 35, location: 'Leisure centres' },
+      { session_name: 'Information & Support Sessions', session_type: 'information-advice', frequency: 'Weekly', typical_attendance: 25, location: 'Hub locations' }
+    ],
+    sample_clients_count: 320,
     is_demo: true,
     onboarded: false
   }

@@ -14,7 +14,12 @@ const BRANCH_URLS = {
   stockport: 'https://stockport-care-connect.base44.app',
   wigan: 'https://wigancare-hub-connect.base44.app',
   trafford: 'https://trafford-care-sync.base44.app',
-  salford: 'https://salford-care-link.base44.app'
+  salford: 'https://salford-care-link.base44.app',
+  bolton: 'https://bolton-age-uk.base44.app',
+  lancashire: 'https://lancashire-age-uk.base44.app',
+  wirral: 'https://wirral-age-uk.base44.app',
+  sefton: 'https://sefton-age-uk.base44.app',
+  liverpool: 'https://liverpool-age-uk.base44.app'
 };
 
 export default function LocationManagement() {
