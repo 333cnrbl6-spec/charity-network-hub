@@ -11,7 +11,7 @@ const getServerUrl = () => {
   if (hostname.includes('.')) {
     const parts = hostname.split('.');
     const subdomain = parts[0];
-    return `https://${subdomain}.base44.com`;
+    return `https://${subdomain}.base44.app`;
   }
   return '';
 };
