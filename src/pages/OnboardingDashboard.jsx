@@ -13,21 +13,20 @@ export default function OnboardingDashboard() {
   const [actionLoading, setActionLoading] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  useEffect(() => {
-    // Auto-bootstrap configs on first load if empty
-    const bootstrap = async () => {
-      const locs = await base44.entities.LocationConfig.list();
-      if (locs.length === 0) {
-        try {
-          await base44.functions.invoke('bootstrapBranchConfigs', {});
-          queryClient.invalidateQueries({ queryKey: ['locationConfigs'] });
-        } catch (error) {
-          console.error('Bootstrap error:', error);
-        }
-      }
-    };
-    bootstrap();
-  }, [queryClient]);
+  const handleBootstrapConfigs = async () => {
+    setActionLoading('bootstrap');
+    playClick();
+    try {
+      await base44.functions.invoke('bootstrapBranchConfigs', {});
+      queryClient.invalidateQueries({ queryKey: ['locationConfigs'] });
+      playSuccess();
+    } catch (error) {
+      console.error('Bootstrap error:', error);
+      alert(`Bootstrap failed: ${error.message}`);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const { data: locations = [] } = useQuery({
     queryKey: ['locationConfigs'],
@@ -264,10 +263,19 @@ export default function OnboardingDashboard() {
       {/* Empty State */}
       {demoLocations.length === 0 && readyLocations.length === 0 && (
         <Card>
-          <CardContent className="p-12 text-center">
-            <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <p className="text-muted-foreground">No location configs synced yet</p>
-            <p className="text-sm text-muted-foreground mt-1">Go to Locations page to sync branch configs first</p>
+          <CardContent className="p-8 text-center space-y-4">
+            <MapPin className="w-12 h-12 text-muted-foreground mx-auto opacity-50" />
+            <div>
+              <p className="text-muted-foreground">No location configs synced yet</p>
+              <p className="text-sm text-muted-foreground mt-1">Bootstrap all 11 branch configs or go to Locations page to sync manually</p>
+            </div>
+            <Button 
+              onClick={handleBootstrapConfigs}
+              disabled={actionLoading === 'bootstrap'}
+              className="gap-2"
+            >
+              {actionLoading === 'bootstrap' ? 'Bootstrapping...' : 'Bootstrap All 11 Branches'}
+            </Button>
           </CardContent>
         </Card>
       )}
