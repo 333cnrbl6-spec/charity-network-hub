@@ -21,9 +21,12 @@ import {
   Filter,
   Plus,
   Calendar,
-  User
+  User,
+  Copy
 } from 'lucide-react';
 import { toast } from 'sonner';
+import TemplateBuilder from '@/components/templates/TemplateBuilder';
+import TemplateApplier from '@/components/templates/TemplateApplier';
 
 const STATUS_CONFIG = {
   backlog: { icon: Circle, color: 'text-gray-500', bg: 'bg-gray-50' },
@@ -48,6 +51,8 @@ export default function ProjectTasks() {
   const [filterAIPriority, setFilterAIPriority] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
+  const [showTemplateBuilder, setShowTemplateBuilder] = useState(false);
+  const [showTemplateApplier, setShowTemplateApplier] = useState(false);
 
   // Fetch tasks
   const { data: allTasks = [], isLoading } = useQuery({
@@ -116,9 +121,28 @@ export default function ProjectTasks() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="border-b">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Project Tasks</h1>
-        <p className="text-muted-foreground">Manage action items from AI insights and discussions</p>
+      <div className="border-b pb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Project Tasks</h1>
+          <p className="text-muted-foreground">Manage action items from AI insights and discussions</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTemplateApplier(true)}
+            className="flex items-center gap-2"
+          >
+            <Copy className="w-4 h-4" /> Apply Template
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setShowTemplateBuilder(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" /> New Template
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -394,6 +418,16 @@ export default function ProjectTasks() {
             </Button>
           </CardContent>
         </Card>
+      )}
+
+      {/* Template Builder Modal */}
+      {showTemplateBuilder && (
+        <TemplateBuilder onClose={() => setShowTemplateBuilder(false)} />
+      )}
+
+      {/* Template Applier Modal */}
+      {showTemplateApplier && (
+        <TemplateApplier onClose={() => setShowTemplateApplier(false)} />
       )}
     </div>
   );

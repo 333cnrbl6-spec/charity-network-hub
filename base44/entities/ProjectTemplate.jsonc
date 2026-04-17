@@ -1,0 +1,79 @@
+{
+  "name": "ProjectTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Template description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "strategy",
+        "products",
+        "prospects",
+        "governance",
+        "general"
+      ],
+      "default": "general",
+      "description": "Template category"
+    },
+    "template_tasks": {
+      "type": "array",
+      "description": "Task definitions in template",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "estimated_hours": {
+            "type": "number"
+          },
+          "assignee_name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "priority"
+        ]
+      }
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Available to all users"
+    },
+    "task_count": {
+      "type": "number",
+      "description": "Number of tasks in template"
+    }
+  },
+  "required": [
+    "name",
+    "template_tasks"
+  ]
+}
