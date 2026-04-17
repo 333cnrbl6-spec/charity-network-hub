@@ -210,8 +210,8 @@ export default function RoleOnboarding() {
       )
     },
     {
-      title: 'You're Ready!',
-      description: 'Your workspace is set up. What's next?',
+      title: 'You are Ready!',
+      description: 'Your workspace is set up. What is next?',
       content: (
         <div className="space-y-4">
           <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
