@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Users, MapPin, Users2, Briefcase, Zap, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { playSuccess, playClick } from '@/lib/audio';
+import BranchLocationMap from '@/components/map/BranchLocationMap';
 
 const BRANCH_URLS = {
   manchester: 'https://mcr-care-compass.base44.app',
@@ -26,6 +27,8 @@ export default function LocationManagement() {
   const [loadingBranch, setLoadingBranch] = useState(null);
   const [distributing, setDistributing] = useState(false);
   const [distributionStatus, setDistributionStatus] = useState({});
+  const [selectedRegion, setSelectedRegion] = useState('all');
+  const [selectedBranch, setSelectedBranch] = useState(null);
 
   const { data: locations = [] } = useQuery({
     queryKey: ['locationConfigs'],
@@ -91,6 +94,16 @@ export default function LocationManagement() {
     }
   };
 
+  const REGIONS = ['all', 'north_west', 'london', 'south_east', 'south_west'];
+
+  const regionLabels = {
+    all: 'All Regions',
+    north_west: 'North West',
+    london: 'London',
+    south_east: 'South East',
+    south_west: 'South West',
+  };
+
   return (
     <div className="p-6 space-y-6">
       <LoadingIndicator isLoading={distributing} message="Distributing location configs..." />
@@ -99,6 +112,42 @@ export default function LocationManagement() {
         <h1 className="text-3xl font-bold text-foreground">Location Configuration Management</h1>
         <p className="text-muted-foreground mt-1">Manage and distribute branch location data with real demographics</p>
       </div>
+
+      {/* Map Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Branch Locations Map
+            </CardTitle>
+            <div className="flex gap-2">
+              {REGIONS.map(region => (
+                <Button
+                  key={region}
+                  variant={selectedRegion === region ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedRegion(region)}
+                >
+                  {regionLabels[region]}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <BranchLocationMap 
+            branches={branches}
+            selectedRegion={selectedRegion}
+            onSelectBranch={setSelectedBranch}
+          />
+          {selectedBranch && (
+            <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <p className="text-sm font-semibold capitalize">{selectedBranch} selected</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Action Bar */}
       <Card className="bg-primary/5 border-primary/20">
