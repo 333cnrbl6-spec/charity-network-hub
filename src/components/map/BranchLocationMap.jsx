@@ -62,8 +62,8 @@ export default function BranchLocationMap({ branches, selectedRegion = 'all', on
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; CartoDB &copy; OpenStreetMap contributors'
         />
 
         {filteredBranches.map(branch => (
