@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Globe, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Globe, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 
 export default function NetworkOverview() {
+  const [syncLoading, setSyncLoading] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data: branches = [] } = useQuery({
     queryKey: ['branches'],
     queryFn: () => base44.asServiceRole.entities.BranchConfig.list(),
@@ -16,6 +20,19 @@ export default function NetworkOverview() {
     queryFn: () => base44.asServiceRole.entities.BranchReport.list(),
   });
 
+  const handleForceSync = async () => {
+    setSyncLoading(true);
+    try {
+      await base44.functions.invoke('syncAllBranches', {});
+      queryClient.invalidateQueries({ queryKey: ['branches'] });
+      queryClient.invalidateQueries({ queryKey: ['branch-reports'] });
+    } catch (error) {
+      console.error('Sync failed:', error);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
   const activeBranches = branches.filter(b => b.status === 'active').length;
   const totalClients = reports.reduce((sum, r) => sum + (r.stats?.total_clients || 0), 0);
   const totalVolunteers = reports.reduce((sum, r) => sum + (r.stats?.active_volunteers || 0), 0);
@@ -23,9 +40,21 @@ export default function NetworkOverview() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Age UK Network Overview</h1>
-        <p className="text-muted-foreground mt-1">National aggregated statistics and branch status</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Age UK Network Overview</h1>
+          <p className="text-muted-foreground mt-1">National aggregated statistics and branch status</p>
+        </div>
+        <Button 
+          onClick={handleForceSync} 
+          disabled={syncLoading}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          <RefreshCw className={`w-4 h-4 ${syncLoading ? 'animate-spin' : ''}`} />
+          {syncLoading ? 'Syncing...' : 'Force Sync'}
+        </Button>
       </div>
 
       {/* KPI Cards */}
