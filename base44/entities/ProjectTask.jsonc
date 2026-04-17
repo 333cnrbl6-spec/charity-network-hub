@@ -101,6 +101,34 @@
       "type": "string",
       "format": "date-time",
       "description": "When the task was completed"
+    },
+    "parent_task_id": {
+      "type": "string",
+      "description": "Parent task ID for hierarchical nesting"
+    },
+    "blocking_task_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Task IDs that must be completed before this task"
+    },
+    "blocked_by_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of tasks blocking this task"
+    },
+    "subtask_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Child task IDs"
+    },
+    "subtask_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of subtasks"
     }
   },
   "required": [

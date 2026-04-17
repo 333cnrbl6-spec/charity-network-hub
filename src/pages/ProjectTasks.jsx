@@ -27,6 +27,8 @@ import {
 import { toast } from 'sonner';
 import TemplateBuilder from '@/components/templates/TemplateBuilder';
 import TemplateApplier from '@/components/templates/TemplateApplier';
+import TaskHierarchy from '@/components/tasks/TaskHierarchy';
+import TaskDependencyModal from '@/components/tasks/TaskDependencyModal';
 
 const STATUS_CONFIG = {
   backlog: { icon: Circle, color: 'text-gray-500', bg: 'bg-gray-50' },
@@ -53,6 +55,8 @@ export default function ProjectTasks() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showTemplateBuilder, setShowTemplateBuilder] = useState(false);
   const [showTemplateApplier, setShowTemplateApplier] = useState(false);
+  const [showDependencies, setShowDependencies] = useState(false);
+  const [expandedTasks, setExpandedTasks] = useState({});
 
   // Fetch tasks
   const { data: allTasks = [], isLoading } = useQuery({
@@ -94,6 +98,9 @@ export default function ProjectTasks() {
     return statusMatch && priorityMatch && aiPriorityMatch && searchMatch;
   });
 
+  // Filter root tasks (no parent)
+  const rootTasks = filteredTasks.filter(t => !t.parent_task_id);
+
   // Group tasks by status
   const tasksByStatus = {
     backlog: filteredTasks.filter(t => t.status === 'backlog'),
@@ -102,6 +109,17 @@ export default function ProjectTasks() {
     review: filteredTasks.filter(t => t.status === 'review'),
     completed: filteredTasks.filter(t => t.status === 'completed'),
     cancelled: filteredTasks.filter(t => t.status === 'cancelled')
+  };
+
+  const handleTaskSelect = (task) => {
+    setSelectedTask(task);
+  };
+
+  const handleExpandTask = (taskId, expanded) => {
+    setExpandedTasks(prev => ({
+      ...prev,
+      [taskId]: expanded
+    }));
   };
 
   const stats = {
@@ -239,89 +257,29 @@ export default function ProjectTasks() {
        </CardContent>
       </Card>
 
-      {/* Kanban-style Task Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {['backlog', 'in_progress', 'completed'].map(status => {
-          const tasks = tasksByStatus[status];
-          const config = STATUS_CONFIG[status];
-          const Icon = config.icon;
-
-          return (
-            <Card key={status} className={config.bg}>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Icon className={`w-4 h-4 ${config.color}`} />
-                    <CardTitle className="text-base capitalize">{status.replace('_', ' ')}</CardTitle>
-                  </div>
-                  <Badge variant="secondary">{tasks.length}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {tasks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No tasks</p>
-                ) : (
-                  tasks.map(task => (
-                    <div
-                      key={task.id}
-                      className="p-3 bg-card rounded-lg border hover:shadow-md transition-shadow cursor-pointer"
-                      onClick={() => setSelectedTask(task)}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                         <p className="font-medium text-sm flex-1">{task.title}</p>
-                         <div className="flex gap-1">
-                           {task.ai_assigned_priority && (
-                             <Badge className={PRIORITY_CONFIG[task.ai_assigned_priority]?.color || ''}>
-                               {task.ai_assigned_priority}
-                             </Badge>
-                           )}
-                         </div>
-                       </div>
-                       {task.source === 'ai_identified' && (
-                         <div className="flex gap-2 items-start flex-wrap mb-2">
-                           <Badge variant="outline" className="text-xs">
-                             <Zap className="w-3 h-3 mr-1" />
-                             AI
-                           </Badge>
-                           {task.ai_priority_keywords && task.ai_priority_keywords.length > 0 && (
-                             <div className="flex gap-1 flex-wrap">
-                               {task.ai_priority_keywords.slice(0, 2).map(keyword => (
-                                 <Badge key={keyword} variant="secondary" className="text-xs">
-                                   {keyword}
-                                 </Badge>
-                               ))}
-                               {task.ai_priority_keywords.length > 2 && (
-                                 <Badge variant="secondary" className="text-xs">
-                                   +{task.ai_priority_keywords.length - 2}
-                                 </Badge>
-                               )}
-                             </div>
-                           )}
-                         </div>
-                       )}
-                      {task.source_channel && (
-                        <p className="text-xs text-muted-foreground mb-2">#{task.source_channel}</p>
-                      )}
-                      {task.due_date && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="w-3 h-3" />
-                          {new Date(task.due_date).toLocaleDateString('en-GB')}
-                        </div>
-                      )}
-                      {task.assignee_name && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                          <User className="w-3 h-3" />
-                          {task.assignee_name}
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Hierarchy View */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Task Hierarchy</CardTitle>
+          <CardDescription>Parent-child relationships and blocking dependencies</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-1">
+          {rootTasks.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No root tasks matching filters</p>
+          ) : (
+            rootTasks.map(task => (
+              <TaskHierarchy
+                key={task.id}
+                task={task}
+                allTasks={filteredTasks}
+                onSelect={handleTaskSelect}
+                expanded={expandedTasks[task.id]}
+                onExpand={handleExpandTask}
+              />
+            ))
+          )}
+        </CardContent>
+      </Card>
 
       {/* Task Detail Modal */}
       {selectedTask && (
@@ -411,6 +369,15 @@ export default function ProjectTasks() {
             )}
             <Button
               variant="outline"
+              className="w-full mb-2"
+              onClick={() => {
+                setShowDependencies(true);
+              }}
+            >
+              Manage Dependencies
+            </Button>
+            <Button
+              variant="outline"
               className="w-full"
               onClick={() => setSelectedTask(null)}
             >
@@ -418,6 +385,18 @@ export default function ProjectTasks() {
             </Button>
           </CardContent>
         </Card>
+      )}
+
+      {/* Dependency Management Modal */}
+      {showDependencies && selectedTask && (
+        <TaskDependencyModal 
+          task={selectedTask}
+          allTasks={allTasks}
+          onClose={() => {
+            setShowDependencies(false);
+            queryClient.invalidateQueries({ queryKey: ['projectTasks'] });
+          }}
+        />
       )}
 
       {/* Template Builder Modal */}
