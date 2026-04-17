@@ -1,0 +1,70 @@
+{
+  "name": "BranchReport",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Unique identifier for the branch"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Display name of the branch"
+    },
+    "report_period": {
+      "type": "string",
+      "description": "Month/year of the report, e.g. 2026-04"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the report was received"
+    },
+    "stats": {
+      "type": "object",
+      "description": "Aggregate statistics blob with counts and totals",
+      "properties": {
+        "total_clients": {
+          "type": "number"
+        },
+        "new_clients": {
+          "type": "number"
+        },
+        "active_volunteers": {
+          "type": "number"
+        },
+        "total_jobs": {
+          "type": "number"
+        },
+        "completed_jobs": {
+          "type": "number"
+        },
+        "total_sessions": {
+          "type": "number"
+        },
+        "grants_awarded": {
+          "type": "number"
+        },
+        "grants_total_value": {
+          "type": "number"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "validated",
+        "flagged",
+        "rejected"
+      ],
+      "default": "received",
+      "description": "Processing status of the report"
+    }
+  },
+  "required": [
+    "branch_id",
+    "branch_name",
+    "report_period",
+    "stats"
+  ]
+}

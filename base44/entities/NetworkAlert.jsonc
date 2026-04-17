@@ -1,0 +1,46 @@
+{
+  "name": "NetworkAlert",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Branch this alert relates to"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "missed_sync",
+        "anomaly",
+        "connection_error",
+        "data_quality"
+      ],
+      "description": "Type of alert"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable alert description"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Severity level"
+    },
+    "resolved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this alert has been resolved"
+    }
+  },
+  "required": [
+    "branch_id",
+    "alert_type",
+    "message",
+    "severity"
+  ]
+}

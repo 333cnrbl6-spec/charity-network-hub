@@ -1,0 +1,52 @@
+{
+  "name": "BranchConfig",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Unique identifier for the branch"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Display name of the branch"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "API key used by the branch to authenticate sync requests"
+    },
+    "hub_api_url": {
+      "type": "string",
+      "description": "The URL this branch uses to send sync data"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "active",
+      "description": "Whether this branch is actively syncing"
+    },
+    "last_sync_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the last successful sync occurred"
+    },
+    "last_sync_result": {
+      "type": "string",
+      "enum": [
+        "success",
+        "error",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Result of the last sync attempt"
+    }
+  },
+  "required": [
+    "branch_id",
+    "branch_name",
+    "api_key"
+  ]
+}
