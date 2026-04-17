@@ -13,7 +13,6 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
 
 export default function AIEnhancementsPanel({ channelName, aiMembers }) {
   const [expandedMember, setExpandedMember] = useState(null);
