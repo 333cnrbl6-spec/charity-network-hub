@@ -53,46 +53,45 @@ export default function Sidebar() {
 
   // Navigation items based on view mode - standardized menu structure
   const getNavItems = () => {
-    // BRANCH VIEW - same structure for all branches (spoke level)
+    // BRANCH VIEW - standardized template for all branches
     if (viewMode === 'branch' && currentBranch) {
       return [
-        { icon: LayoutDashboard, label: 'Dashboard', path: `/branch/${currentBranch.branch_id}` },
+        { icon: LayoutDashboard, label: 'Branch Dashboard', path: `/branch/${currentBranch.branch_id}` },
         { icon: Users, label: 'Clients', path: '/clients' },
         { icon: Users2, label: 'Volunteers', path: '/volunteers' },
         { icon: Briefcase, label: 'Jobs', path: '/jobs' },
         { icon: Zap, label: 'Sessions', path: '/sessions' },
         { icon: Gift, label: 'Grants', path: '/grants' },
-        { icon: AlertCircle, label: 'Alerts', path: '/alerts-log' },
-        { icon: Network, label: 'Sync Log', path: '/sync-log' },
+        { icon: AlertCircle, label: 'Compliance', path: '/compliance' },
+        { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
       ];
     }
     
-    // REGIONAL VIEW - same structure across all regions
+    // REGIONAL VIEW - standardized across all regions
     if (viewMode === 'regional') {
       return [
-        { icon: LayoutDashboard, label: 'Dashboard', path: `/regional/${currentRegion}` },
-        { icon: Users, label: 'Clients', path: '/clients' },
-        { icon: Users2, label: 'Volunteers', path: '/volunteers' },
-        { icon: Briefcase, label: 'Jobs', path: '/jobs' },
-        { icon: Zap, label: 'Sessions', path: '/sessions' },
-        { icon: Gift, label: 'Grants', path: '/grants' },
-        { icon: Map, label: 'Branch Map', path: '/map' },
-        { icon: Network, label: 'Compliance', path: '/compliance' },
-        { icon: Network, label: 'Sync Log', path: '/sync-log' },
+        { icon: LayoutDashboard, label: 'Regional Dashboard', path: `/regional/${currentRegion}` },
+        { icon: Users, label: 'All Clients', path: '/clients' },
+        { icon: Users2, label: 'All Volunteers', path: '/volunteers' },
+        { icon: Briefcase, label: 'All Jobs', path: '/jobs' },
+        { icon: Zap, label: 'All Sessions', path: '/sessions' },
+        { icon: Gift, label: 'All Grants', path: '/grants' },
+        { icon: MapPin, label: 'Branch Map', path: '/map' },
+        { icon: AlertCircle, label: 'Compliance Overview', path: '/compliance' },
+        { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
       ];
     }
 
     // NATIONAL VIEW - hub level with admin functions
     return [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+      { icon: LayoutDashboard, label: 'Hub Dashboard', path: '/' },
       { icon: Globe, label: 'Network Overview', path: '/network' },
-      { icon: Map, label: 'Network Map', path: '/map' },
       { icon: MapPin, label: 'Branch Locations', path: '/locations' },
-      { icon: Network, label: 'Regional Views', path: '/' },
-      { icon: Network, label: 'Compliance', path: '/compliance' },
-      { icon: Rocket, label: 'Onboarding', path: '/onboarding' },
-      { icon: Upload, label: 'Import Data', path: '/import' },
-      { icon: Zap, label: 'Sync Log', path: '/sync-log' },
+      { icon: Map, label: 'Network Map', path: '/map' },
+      { icon: AlertCircle, label: 'Network Compliance', path: '/compliance' },
+      { icon: Rocket, label: 'Branch Onboarding', path: '/onboarding' },
+      { icon: Upload, label: 'Data Import', path: '/import' },
+      { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
     ];
   };
 

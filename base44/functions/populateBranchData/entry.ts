@@ -41,13 +41,12 @@ function randomBirthDate() {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const body = await req.json();
+    const { branch_id, branch_name } = body;
 
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!branch_id || !branch_name) {
+      return Response.json({ error: 'Missing branch_id or branch_name' }, { status: 400 });
     }
-
-    const { branch_id, branch_name } = await req.json();
 
     // Generate extensive realistic counts based on branch population
     const scales = {
@@ -204,6 +203,15 @@ Deno.serve(async (req) => {
     }
     if (complianceData.length > 0) await base44.asServiceRole.entities.ComplianceRecord.bulkCreate(complianceData);
 
+    console.log(`[populateBranchData] Successfully populated ${branch_name}:`, {
+      clients: clientsData.length,
+      volunteers: volunteersData.length,
+      jobs: jobsData.length,
+      sessions: sessionsData.length,
+      grants: grantsData.length,
+      compliance: complianceData.length
+    });
+
     return Response.json({
       success: true,
       message: `Successfully populated data for ${branch_name}`,
@@ -217,6 +225,7 @@ Deno.serve(async (req) => {
       }
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error(`[populateBranchData] Error for ${branch_id}:`, error.message);
+    return Response.json({ error: error.message, branch_id }, { status: 500 });
   }
 });

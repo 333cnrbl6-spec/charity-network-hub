@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import AppLayout from './components/layout/AppLayout';
 import Dashboard from './pages/Dashboard';
+import NationalDashboard from './pages/NationalDashboard';
 import NetworkOverview from './pages/NetworkOverview';
 import RegionalOverview from './pages/RegionalOverview';
 import BranchDetails from './pages/BranchDetails';
@@ -47,7 +48,8 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<NationalDashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/network" element={<NetworkOverview />} />
         <Route path="/regional/:region" element={<RegionalOverview />} />
         <Route path="/branch/:branchId" element={<BranchDetails />} />

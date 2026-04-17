@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle2, Trash2, Zap, MapPin, AlertTriangle } from 'lucide-react';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
-import { playSuccess, playClick } from '@/lib/audio';
+import { playSuccess, playClick, playError, playLoading } from '@/lib/audio';
 
 export default function OnboardingDashboard() {
   const queryClient = useQueryClient();
@@ -15,13 +15,14 @@ export default function OnboardingDashboard() {
 
   const handleBootstrapConfigs = async () => {
     setActionLoading('bootstrap');
-    playClick();
+    playLoading();
     try {
       await base44.functions.invoke('bootstrapBranchConfigs', {});
       queryClient.invalidateQueries({ queryKey: ['locationConfigs'] });
       playSuccess();
     } catch (error) {
       console.error('Bootstrap error:', error);
+      playError();
       alert(`Bootstrap failed: ${error.message}`);
     } finally {
       setActionLoading(null);
@@ -315,11 +316,14 @@ export default function OnboardingDashboard() {
           <Button 
             onClick={async () => {
               setActionLoading('auto-populate');
+              playLoading();
               try {
                 await base44.functions.invoke('autopopulateAllBranches', {});
                 queryClient.invalidateQueries({ queryKey: ['demoStats'] });
+                queryClient.invalidateQueries({ queryKey: ['locationConfigs'] });
                 playSuccess();
               } catch (error) {
+                playError();
                 alert(`❌ Error: ${error.message}`);
               } finally {
                 setActionLoading(null);

@@ -85,3 +85,24 @@ export const playCover = () => {
     // Silent fail
   }
 };
+
+export const playError = () => {
+  try {
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.setValueAtTime(200, now + 0.1);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    
+    osc.start(now);
+    osc.stop(now + 0.2);
+  } catch (e) {
+    // Silent fail
+  }
+};

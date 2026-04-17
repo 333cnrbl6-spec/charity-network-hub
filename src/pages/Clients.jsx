@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import { useBranchFilter } from '@/hooks/useBranchFilter';
+import { playClick, playSuccess, playError } from '@/lib/audio';
 
 export default function Clients() {
   const [search, setSearch] = useState('');
@@ -22,7 +23,11 @@ export default function Clients() {
 
   const deleteClient = useMutation({
     mutationFn: (id) => base44.entities.Client.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+    onSuccess: () => {
+      playSuccess();
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+    },
+    onError: () => playError(),
   });
 
   const filtered = filterData(clients).filter(c => {
@@ -42,10 +47,10 @@ export default function Clients() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Clients</h1>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Client
-        </Button>
+        <Button className="gap-2" onClick={playClick}>
+            <Plus className="w-4 h-4" />
+            Add Client
+          </Button>
       </div>
 
       <Card>
@@ -109,17 +114,20 @@ export default function Clients() {
                   <TableCell className="text-sm">{client.date_registered ? new Date(client.date_registered).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="ghost">
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        onClick={() => deleteClient.mutate(client.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                       <Button size="sm" variant="ghost" onClick={playClick}>
+                         <Pencil className="w-4 h-4" />
+                       </Button>
+                       <Button 
+                         size="sm" 
+                         variant="ghost" 
+                         onClick={() => {
+                           playClick();
+                           deleteClient.mutate(client.id);
+                         }}
+                       >
+                         <Trash2 className="w-4 h-4" />
+                       </Button>
+                     </div>
                   </TableCell>
                 </TableRow>
               );
