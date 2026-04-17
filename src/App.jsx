@@ -31,6 +31,7 @@ import ImpactDashboard from './pages/ImpactDashboard';
 import VolunteerOnboarding from './pages/VolunteerOnboarding';
 import Boardroom from './pages/Boardroom';
 import UserProfile from './pages/UserProfile';
+import ProjectTasks from './pages/ProjectTasks';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
         <Route path="/impact" element={<ImpactDashboard />} />
         <Route path="/boardroom" element={<Boardroom />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/tasks" element={<ProjectTasks />} />
       </Route>
       <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
       <Route path="/role-onboarding" element={<RoleOnboarding />} />

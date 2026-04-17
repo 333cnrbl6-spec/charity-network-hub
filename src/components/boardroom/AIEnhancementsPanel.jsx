@@ -13,6 +13,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { base44 } from '@/api/base44Client';
 
 export default function AIEnhancementsPanel({ channelName, aiMembers }) {
   const [expandedMember, setExpandedMember] = useState(null);
@@ -125,12 +126,32 @@ export default function AIEnhancementsPanel({ channelName, aiMembers }) {
                 {/* Result Display */}
                 {Object.entries(results)
                   .filter(([key]) => key.startsWith(member))
-                  .map(([key, result]) => (
-                    <div key={key} className="mt-3 p-2 bg-primary/5 rounded border border-primary/20 text-xs max-h-32 overflow-y-auto">
-                      <p className="font-semibold mb-1">Result:</p>
-                      <p className="text-muted-foreground whitespace-pre-wrap">{result}</p>
-                    </div>
-                  ))}
+                  .map(([key, result]) => {
+                    const action = key.split('_').pop();
+                    return (
+                      <div key={key} className="mt-3 p-2 bg-primary/5 rounded border border-primary/20 text-xs max-h-32 overflow-y-auto">
+                        <p className="font-semibold mb-1">Result:</p>
+                        <p className="text-muted-foreground whitespace-pre-wrap">{result}</p>
+                        {action === 'identifyActionItems' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="mt-2 w-full text-xs"
+                            onClick={() => {
+                              base44.functions.invoke('createTasksFromActionItems', {
+                                action_items_text: result,
+                                channel_name: channelName,
+                                ai_member: member
+                              });
+                              toast.success('Tasks created from action items');
+                            }}
+                          >
+                            Create Tasks
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
             )}
           </div>

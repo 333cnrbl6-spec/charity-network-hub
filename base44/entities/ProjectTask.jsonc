@@ -1,0 +1,93 @@
+{
+  "name": "ProjectTask",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Task description and details"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "ai_identified",
+        "manual",
+        "discussion"
+      ],
+      "default": "manual",
+      "description": "Source of task creation"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Reference to source discussion, message, or AI analysis"
+    },
+    "source_channel": {
+      "type": "string",
+      "description": "Channel where task was identified"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "backlog",
+        "todo",
+        "in_progress",
+        "review",
+        "completed",
+        "cancelled"
+      ],
+      "default": "backlog",
+      "description": "Task status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Task priority"
+    },
+    "assignee": {
+      "type": "string",
+      "description": "Email of assigned user"
+    },
+    "assignee_name": {
+      "type": "string",
+      "description": "Name of assigned user"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Task due date"
+    },
+    "estimated_hours": {
+      "type": "number",
+      "description": "Estimated time to complete in hours"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Category tags for the task"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "User who created the task"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task was completed"
+    }
+  },
+  "required": [
+    "title",
+    "status"
+  ]
+}
