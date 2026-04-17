@@ -8,10 +8,13 @@ import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle, Network, Ch
 
 export default function Dashboard() {
   const [syncLoading, setSyncLoading] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState('national');
   const [selectedBranch, setSelectedBranch] = useState(null);
 
   useEffect(() => {
-    const branch = JSON.parse(sessionStorage.getItem('selectedBranch') || '{}');
+    const region = sessionStorage.getItem('selectedRegion') || 'national';
+    const branch = JSON.parse(sessionStorage.getItem('selectedBranch') || 'null');
+    setSelectedRegion(region);
     setSelectedBranch(branch);
   }, []);
 
@@ -78,11 +81,29 @@ export default function Dashboard() {
 
   const lastSync = syncLogs.length > 0 ? syncLogs[syncLogs.length - 1] : null;
 
+  const getTitle = () => {
+    if (selectedBranch) return selectedBranch.branch_name;
+    if (selectedRegion === 'national') return 'Age UK Network';
+    const regionMap = {
+      north_west: 'North West Region',
+      london: 'London Region',
+      south_east: 'South East Region',
+      south_west: 'South West Region',
+      midlands: 'Midlands Region',
+      north_east: 'North East Region',
+      yorkshire: 'Yorkshire & Humber Region',
+      east_midlands: 'East Midlands Region',
+      east: 'East Region',
+      wales: 'Wales Region',
+    };
+    return regionMap[selectedRegion] || 'Age UK Network';
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Age UK Manchester</h1>
-        <p className="text-muted-foreground mt-1">Operations Dashboard</p>
+        <h1 className="text-3xl font-bold text-foreground">{getTitle()}</h1>
+        <p className="text-muted-foreground mt-1">{selectedBranch ? 'Branch Operations' : 'Network Overview'}</p>
       </div>
 
       {lastSync && (
