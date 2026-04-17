@@ -169,9 +169,9 @@ async function createPDF(base44) {
 
   yPos += 5;
 
-  // Governance Risk Summary
+  // Governance Risk Summary with Top 3 Risks
   if (latestScorecard) {
-    if (yPos > pageHeight - 60) {
+    if (yPos > pageHeight - 80) {
       doc.addPage();
       yPos = 20;
     }
@@ -201,8 +201,60 @@ async function createPDF(base44) {
     yPos += 6;
     doc.text(`Critical Violations: ${latestScorecard.critical_violations?.length || 0}`, 20, yPos);
 
-    if (latestScorecard.mitigation_recommendations?.length > 0) {
-      yPos += 10;
+    // Top 3 Risks from violations
+    if (latestScorecard.products_assessed && latestScorecard.products_assessed.length > 0) {
+      const allViolations = [];
+      latestScorecard.products_assessed.forEach(product => {
+        if (product.violations && product.violations.length > 0) {
+          product.violations.forEach(violation => {
+            allViolations.push({
+              product: product.product_name,
+              policy: violation.policy_name,
+              severity: violation.severity,
+              finding: violation.finding
+            });
+          });
+        }
+      });
+
+      const topRisks = allViolations
+        .sort((a, b) => {
+          const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+          return (severityOrder[a.severity] || 3) - (severityOrder[b.severity] || 3);
+        })
+        .slice(0, 3);
+
+      if (topRisks.length > 0) {
+        yPos += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(40, 60, 120);
+        doc.text('Top 3 Identified Risks:', 20, yPos);
+
+        yPos += 6;
+        doc.setFontSize(8);
+        doc.setTextColor(80);
+        topRisks.forEach((risk, idx) => {
+          const severityColor = risk.severity === 'critical' ? [200, 0, 0] :
+                               risk.severity === 'high' ? [255, 100, 0] : [100, 100, 100];
+          doc.setTextColor(...severityColor);
+          doc.text(`${idx + 1}. [${risk.severity.toUpperCase()}] ${risk.policy} (${risk.product})`, 25, yPos);
+          
+          yPos += 4;
+          doc.setTextColor(80);
+          doc.text(`   ${risk.finding}`, 25, yPos, { maxWidth: pageWidth - 50 });
+          yPos += 5;
+        });
+      }
+    }
+
+    // Key Recommendations
+    if (latestScorecard.mitigation_recommendations && latestScorecard.mitigation_recommendations.length > 0) {
+      if (yPos > pageHeight - 50) {
+        doc.addPage();
+        yPos = 20;
+      }
+
+      yPos += 5;
       doc.setFontSize(10);
       doc.setTextColor(40, 60, 120);
       doc.text('Key Recommendations:', 20, yPos);
@@ -210,8 +262,8 @@ async function createPDF(base44) {
       yPos += 6;
       doc.setFontSize(8);
       doc.setTextColor(80);
-      latestScorecard.mitigation_recommendations.slice(0, 3).forEach(rec => {
-        doc.text(`• ${rec}`, 25, yPos, { maxWidth: pageWidth - 50 });
+      latestScorecard.mitigation_recommendations.slice(0, 5).forEach((rec, idx) => {
+        doc.text(`${idx + 1}. ${rec}`, 25, yPos, { maxWidth: pageWidth - 50 });
         yPos += 5;
       });
     }
