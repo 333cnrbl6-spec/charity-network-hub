@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Globe, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
+import BulkBranchPopulator from '@/components/data-population/BulkBranchPopulator';
 
 export default function NetworkOverview() {
   const [syncLoading, setSyncLoading] = useState(false);
@@ -99,6 +100,16 @@ export default function NetworkOverview() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bulk Data Population */}
+      {branches.length > 0 && (
+        <BulkBranchPopulator 
+          branches={branches}
+          onPopulated={() => {
+            queryClient.invalidateQueries();
+          }}
+        />
+      )}
 
       {/* Branch Status Table */}
       <Card>

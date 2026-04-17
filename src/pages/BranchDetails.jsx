@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import BranchDataPopulator from '@/components/data-population/BranchDataPopulator';
 
 export default function BranchDetails() {
   const { branchId } = useParams();
+  const queryClient = useQueryClient();
 
   const { data: branch } = useQuery({
     queryKey: ['branch', branchId],
@@ -115,6 +117,14 @@ export default function BranchDetails() {
           </Card>
         </div>
       )}
+
+      <BranchDataPopulator 
+        branchId={branchId}
+        branchName={branch?.branch_name}
+        onPopulated={() => {
+          queryClient.invalidateQueries();
+        }}
+      />
     </div>
   );
 }
