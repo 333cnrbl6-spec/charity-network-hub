@@ -6,8 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Gift } from 'lucide-react';
+import { useBranchFilter } from '@/hooks/useBranchFilter';
 
 export default function Grants() {
+  const { filterData } = useBranchFilter();
+
   const { data: grants = [] } = useQuery({
     queryKey: ['grants'],
     queryFn: () => base44.entities.Grant.list(),
@@ -19,14 +22,15 @@ export default function Grants() {
     rejected: 'bg-red-100 text-red-800',
   };
 
-  const awardedGrants = grants.filter(g => g.status === 'awarded');
+  const filteredGrants = filterData(grants);
+  const awardedGrants = filteredGrants.filter(g => g.status === 'awarded');
   const totalValue = awardedGrants.reduce((sum, g) => sum + (g.amount_awarded || 0), 0);
   const thisMonthAwarded = awardedGrants.filter(g => {
     const grantDate = new Date(g.date_awarded);
     const now = new Date();
     return grantDate.getMonth() === now.getMonth() && grantDate.getFullYear() === now.getFullYear();
   }).length;
-  const thisMonthValue = grants.filter(g => {
+  const thisMonthValue = filteredGrants.filter(g => {
     const grantDate = new Date(g.date_awarded);
     const now = new Date();
     return g.status === 'awarded' && grantDate.getMonth() === now.getMonth() && grantDate.getFullYear() === now.getFullYear();
@@ -89,7 +93,7 @@ export default function Grants() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {grants.map(grant => (
+            {filteredGrants.map(grant => (
               <TableRow key={grant.id}>
                 <TableCell className="font-medium">{grant.grant_name}</TableCell>
                 <TableCell className="text-sm capitalize">{grant.grant_type?.replace('-', ' ')}</TableCell>

@@ -6,16 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Clock } from 'lucide-react';
+import { useBranchFilter } from '@/hooks/useBranchFilter';
 
 export default function Jobs() {
   const [statusFilter, setStatusFilter] = useState('all');
+  const { filterData } = useBranchFilter();
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['jobs'],
     queryFn: () => base44.entities.Job.list(),
   });
 
-  const filtered = jobs.filter(j => statusFilter === 'all' || j.status === statusFilter);
+  const filtered = filterData(jobs).filter(j => statusFilter === 'all' || j.status === statusFilter);
 
   const statusColors = {
     scheduled: 'bg-blue-100 text-blue-800',

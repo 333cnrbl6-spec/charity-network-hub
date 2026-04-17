@@ -7,16 +7,18 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, AlertCircle } from 'lucide-react';
+import { useBranchFilter } from '@/hooks/useBranchFilter';
 
 export default function Volunteers() {
   const [search, setSearch] = useState('');
+  const { filterData } = useBranchFilter();
 
   const { data: volunteers = [] } = useQuery({
     queryKey: ['volunteers'],
     queryFn: () => base44.entities.Volunteer.list(),
   });
 
-  const filtered = volunteers.filter(v =>
+  const filtered = filterData(volunteers).filter(v =>
     v.full_name.toLowerCase().includes(search.toLowerCase()) ||
     v.area?.toLowerCase().includes(search.toLowerCase())
   );

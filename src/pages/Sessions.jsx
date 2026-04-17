@@ -6,12 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Users } from 'lucide-react';
+import { useBranchFilter } from '@/hooks/useBranchFilter';
 
 export default function Sessions() {
+  const { filterData } = useBranchFilter();
+
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions'],
     queryFn: () => base44.entities.Session.list(),
   });
+
+  const filteredSessions = filterData(sessions);
 
   const statusColors = {
     scheduled: 'bg-blue-100 text-blue-800',
@@ -49,7 +54,7 @@ export default function Sessions() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sessions.map(session => (
+            {filteredSessions.map(session => (
               <TableRow key={session.id}>
                 <TableCell className="font-medium">{session.session_name}</TableCell>
                 <TableCell className="text-sm capitalize">{session.session_type?.replace('-', ' ')}</TableCell>
@@ -72,7 +77,7 @@ export default function Sessions() {
       </Card>
 
       <div className="text-sm text-muted-foreground">
-        Total sessions: {sessions.length}
+        Total sessions: {filteredSessions.length}
       </div>
     </div>
   );

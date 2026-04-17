@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { useBranchFilter } from '@/hooks/useBranchFilter';
 
 export default function Clients() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const queryClient = useQueryClient();
+  const { isBranchView, filterData } = useBranchFilter();
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -23,7 +25,7 @@ export default function Clients() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
   });
 
-  const filtered = clients.filter(c => {
+  const filtered = filterData(clients).filter(c => {
     const matchesSearch = c.full_name.toLowerCase().includes(search.toLowerCase()) ||
                          c.postcode?.includes(search);
     const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
