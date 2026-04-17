@@ -6,7 +6,7 @@ import { playClick } from '@/lib/audio';
 
 const REGIONS = {
   national: { name: 'National Overview', icon: Globe },
-  north_west: { name: 'North West', branches: ['manchester', 'salford', 'trafford', 'wigan', 'bury', 'bolton', 'stockport'] },
+  north_west: { name: 'North West', branches: ['manchester', 'salford', 'trafford', 'wigan', 'bury', 'bolton', 'stockport', 'lancashire', 'wirral', 'sefton', 'liverpool'] },
   london: { name: 'London', branches: [] },
   south_east: { name: 'South East', branches: [] },
   south_west: { name: 'South West', branches: [] },

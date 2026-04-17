@@ -51,41 +51,47 @@ export default function Sidebar() {
     sessionStorage.setItem('selectedRegion', 'branch');
   };
 
-  // Navigation items based on view mode
+  // Navigation items based on view mode - standardized menu structure
   const getNavItems = () => {
+    // BRANCH VIEW - same structure for all branches (spoke level)
     if (viewMode === 'branch' && currentBranch) {
-      // Branch view - only branch-specific data
       return [
-        { icon: LayoutDashboard, label: 'Overview', path: `/branch/${currentBranch.branch_id}` },
+        { icon: LayoutDashboard, label: 'Dashboard', path: `/branch/${currentBranch.branch_id}` },
         { icon: Users, label: 'Clients', path: '/clients' },
         { icon: Users2, label: 'Volunteers', path: '/volunteers' },
         { icon: Briefcase, label: 'Jobs', path: '/jobs' },
         { icon: Zap, label: 'Sessions', path: '/sessions' },
         { icon: Gift, label: 'Grants', path: '/grants' },
+        { icon: AlertCircle, label: 'Alerts', path: '/alerts-log' },
         { icon: Network, label: 'Sync Log', path: '/sync-log' },
       ];
     }
     
+    // REGIONAL VIEW - same structure across all regions
     if (viewMode === 'regional') {
-      // Regional view - aggregate regional data
       return [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: Globe, label: 'Regional View', path: `/regional/${currentRegion}` },
-        { icon: Map, label: 'Network Map', path: '/map' },
-        { icon: Network, label: 'Network Overview', path: '/network' },
-        { icon: Network, label: 'Sync Status', path: '/sync-log' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: `/regional/${currentRegion}` },
+        { icon: Users, label: 'Clients', path: '/clients' },
+        { icon: Users2, label: 'Volunteers', path: '/volunteers' },
+        { icon: Briefcase, label: 'Jobs', path: '/jobs' },
+        { icon: Zap, label: 'Sessions', path: '/sessions' },
+        { icon: Gift, label: 'Grants', path: '/grants' },
+        { icon: Map, label: 'Branch Map', path: '/map' },
+        { icon: Network, label: 'Compliance', path: '/compliance' },
+        { icon: Network, label: 'Sync Log', path: '/sync-log' },
       ];
     }
 
-    // National view - all aggregates
+    // NATIONAL VIEW - hub level with admin functions
     return [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: Rocket, label: 'Onboarding', path: '/onboarding' },
-      { icon: Upload, label: 'Import Data', path: '/import' },
       { icon: Globe, label: 'Network Overview', path: '/network' },
       { icon: Map, label: 'Network Map', path: '/map' },
-      { icon: MapPin, label: 'Locations', path: '/locations' },
+      { icon: MapPin, label: 'Branch Locations', path: '/locations' },
+      { icon: Network, label: 'Regional Views', path: '/' },
       { icon: Network, label: 'Compliance', path: '/compliance' },
+      { icon: Rocket, label: 'Onboarding', path: '/onboarding' },
+      { icon: Upload, label: 'Import Data', path: '/import' },
       { icon: Zap, label: 'Sync Log', path: '/sync-log' },
     ];
   };
