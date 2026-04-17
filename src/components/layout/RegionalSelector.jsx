@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { ChevronDown, Globe, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { playClick } from '@/lib/audio';
 
 const REGIONS = {
   national: { name: 'National Overview', icon: Globe },
@@ -27,7 +28,7 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const data = await base44.asServiceRole.entities.BranchConfig.list();
+        const data = await base44.entities.BranchConfig.list();
         setBranches(data || []);
         
         // Map branches to regions
@@ -54,6 +55,7 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
   }, []);
 
   const handleRegionSelect = (regionKey) => {
+    playClick();
     setSelectedRegion(regionKey);
     setExpandedRegion(expandedRegion === regionKey ? null : regionKey);
     onRegionChange(regionKey);
@@ -63,6 +65,7 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
   };
 
   const handleBranchSelect = (branch) => {
+    playClick();
     onBranchChange(branch);
     setIsOpen(false);
   };
@@ -72,7 +75,10 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          playClick();
+          setIsOpen(!isOpen);
+        }}
         className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent/50 text-sidebar-foreground text-sm transition-colors"
       >
         <div className="flex items-center gap-2 truncate text-left flex-1">
