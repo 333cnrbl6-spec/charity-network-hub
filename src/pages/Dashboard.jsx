@@ -51,9 +51,14 @@ export default function Dashboard() {
     queryFn: () => base44.entities.SyncLog.list(),
   });
 
+  const { data: branches = [] } = useQuery({
+    queryKey: ['branches'],
+    queryFn: () => base44.entities.BranchConfig.list(),
+  });
+
   const { data: branchReports = [] } = useQuery({
     queryKey: ['branchReports'],
-    queryFn: () => base44.asServiceRole.entities.BranchReport.list().catch(() => []),
+    queryFn: () => base44.entities.BranchReport.list(),
   });
 
   const handleManualSync = async () => {
@@ -208,40 +213,58 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Network className="w-5 h-5" />
-            Network Status - All Branches
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {branchReports.length > 0 ? (
-              branchReports.reduce((acc, report) => {
-                const existing = acc.find(b => b.branch_id === report.branch_id);
-                if (!existing || new Date(report.received_at) > new Date(existing.received_at)) {
-                  return [...acc.filter(b => b.branch_id !== report.branch_id), report];
-                }
-                return acc;
-              }, []).map(report => (
-                <div key={report.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                  <div className="flex items-center gap-3 flex-1">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                    <div>
-                      <p className="font-medium text-sm">{report.branch_name}</p>
-                      <p className="text-xs text-muted-foreground">Last report: {new Date(report.received_at).toLocaleDateString()}</p>
+      {selectedRegion === 'national' && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Network className="w-5 h-5" />
+              Connected Branches Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {branches.length > 0 ? (
+                branches.map(branch => {
+                  const latestReport = branchReports
+                    .filter(r => r.branch_id === branch.branch_id)
+                    .sort((a, b) => new Date(b.received_at) - new Date(a.received_at))[0];
+                  
+                  const isActive = branch.status === 'active';
+                  const lastSyncTime = latestReport ? new Date(latestReport.received_at) : new Date(branch.last_sync_date || 0);
+                  const hoursAgo = Math.floor((Date.now() - lastSyncTime.getTime()) / (1000 * 60 * 60));
+                  
+                  return (
+                    <div key={branch.branch_id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className={`w-3 h-3 rounded-full ${isActive ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <div className="flex-1">
+                          <p className="font-semibold">{branch.branch_name}</p>
+                          <div className="text-xs text-muted-foreground space-y-1 mt-1">
+                            <p>Status: <span className={isActive ? 'text-green-600' : 'text-gray-500'}>{branch.status}</span></p>
+                            {latestReport && (
+                              <p>Clients: {latestReport.stats?.total_clients || 0} | Volunteers: {latestReport.stats?.active_volunteers || 0} | Jobs: {latestReport.stats?.completed_jobs || 0}/{latestReport.stats?.total_jobs || 0}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant={isActive ? 'default' : 'outline'} className={isActive ? 'bg-green-100 text-green-800' : ''}>
+                          {isActive ? 'Online' : 'Offline'}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {hoursAgo === 0 ? 'Now' : `${hoursAgo}h ago`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800">Online</Badge>
-                </div>
-              ))
-            ) : (
-              <div className="text-sm text-muted-foreground p-3">No branch reports received yet</div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+                  );
+                })
+              ) : (
+                <div className="text-sm text-muted-foreground p-4 text-center">No branches configured yet</div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
