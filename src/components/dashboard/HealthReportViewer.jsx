@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle2, TrendingDown, Zap, MessageCircle } from 'lucide-react';
 import CommunicationModule from '@/components/communication/CommunicationModule';
+import AIInsights from './AIInsights';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -199,6 +200,14 @@ export default function HealthReportViewer() {
           Generate Report Now
         </Button>
       </div>
+
+      {/* AI-Driven Insights */}
+      {latestReport && (
+        <AIInsights
+          insightType="health_report"
+          data={latestReport}
+        />
+      )}
 
       {/* Real-time Communication Module */}
       {latestReport && (

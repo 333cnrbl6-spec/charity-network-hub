@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
+import AIInsights from './AIInsights';
 
 // Real-time mock data - replace with SynergyFlow API calls
 const COLLECTIVE_METRICS = [
@@ -40,6 +41,14 @@ export default function CollectivePerformanceChart() {
   const collectiveReadiness = Math.round(COLLECTIVE_METRICS.reduce((sum, m) => sum + m.readiness, 0) / COLLECTIVE_METRICS.length);
   const totalClients = COLLECTIVE_METRICS.reduce((sum, m) => sum + m.clients, 0);
   const avgGrowth = Math.round(COLLECTIVE_METRICS.reduce((sum, m) => sum + m.growth, 0) / COLLECTIVE_METRICS.length);
+
+  const performanceData = {
+    products: COLLECTIVE_METRICS,
+    collectiveReadiness,
+    totalClients,
+    avgGrowth,
+    period: 'April 2026'
+  };
 
   return (
     <div className="space-y-6">
@@ -167,6 +176,12 @@ export default function CollectivePerformanceChart() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
-  );
-}
+
+      {/* AI-Driven Insights */}
+      <AIInsights
+        insightType="product_performance"
+        data={performanceData}
+      />
+      </div>
+      );
+      }
