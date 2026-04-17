@@ -3,11 +3,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
-    }
 
     const locationConfigs = [
       {
@@ -333,23 +328,14 @@ Deno.serve(async (req) => {
       }
     ];
 
-    // Check if configs already exist
-    const existing = await base44.asServiceRole.entities.LocationConfig.list();
-    let created = 0;
+    // Bulk create all configs
+    const created = await base44.asServiceRole.entities.LocationConfig.bulkCreate(locationConfigs);
 
-    for (const config of locationConfigs) {
-      const foundExisting = existing.find(e => e.branch_id === config.branch_id);
-      if (!foundExisting) {
-        await base44.asServiceRole.entities.LocationConfig.create(config);
-        created++;
-      }
-    }
-
-    console.log(`[bootstrapBranchConfigs] Created ${created}/${locationConfigs.length} location configs`);
+    console.log(`[bootstrapBranchConfigs] Created ${created.length}/${locationConfigs.length} location configs`);
 
     return Response.json({
       success: true,
-      created,
+      created_count: created.length,
       total: locationConfigs.length,
       timestamp: new Date().toISOString(),
     });
