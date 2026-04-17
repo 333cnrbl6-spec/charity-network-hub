@@ -1,0 +1,81 @@
+{
+  "name": "ComplianceRecord",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to branch"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Branch name for reference"
+    },
+    "compliance_area": {
+      "type": "string",
+      "enum": [
+        "dbs_checks",
+        "safeguarding_training",
+        "health_safety",
+        "manual_handling",
+        "dementia_awareness",
+        "boundary_training",
+        "financial_audit",
+        "data_protection",
+        "insurance",
+        "accessibility_standards",
+        "quality_standards",
+        "incident_reporting"
+      ],
+      "description": "Compliance area"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "compliant",
+        "at_risk",
+        "non_compliant",
+        "pending_review"
+      ],
+      "default": "pending_review",
+      "description": "Current compliance status"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Due date for compliance requirement"
+    },
+    "last_completed": {
+      "type": "string",
+      "format": "date",
+      "description": "Date last completed/verified"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Name of person responsible"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or action items"
+    },
+    "evidence_url": {
+      "type": "string",
+      "description": "URL to evidence documentation"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Risk level if non-compliant"
+    }
+  },
+  "required": [
+    "branch_id",
+    "branch_name",
+    "compliance_area"
+  ]
+}

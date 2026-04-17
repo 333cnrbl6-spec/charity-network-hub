@@ -18,6 +18,8 @@ import Jobs from './pages/Jobs';
 import Sessions from './pages/Sessions';
 import Grants from './pages/Grants';
 import SyncLog from './pages/SyncLog';
+import ComplianceOverview from './pages/ComplianceOverview';
+import BranchComplianceDetail from './pages/BranchComplianceDetail';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +55,8 @@ const AuthenticatedApp = () => {
         <Route path="/sessions" element={<Sessions />} />
         <Route path="/grants" element={<Grants />} />
         <Route path="/sync-log" element={<SyncLog />} />
+        <Route path="/compliance" element={<ComplianceOverview />} />
+        <Route path="/branch/:branchId/compliance" element={<BranchComplianceDetail />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

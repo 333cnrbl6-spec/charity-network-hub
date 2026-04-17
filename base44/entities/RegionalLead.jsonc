@@ -1,0 +1,51 @@
+{
+  "name": "RegionalLead",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email of regional lead user"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Regional lead name"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "north_west",
+        "london",
+        "south_east",
+        "south_west",
+        "midlands",
+        "north_east",
+        "yorkshire",
+        "east_midlands",
+        "east",
+        "wales"
+      ],
+      "description": "Region managed by this lead"
+    },
+    "branches_managed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of branch IDs managed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "user_email",
+    "full_name",
+    "region"
+  ]
+}
