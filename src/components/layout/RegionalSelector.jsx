@@ -81,7 +81,7 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-sidebar-accent border border-sidebar-border rounded-lg shadow-lg z-10 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-sidebar-accent border border-sidebar-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto pointer-events-auto">
           {/* National Overview */}
           <button
             onClick={() => handleRegionSelect('national')}
@@ -116,10 +116,13 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
                 </button>
 
                 {/* Branches in Region */}
-                {expandedRegion === key && regionBranches.map(branch => (
+                {expandedRegion === key && regionBranches.length > 0 && regionBranches.map(branch => (
                   <button
                     key={branch.id}
-                    onClick={() => handleBranchSelect(branch)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBranchSelect(branch);
+                    }}
                     className="w-full text-left px-6 py-2 text-xs hover:bg-sidebar-accent-foreground/10 transition-colors border-l-2 border-sidebar-primary/30"
                   >
                     {branch.branch_name}
