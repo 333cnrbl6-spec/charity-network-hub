@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Clock, AlertCircle, TrendingUp, Users, MessageSquare, FileText } from 'lucide-react';
+import MessagingHub from '@/components/boardroom/MessagingHub';
 
 // Mock data
 const PRODUCTS = [
@@ -10,41 +11,6 @@ const PRODUCTS = [
   { id: 'premiso', name: 'Premiso', parity: 78, status: 'stable', revenue: '£28k', clients: 650 },
   { id: 'species-explorer', name: 'Species Explorer', parity: 65, status: 'developing', revenue: '£12k', clients: 2100 },
   { id: 'case-narrative', name: 'CaseNarrative', parity: 71, status: 'stable', revenue: '£18k', clients: 890 }
-];
-
-const DISCUSSIONS = [
-  {
-    id: 1,
-    channel: '#strategy',
-    author: 'Chairman',
-    message: 'Q2 focus: drive Species Explorer parity to 80+. Cross-sell opportunities with Premiso identified.',
-    timestamp: '2 hours ago',
-    replies: 3
-  },
-  {
-    id: 2,
-    channel: '#products',
-    author: 'Premiso PM',
-    message: 'CaseNarrative integration proposal ready for review. Could unlock 180+ shared clients.',
-    timestamp: '5 hours ago',
-    replies: 7
-  },
-  {
-    id: 3,
-    channel: '#prospects',
-    author: 'Sales Lead',
-    message: 'Enterprise prospect interested in unified platform approach. All four products.',
-    timestamp: '1 day ago',
-    replies: 12
-  },
-  {
-    id: 4,
-    channel: '#governance',
-    author: 'Chairman',
-    message: 'Monthly parity review: all products healthy. Next sync Tuesday 10am.',
-    timestamp: '3 days ago',
-    replies: 2
-  }
 ];
 
 const PROPOSALS = [
@@ -177,68 +143,8 @@ export default function Boardroom() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Board Discussions Feed */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5" />
-              Board Discussions
-            </CardTitle>
-            <CardDescription>Recent strategic conversations across channels</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {DISCUSSIONS.map(discussion => (
-              <div key={discussion.id} className="border-b pb-4 last:border-0">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge variant="outline" className="text-xs">{discussion.channel}</Badge>
-                      <span className="text-xs text-muted-foreground">{discussion.timestamp}</span>
-                    </div>
-                    <p className="text-sm font-medium text-muted-foreground mb-2">{discussion.author}</p>
-                    <p className="text-sm">{discussion.message}</p>
-                  </div>
-                </div>
-                <button className="text-xs text-primary hover:underline mt-2">
-                  {discussion.replies} replies →
-                </button>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Pending Proposals */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Proposals
-            </CardTitle>
-            <CardDescription>Awaiting Chairman review</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {PROPOSALS.map(proposal => (
-              <div
-                key={proposal.id}
-                className="border rounded-lg p-3 cursor-pointer hover:bg-accent transition-colors"
-                onClick={() => setSelectedProposal(proposal)}
-              >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h4 className="text-sm font-medium leading-snug">{proposal.title}</h4>
-                  <StatusBadge status={proposal.status} />
-                </div>
-                <p className="text-xs text-muted-foreground mb-2">{proposal.proposedBy}</p>
-                <p className="text-xs mb-2">{proposal.description}</p>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="w-3 h-3" />
-                  {proposal.deadline}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+      {/* Integrated Messaging Hub */}
+      <MessagingHub />
 
       {/* Proposal Detail Modal */}
       {selectedProposal && (

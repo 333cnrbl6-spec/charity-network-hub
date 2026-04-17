@@ -1,0 +1,36 @@
+{
+  "name": "Channel",
+  "type": "object",
+  "properties": {
+    "channel_name": {
+      "type": "string",
+      "description": "Channel name (e.g., strategy, products, prospects, governance)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Channel description and purpose"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icon name for the channel"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of member names/IDs"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "channel_name"
+  ]
+}
