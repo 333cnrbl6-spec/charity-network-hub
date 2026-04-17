@@ -63,7 +63,7 @@ export default function RoleOnboarding() {
   const onboardingSteps = [
     {
       title: 'Understand Your Role',
-      description: 'We've researched your Handyperson Coordinator responsibilities.',
+      description: 'We have researched your Handyperson Coordinator responsibilities.',
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
@@ -152,7 +152,7 @@ export default function RoleOnboarding() {
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            Don't worry if your files aren't perfect—we'll guide you through any questions.
+            Don't worry if your files are not perfect - we will guide you through any questions.
           </p>
         </div>
       )
