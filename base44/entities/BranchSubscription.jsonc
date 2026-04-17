@@ -1,0 +1,97 @@
+{
+  "name": "BranchSubscription",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to the branch"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Branch name for reference"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID for this branch"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter",
+      "description": "Subscription tier"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "suspended",
+        "cancelled",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Current subscription status"
+    },
+    "amount_monthly": {
+      "type": "number",
+      "description": "Monthly cost in GBP"
+    },
+    "billing_cycle_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Billing cycle start date"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next billing date"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method ID (card last 4 digits stored for reference)"
+    },
+    "days_overdue": {
+      "type": "number",
+      "default": 0,
+      "description": "Days overdue if status is past_due"
+    },
+    "last_payment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last successful payment"
+    },
+    "cancellation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date subscription was cancelled"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "description": "Reason for cancellation if applicable"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether subscription auto-renews"
+    },
+    "invoice_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email for invoice receipts"
+    }
+  },
+  "required": [
+    "branch_id",
+    "branch_name",
+    "plan",
+    "amount_monthly"
+  ]
+}
