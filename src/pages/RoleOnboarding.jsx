@@ -159,7 +159,7 @@ export default function RoleOnboarding() {
     },
     {
       title: 'Data Safety & Compliance',
-      description: 'Your data is protected. Here's how.',
+      description: 'Your data is protected. Here is how.',
       content: (
         <div className="space-y-4">
           <div className="space-y-3">
