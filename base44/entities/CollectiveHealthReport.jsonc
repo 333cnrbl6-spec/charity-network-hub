@@ -1,0 +1,88 @@
+{
+  "name": "CollectiveHealthReport",
+  "type": "object",
+  "properties": {
+    "report_week": {
+      "type": "string",
+      "description": "Week identifier (e.g., 2026-W16)"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was generated"
+    },
+    "collective_health_score": {
+      "type": "number",
+      "description": "Overall health score (0-100)"
+    },
+    "products": {
+      "type": "array",
+      "description": "Health data for each product",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_name": {
+            "type": "string"
+          },
+          "parity_score": {
+            "type": "number",
+            "description": "Parity readiness percentage"
+          },
+          "impact_score": {
+            "type": "number",
+            "description": "Impact metrics score"
+          },
+          "growth_rate": {
+            "type": "number",
+            "description": "Growth percentage"
+          },
+          "client_count": {
+            "type": "number"
+          },
+          "flagged": {
+            "type": "boolean",
+            "description": "True if parity < 70%"
+          },
+          "flag_reason": {
+            "type": "string",
+            "description": "Reason for flag if applicable"
+          }
+        }
+      }
+    },
+    "flagged_products": {
+      "type": "array",
+      "description": "List of product names flagged for attention",
+      "items": {
+        "type": "string"
+      }
+    },
+    "threshold": {
+      "type": "number",
+      "default": 70,
+      "description": "Parity threshold for flagging"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "warning",
+        "critical"
+      ],
+      "default": "healthy",
+      "description": "Overall report status"
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "Strategic recommendations based on scores",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "report_week",
+    "collective_health_score",
+    "products"
+  ]
+}
