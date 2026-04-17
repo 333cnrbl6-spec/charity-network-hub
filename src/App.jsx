@@ -25,6 +25,8 @@ import LocationManagement from './pages/LocationManagement';
 import OnboardingDashboard from './pages/OnboardingDashboard';
 import DataImport from './pages/DataImport';
 import SubscriptionManagement from './pages/SubscriptionManagement';
+import SueBradleyOnboarding from './pages/SueBradleyOnboarding';
+import RoleOnboarding from './pages/RoleOnboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -68,6 +70,8 @@ const AuthenticatedApp = () => {
         <Route path="/import" element={<DataImport />} />
         <Route path="/subscriptions" element={<SubscriptionManagement />} />
       </Route>
+      <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
+      <Route path="/role-onboarding" element={<RoleOnboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
