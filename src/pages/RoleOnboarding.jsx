@@ -16,6 +16,7 @@ const STEPS = [
   { title: 'Understand Your Role', desc: 'We have researched your Handyperson Coordinator responsibilities.' },
   { title: 'Choose Your Workspace', desc: 'Customise how you want to work.' },
   { title: 'Select Your Modules', desc: 'Enable additional features you manage.' },
+  { title: 'Manage Demo Data', desc: 'Replace demo data with your real records.' },
   { title: 'Data Safety & Compliance', desc: 'Your data is protected. Here is how.' },
   { title: 'You are Ready!', desc: 'Your workspace is set up. What is next?' },
 ];
@@ -40,6 +41,9 @@ export default function RoleOnboarding() {
   const [slideIndex, setSlideIndex] = useState(0);
   const [selectedWorkspace, setSelectedWorkspace] = useState('dashboard');
   const [selectedModules, setSelectedModules] = useState(new Set());
+  const [demoDataAction, setDemoDataAction] = useState(null); // 'keep' | 'clear' | 'upload'
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const TOTAL = STEPS.length;
@@ -58,12 +62,53 @@ export default function RoleOnboarding() {
     }, 200);
   }, []);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setCompletedSteps(prev => new Set([...prev, currentStep]));
+    
+    // Handle demo data actions on step 4
+    if (currentStep === 4 && demoDataAction) {
+      setIsProcessing(true);
+      try {
+        if (demoDataAction === 'clear') {
+          await clearDemoData();
+        } else if (demoDataAction === 'upload' && uploadedFiles.length > 0) {
+          await uploadUserData();
+        }
+      } catch (error) {
+        console.error('Error processing data:', error);
+      } finally {
+        setIsProcessing(false);
+      }
+    }
+
     if (currentStep >= TOTAL) {
       setTimeout(() => { window.location.href = '/coordinator-portal'; }, 400);
     } else {
       goTo(currentStep + 1);
+    }
+  };
+
+  const clearDemoData = async () => {
+    // Call backend function to clear demo data
+    try {
+      await fetch('/api/clearDemoData', { method: 'POST' });
+    } catch (error) {
+      console.error('Failed to clear demo data:', error);
+    }
+  };
+
+  const uploadUserData = async () => {
+    // Call backend function to process uploaded files
+    const formData = new FormData();
+    uploadedFiles.forEach(file => formData.append('files', file));
+    
+    try {
+      await fetch('/api/importUserData', {
+        method: 'POST',
+        body: formData
+      });
+    } catch (error) {
+      console.error('Failed to upload data:', error);
     }
   };
 
@@ -155,33 +200,95 @@ export default function RoleOnboarding() {
       case 4:
         return (
           <div className="space-y-4">
-            {[
-              { icon: Lock, title: 'Bank-Level Encryption', desc: 'All data is encrypted in transit and at rest.' },
-              { icon: Shield, title: 'GDPR Compliant', desc: 'We follow UK data protection regulations. Only you control who sees what data.' },
-              { icon: FileText, title: 'Role-Based Access', desc: 'Your handypeople see jobs—not compliance data. Role-specific visibility.' },
-              { icon: CheckCircle2, title: 'Your Data, Your Control', desc: 'You can download or delete all your data at any time. No lock-in.' },
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="border border-border rounded-lg p-4 flex items-start gap-3">
-                <Icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-sm">{title}</h4>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+              <p className="text-sm font-semibold text-blue-900">What would you like to do with the demo data?</p>
+
+              {['keep', 'clear', 'upload'].map(action => (
+                <Card
+                  key={action}
+                  onClick={() => setDemoDataAction(action)}
+                  className={`cursor-pointer border-2 transition-all ${
+                    demoDataAction === action ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      {action === 'keep' && '✓ Keep Demo Data'}
+                      {action === 'clear' && '🗑️ Clear Demo Data'}
+                      {action === 'upload' && '📤 Replace with My Data'}
+                      {demoDataAction === action && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      {action === 'keep' && 'Explore the system with sample records'}
+                      {action === 'clear' && 'Start fresh with an empty portal'}
+                      {action === 'upload' && 'Import your real client, volunteer & job records'}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+
+              {demoDataAction === 'upload' && (
+                <div className="mt-4 p-4 border-2 border-dashed border-primary rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-2">Supported formats: CSV, Excel (.xlsx), JSON</p>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".csv,.xlsx,.json"
+                    onChange={(e) => {
+                      setUploadedFiles(Array.from(e.target.files || []));
+                    }}
+                    className="text-sm w-full"
+                  />
+                  {uploadedFiles.length > 0 && (
+                    <div className="mt-3 space-y-1">
+                      {uploadedFiles.map((f, i) => (
+                        <p key={i} className="text-xs text-green-600 flex items-center gap-1">✓ {f.name}</p>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
         );
 
       case 5:
-        return (
-          <div className="space-y-4">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
-              <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto" />
-              <h4 className="font-semibold text-green-900 text-lg">Welcome to Your Coordinator Portal!</h4>
-              <p className="text-sm text-green-800">Everything is ready. Start managing appointments, supervising your team, and tracking impact.</p>
-            </div>
-          </div>
-        );
+         return (
+           <div className="space-y-4">
+             {[
+               { icon: Lock, title: 'Bank-Level Encryption', desc: 'All data is encrypted in transit and at rest.' },
+               { icon: Shield, title: 'GDPR Compliant', desc: 'We follow UK data protection regulations. Only you control who sees what data.' },
+               { icon: FileText, title: 'Role-Based Access', desc: 'Your handypeople see jobs—not compliance data. Role-specific visibility.' },
+               { icon: CheckCircle2, title: 'Your Data, Your Control', desc: 'You can download or delete all your data at any time. No lock-in.' },
+             ].map(({ icon: Icon, title, desc }) => (
+               <div key={title} className="border border-border rounded-lg p-4 flex items-start gap-3">
+                 <Icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                 <div>
+                   <h4 className="font-semibold text-sm">{title}</h4>
+                   <p className="text-sm text-muted-foreground">{desc}</p>
+                 </div>
+               </div>
+             ))}
+           </div>
+         );
+
+      case 6:
+         return (
+           <div className="space-y-4">
+             <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
+               <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto" />
+               <h4 className="font-semibold text-green-900 text-lg">Welcome to Your Coordinator Portal!</h4>
+               <p className="text-sm text-green-800">Everything is ready. Start managing appointments, supervising your team, and tracking impact.</p>
+               {demoDataAction && (
+                 <p className="text-xs text-green-700 pt-2 border-t border-green-200 mt-3">
+                   {demoDataAction === 'keep' && '✓ Demo data ready to explore'}
+                   {demoDataAction === 'clear' && '✓ Portal cleared and ready for your data'}
+                   {demoDataAction === 'upload' && '✓ Your data imported and ready to use'}
+                 </p>
+               )}
+             </div>
+           </div>
+         );
 
       default:
         return null;
@@ -233,12 +340,18 @@ export default function RoleOnboarding() {
               {renderStepContent()}
               <div className="flex gap-3 pt-4 border-t border-border">
                 {currentStep > 1 && (
-                  <Button variant="outline" onClick={() => goTo(currentStep - 1)} disabled={isTransitioning}>
+                  <Button variant="outline" onClick={() => goTo(currentStep - 1)} disabled={isTransitioning || isProcessing}>
                     Back
                   </Button>
                 )}
-                <Button onClick={handleContinue} disabled={isTransitioning} className="flex-1 py-5 text-base">
-                  {isTransitioning
+                <Button 
+                  onClick={handleContinue} 
+                  disabled={isTransitioning || isProcessing || (currentStep === 4 && !demoDataAction)} 
+                  className="flex-1 py-5 text-base"
+                >
+                  {isProcessing
+                    ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing...</span>
+                    : isTransitioning
                     ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Please wait...</span>
                     : currentStep === TOTAL
                       ? <span className="flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4" /> Finish & Enter Portal</span>
