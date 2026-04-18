@@ -15,6 +15,7 @@ const slides = [
 const STEPS = [
   { title: 'Understand Your Role', desc: 'We have researched your Handyperson Coordinator responsibilities.' },
   { title: 'Choose Your Workspace', desc: 'Customise how you want to work.' },
+  { title: 'Select Your Modules', desc: 'Enable additional features you manage.' },
   { title: 'Data Safety & Compliance', desc: 'Your data is protected. Here is how.' },
   { title: 'You are Ready!', desc: 'Your workspace is set up. What is next?' },
 ];
@@ -25,11 +26,20 @@ const WORKSPACE_OPTIONS = [
   { id: 'calendar', icon: '🗓️', label: 'Calendar View', desc: 'Visual schedule of all bookings and team assignments', badge: 'Plan ahead visually' },
 ];
 
+const MODULES = [
+  { id: 'risk-flagging', icon: '⚠️', label: 'At-Risk Client Flagging', desc: 'Identify and track vulnerable clients needing escalation' },
+  { id: 'referrals', icon: '➡️', label: 'Referrals', desc: 'Manage referrals to other Age UK departments' },
+  { id: 'befriending', icon: '💬', label: 'Befriending', desc: 'Coordinate befriending services and check-ins' },
+  { id: 'hospital', icon: '🏥', label: 'Home from Hospital', desc: 'Track post-hospital support and recovery progress' },
+  { id: 'info-advice', icon: '💡', label: 'Information & Advice', desc: 'Provide and record information/advice sessions' },
+];
+
 export default function RoleOnboarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [slideIndex, setSlideIndex] = useState(0);
   const [selectedWorkspace, setSelectedWorkspace] = useState('dashboard');
+  const [selectedModules, setSelectedModules] = useState(new Set());
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const TOTAL = STEPS.length;
@@ -111,6 +121,39 @@ export default function RoleOnboarding() {
 
       case 3:
         return (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground mb-2">Select the additional modules you manage:</p>
+            <div className="space-y-2">
+              {MODULES.map(mod => (
+                <Card
+                  key={mod.id}
+                  onClick={() => {
+                    const newModules = new Set(selectedModules);
+                    if (newModules.has(mod.id)) {
+                      newModules.delete(mod.id);
+                    } else {
+                      newModules.add(mod.id);
+                    }
+                    setSelectedModules(newModules);
+                  }}
+                  className={`cursor-pointer border-2 transition-all duration-200 ${selectedModules.has(mod.id) ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'}`}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      {mod.icon} {mod.label}
+                      {selectedModules.has(mod.id) && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                    </CardTitle>
+                    <CardDescription>{mod.desc}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">You can enable or disable modules later from settings.</p>
+          </div>
+        );
+
+      case 4:
+        return (
           <div className="space-y-4">
             {[
               { icon: Lock, title: 'Bank-Level Encryption', desc: 'All data is encrypted in transit and at rest.' },
@@ -129,7 +172,7 @@ export default function RoleOnboarding() {
           </div>
         );
 
-      case 4:
+      case 5:
         return (
           <div className="space-y-4">
             <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
