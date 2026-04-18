@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronRight, Lock, Shield, FileText, CheckCircle2, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ChevronRight, Lock, Shield, FileText, CheckCircle2, Loader2, Cloud, HardDrive, FolderOpen, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -28,6 +28,176 @@ const WORKSPACE_OPTIONS = [
   { id: 'calendar', icon: '🗓️', label: 'Calendar View', desc: 'Visual schedule of all bookings and team assignments', badge: 'Plan ahead visually', variant: 'outline' },
 ];
 
+const ACCEPTED_TYPES = [
+  { ext: '.xlsx', label: 'Excel Workbook', icon: '📊' },
+  { ext: '.xls', label: 'Excel 97–2003', icon: '📊' },
+  { ext: '.csv', label: 'CSV Spreadsheet', icon: '📋' },
+  { ext: '.ods', label: 'OpenDocument', icon: '📋' },
+  { ext: '.pdf', label: 'PDF Document', icon: '📄' },
+  { ext: '.docx', label: 'Word Document', icon: '📝' },
+  { ext: '.doc', label: 'Word 97–2003', icon: '📝' },
+  { ext: '.txt', label: 'Plain Text', icon: '📃' },
+  { ext: '.json', label: 'JSON Data', icon: '🔧' },
+  { ext: '.xml', label: 'XML Data', icon: '🔧' },
+  { ext: '.zip', label: 'ZIP Archive', icon: '🗜️' },
+  { ext: '.mdb', label: 'Access Database', icon: '🗄️' },
+];
+
+const CLOUD_SOURCES = [
+  { id: 'gdrive', label: 'Google Drive', color: 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100', icon: '🟦' },
+  { id: 'onedrive', label: 'OneDrive', color: 'bg-sky-50 border-sky-200 text-sky-700 hover:bg-sky-100', icon: '☁️' },
+  { id: 'dropbox', label: 'Dropbox', color: 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100', icon: '📦' },
+  { id: 'sharepoint', label: 'SharePoint', color: 'bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100', icon: '🟩' },
+];
+
+const LOCAL_DRIVES = ['C:\\', 'D:\\', 'E:\\', 'F:\\', 'G:\\', 'H:\\'];
+
+function ImportStep({ droppedFiles, setDroppedFiles }) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [cloudConnecting, setCloudConnecting] = useState(null);
+  const [cloudConnected, setCloudConnected] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    addFiles(files);
+  };
+
+  const handleFileInput = (e) => {
+    addFiles(Array.from(e.target.files));
+  };
+
+  const addFiles = (files) => {
+    const newEntries = files.map(f => ({ name: f.name, size: (f.size / 1024).toFixed(1) + ' KB', status: 'ready' }));
+    setDroppedFiles(prev => [...prev, ...newEntries]);
+    playClick();
+  };
+
+  const removeFile = (idx) => {
+    setDroppedFiles(prev => prev.filter((_, i) => i !== idx));
+    playClick();
+  };
+
+  const handleCloudConnect = (id) => {
+    if (cloudConnected.includes(id)) return;
+    setCloudConnecting(id);
+    playClick();
+    // Simulate OAuth connect
+    setTimeout(() => {
+      setCloudConnecting(null);
+      setCloudConnected(prev => [...prev, id]);
+      playSuccess();
+    }, 1800);
+  };
+
+  const handleDriveSelect = () => {
+    fileInputRef.current?.click();
+    playClick();
+  };
+
+  return (
+    <div className="space-y-4">
+
+      {/* Drag & Drop Zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
+          isDragging ? 'border-primary bg-primary/10 scale-[1.01]' : 'border-blue-300 bg-blue-50 hover:bg-blue-100 hover:border-blue-400'
+        }`}
+      >
+        <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileInput}
+          accept=".xlsx,.xls,.csv,.ods,.pdf,.docx,.doc,.txt,.json,.xml,.zip,.mdb" />
+        <Upload className={`w-8 h-8 mx-auto mb-2 ${isDragging ? 'text-primary' : 'text-blue-400'}`} />
+        <p className="text-sm font-semibold text-blue-900">{isDragging ? 'Release to upload' : 'Drag & drop files here'}</p>
+        <p className="text-xs text-blue-600 mt-1">or click to browse your computer</p>
+      </div>
+
+      {/* Accepted file types */}
+      <div>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Accepted file types:</p>
+        <div className="flex flex-wrap gap-1.5">
+          {ACCEPTED_TYPES.map(t => (
+            <span key={t.ext} className="inline-flex items-center gap-1 text-xs bg-muted border border-border rounded px-2 py-0.5 font-mono">
+              {t.icon} {t.ext}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Local Drive picker */}
+      <div>
+        <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5"><HardDrive className="w-3.5 h-3.5" /> Browse local drives:</p>
+        <div className="flex flex-wrap gap-2">
+          {LOCAL_DRIVES.map(drive => (
+            <button
+              key={drive}
+              onClick={handleDriveSelect}
+              className="flex items-center gap-1.5 text-xs border border-border bg-card hover:bg-muted rounded-lg px-3 py-2 transition-colors font-mono font-semibold"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-yellow-500" /> {drive}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Cloud connectors */}
+      <div>
+        <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5"><Cloud className="w-3.5 h-3.5" /> Connect cloud storage:</p>
+        <div className="grid grid-cols-2 gap-2">
+          {CLOUD_SOURCES.map(src => (
+            <button
+              key={src.id}
+              onClick={() => handleCloudConnect(src.id)}
+              className={`flex items-center justify-between gap-2 border rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${src.color} ${cloudConnected.includes(src.id) ? 'opacity-100' : ''}`}
+            >
+              <span className="flex items-center gap-2">
+                <span>{src.icon}</span>
+                <span>{src.label}</span>
+              </span>
+              {cloudConnecting === src.id
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                : cloudConnected.includes(src.id)
+                  ? <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                  : <span className="text-xs opacity-60">Connect</span>
+              }
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Queued files */}
+      {droppedFiles.length > 0 && (
+        <div className="border border-border rounded-lg overflow-hidden">
+          <div className="bg-muted/50 px-3 py-2 text-xs font-semibold flex items-center justify-between">
+            <span>Files queued for import ({droppedFiles.length})</span>
+            <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+          </div>
+          <div className="divide-y divide-border max-h-40 overflow-y-auto">
+            {droppedFiles.map((f, i) => (
+              <div key={i} className="flex items-center justify-between px-3 py-2 text-xs">
+                <span className="truncate text-foreground">{f.name}</span>
+                <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                  <span className="text-muted-foreground">{f.size}</span>
+                  <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive transition-colors">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-muted-foreground">Don't worry if files aren't perfect — we'll guide you through any questions.</p>
+    </div>
+  );
+}
+
 export default function RoleOnboarding() {
   const [currentStep, setCurrentStep] = useState(0); // 0 = slideshow, 1-5 = steps
   const [completedSteps, setCompletedSteps] = useState(new Set());
@@ -35,6 +205,7 @@ export default function RoleOnboarding() {
   const [selectedWorkspace, setSelectedWorkspace] = useState('dashboard');
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState([]);
 
   const TOTAL = STEPS.length;
 
@@ -117,26 +288,8 @@ export default function RoleOnboarding() {
         );
 
       case 3:
-        return (
-          <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-              <h4 className="font-semibold text-sm text-blue-900">Drop Your Files Here</h4>
-              <p className="text-sm text-blue-800">Have existing spreadsheets? No problem. We'll transform them into your database.</p>
-              <div className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center cursor-pointer hover:bg-blue-100 transition-colors">
-                <div className="text-3xl mb-2">📁</div>
-                <p className="text-sm font-medium text-blue-900">Drag & drop Excel/CSV files here</p>
-                <p className="text-xs text-blue-700 mt-1">Or click to browse</p>
-              </div>
-              <div className="bg-white rounded p-3 space-y-1">
-                <p className="text-xs font-semibold text-foreground">We can import:</p>
-                {['Client contact details & addresses','Job history & service records','Handyperson team info','Payment & expense records'].map(i => (
-                  <p key={i} className="text-xs text-muted-foreground">• {i}</p>
-                ))}
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground">Don't worry if files aren't perfect — we'll guide you through any questions.</p>
-          </div>
-        );
+        return <ImportStep droppedFiles={droppedFiles} setDroppedFiles={setDroppedFiles} />;
+
 
       case 4:
         return (
