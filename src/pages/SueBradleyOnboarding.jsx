@@ -1,16 +1,61 @@
-import React, { useState } from 'react';
-import { CheckCircle2, Shield, Lock, Users, Calendar, TrendingUp, ChevronRight, BadgeCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, Shield, Lock, Users, Calendar, TrendingUp, ChevronRight, BadgeCheck, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { base44 } from '@/api/base44Client';
 
 export default function SueBradleyOnboarding() {
   const [step, setStep] = useState('welcome');
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // null = checking
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(setIsAuthenticated);
+  }, []);
 
   if (step === 'onboarding') {
-    // Redirect to full onboarding
     window.location.href = '/role-onboarding';
     return null;
+  }
+
+  // Show sign-in prompt if not authenticated
+  if (isAuthenticated === false) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-6">
+        <Card className="max-w-md w-full text-center">
+          <CardHeader>
+            <div className="mx-auto mb-3 w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center">
+              <LogIn className="w-7 h-7 text-primary" />
+            </div>
+            <CardTitle>Welcome, Sue Bradley</CardTitle>
+            <CardDescription>
+              Please sign in with your Age UK email address to access your Coordinator Portal setup.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => base44.auth.redirectToLogin(window.location.href)}
+            >
+              Sign In to Continue <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              You should have received an invite email from Age UK. Use that link to set up your password first.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
