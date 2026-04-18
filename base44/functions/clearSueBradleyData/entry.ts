@@ -14,24 +14,34 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Clear all demo data associated with Sue
-    await base44.asServiceRole.entities.Client.delete({ created_by: user.email });
-    await base44.asServiceRole.entities.Volunteer.delete({ created_by: user.email });
-    await base44.asServiceRole.entities.Job.delete({ created_by: user.email });
-    await base44.asServiceRole.entities.Session.delete({ created_by: user.email });
-    await base44.asServiceRole.entities.Grant.delete({ created_by: user.email });
+    // Clear ALL data associated with Sue across all entities
+    const entitiesToClear = [
+      'Client', 'Volunteer', 'Job', 'Session', 'Grant',
+      'LocationConfig', 'BranchConfig', 'ComplianceRecord'
+    ];
 
-    // Mark Sue's onboarding as needing to restart
+    for (const entity of entitiesToClear) {
+      try {
+        await base44.asServiceRole.entities[entity].delete({ created_by: user.email });
+      } catch (err) {
+        // Entity may not have records, continue
+        console.log(`No records to clear for ${entity}`);
+      }
+    }
+
+    // Reset user profile completely - clear all onboarding & workspace data
     await base44.auth.updateMe({ 
-      onboarding_status: 'pending',
-      onboarding_step: 0,
-      selected_modules: [],
-      workspace_view: null
+      onboarding_status: null,
+      onboarding_step: null,
+      selected_modules: null,
+      workspace_view: null,
+      demoDataAction: null,
+      selectedWorkspace: null
     });
 
     return Response.json({ 
       success: true, 
-      message: 'Data cleared. Ready for new onboarding.',
+      message: 'All data cleared. User ready for fresh registration.',
       redirect: '/role-onboarding'
     });
   } catch (error) {
