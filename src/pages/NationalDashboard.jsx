@@ -34,8 +34,7 @@ export default function NationalDashboard() {
     base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
 
-  const isSueBradley = currentUser?.email?.toLowerCase().includes('sue') || 
-                       currentUser?.full_name?.toLowerCase().includes('sue bradley');
+  const isSueBradley = currentUser?.email === 'sue.bradley1@ntlworld.com';
 
   // Fetch branch configs
   const { data: branches = [] } = useQuery({
