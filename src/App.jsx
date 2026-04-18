@@ -91,10 +91,6 @@ const AuthenticatedApp = () => {
         <Route path="/tasks" element={<ProjectTasks />} />
         <Route path="/analytics" element={<AnalyticsDashboard />} />
       </Route>
-      <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
-      <Route path="/role-onboarding" element={<RoleOnboarding />} />
-      <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
-      <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -105,7 +101,15 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <AuthenticatedApp />
+          <Routes>
+            {/* Public routes — no auth required */}
+            <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
+            <Route path="/role-onboarding" element={<RoleOnboarding />} />
+            <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
+            <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
+            {/* All other routes go through auth guard */}
+            <Route path="*" element={<AuthenticatedApp />} />
+          </Routes>
         </Router>
         <Toaster />
       </QueryClientProvider>
