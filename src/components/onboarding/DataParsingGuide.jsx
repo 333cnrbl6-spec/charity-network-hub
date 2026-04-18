@@ -13,25 +13,28 @@ export default function DataParsingGuide({ files, onComplete, onError }) {
   const startParsing = async () => {
     setParsingState('parsing');
     try {
-      const formData = new FormData();
-      files.forEach(file => formData.append('files', file));
+      // Read file contents
+      const fileData = await Promise.all(
+        Array.from(files).map(async (file) => ({
+          name: file.name,
+          content: await file.text()
+        }))
+      );
 
       const response = await base44.functions.invoke('parseAndValidateData', {
-        files: Array.from(files).map(f => ({
-          name: f.name,
-          size: f.size,
-          type: f.type
-        }))
+        fileData
       });
 
       if (response.data.success) {
         setParseResults(response.data.analysis);
-        setSelectedEntities(
-          Object.keys(response.data.analysis.entities || {}).reduce((acc, key) => {
-            acc[key] = true;
-            return acc;
-          }, {})
-        );
+        // Select all detected entities by default
+        const selectedByDefault = {};
+        Object.entries(response.data.analysis).forEach(([fileName, analysis]) => {
+          Object.keys(analysis.detectedEntities || {}).forEach(entity => {
+            selectedByDefault[`${fileName}::${entity}`] = true;
+          });
+        });
+        setSelectedEntities(selectedByDefault);
         setParsingState('results');
       } else {
         setParsingState('error');
@@ -126,26 +129,37 @@ export default function DataParsingGuide({ files, onComplete, onError }) {
       <div className="space-y-4">
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-sm font-semibold text-green-900 mb-2">✓ Data Successfully Analyzed</p>
-          <p className="text-xs text-green-800">Found {Object.keys(parseResults.entities || {}).length} data types across your files</p>
+          <p className="text-xs text-green-800">Detected entities and fields from your files</p>
         </div>
 
-        <div className="space-y-3">
-           <p className="text-sm font-semibold">Select which data to import:</p>
-           {Object.entries(parseResults.entities || {}).map(([entity, info]) => (
-             <Card key={entity} className={`cursor-pointer border-2 transition-all ${selectedEntities[entity] ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
-               <CardHeader className="pb-2" onClick={() => setSelectedEntities(prev => ({ ...prev, [entity]: !prev[entity] }))}>
-                 <CardTitle className="text-sm flex items-center gap-2">
-                   <input type="checkbox" checked={selectedEntities[entity]} onChange={() => {}} className="cursor-pointer" />
-                   {entity}
-                 </CardTitle>
-                 <CardDescription className="text-xs">
-                   {info.fileName && `Found in: ${info.fileName}`}
-                   {info.confidence && ` • ${info.confidence}% confidence`}
-                 </CardDescription>
-               </CardHeader>
-             </Card>
-           ))}
-         </div>
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          {Object.entries(parseResults).map(([fileName, analysis]) => (
+            <div key={fileName} className="border border-border rounded-lg p-3 space-y-3">
+              <p className="text-xs font-mono text-muted-foreground">{fileName}</p>
+              <p className="text-xs text-muted-foreground">Headers: {analysis.headers.join(', ')}</p>
+
+              {Object.entries(analysis.detectedEntities || {}).map(([entity, info]) => {
+                const key = `${fileName}::${entity}`;
+                return (
+                  <Card key={key} className={`cursor-pointer border-2 transition-all ${selectedEntities[key] ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
+                    <CardHeader className="pb-2" onClick={() => setSelectedEntities(prev => ({ ...prev, [key]: !prev[key] }))}>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <input type="checkbox" checked={!!selectedEntities[key]} onChange={() => {}} className="cursor-pointer" />
+                        {entity}
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        {info.totalFields} fields detected • {info.confidence}% confidence
+                      </CardDescription>
+                      <CardDescription className="text-xs mt-1 text-muted-foreground">
+                        Fields: {info.matchedFields.join(', ')}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+          ))}
+        </div>
 
         <div className="flex gap-3">
           <Button variant="outline" onClick={() => setParsingState('preview')} disabled={isImporting}>
