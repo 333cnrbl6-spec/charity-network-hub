@@ -1,5 +1,49 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// Basic file pattern analysis without AI
+const analyzeFilePatterns = (files) => {
+  const entities = {};
+  const warnings = [];
+
+  // Map file names to likely entity types
+  const entityKeywords = {
+    Client: ['client', 'user', 'customer', 'person', 'contact'],
+    Volunteer: ['volunteer', 'staff', 'member', 'team'],
+    Job: ['job', 'task', 'appointment', 'visit', 'task'],
+    Session: ['session', 'activity', 'group', 'event'],
+    Grant: ['grant', 'funding', 'award', 'benefit']
+  };
+
+  files.forEach(file => {
+    const nameLower = file.name.toLowerCase();
+    
+    Object.entries(entityKeywords).forEach(([entity, keywords]) => {
+      if (keywords.some(kw => nameLower.includes(kw))) {
+        if (!entities[entity]) {
+          entities[entity] = { 
+            confidence: 70, 
+            detected: true, 
+            fileName: file.name 
+          };
+        }
+      }
+    });
+  });
+
+  // Add warnings
+  if (files.length === 0) {
+    warnings.push('No files detected');
+  }
+  
+  files.forEach(f => {
+    if (f.size > 50 * 1024 * 1024) {
+      warnings.push(`File ${f.name} is larger than 50MB and may take longer to process`);
+    }
+  });
+
+  return { entities, warnings };
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -16,65 +60,20 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No files provided' }, { status: 400 });
     }
 
-    // Use AI to analyze file structure and content
-    const fileAnalyses = files.map(f => ({
-      name: f.name,
-      size: f.size,
-      type: f.type
-    }));
-
-    const analysisPrompt = `You are a data structure analysis expert. Analyze these files that will be imported into an Age UK database:
-
-Files: ${JSON.stringify(fileAnalyses)}
-
-The system has these entity types available:
-- Client: full_name, date_of_birth, address, postcode, phone, email, referral_source, status, date_registered, key_worker, notes
-- Volunteer: full_name, email, phone, role, status, dbs_checked, dbs_expiry, date_joined, hours_contributed, area
-- Job: client_id, client_name, volunteer_id, volunteer_name, job_type, scheduled_date, status, notes, duration_minutes
-- Session: session_name, session_type, location, scheduled_date, attendees_count, max_capacity, status, facilitator, notes
-- Grant: grant_name, funder, amount_awarded, date_awarded, grant_type, client_id, client_name, status, notes
-
-Without seeing the actual file contents, provide a structured analysis that includes:
-1. Which entity types are likely in these files based on file names
-2. Expected data structure for each entity
-3. Data quality concerns to watch for
-4. Confidence level (0-100) for each entity type
-
-Return ONLY valid JSON with this structure:
-{
-  "entities": {
-    "Client": {"count": 150, "confidence": 95, "preview": [sample record]},
-    ...
-  },
-  "warnings": [],
-  "recommendations": []
-}`;
-
-    const aiResponse = await base44.integrations.Core.InvokeLLM({
-      prompt: analysisPrompt,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          entities: {
-            type: 'object',
-            additionalProperties: {
-              type: 'object',
-              properties: {
-                count: { type: 'number' },
-                confidence: { type: 'number' },
-                preview: { type: 'array' }
-              }
-            }
-          },
-          warnings: { type: 'array', items: { type: 'string' } },
-          recommendations: { type: 'array', items: { type: 'string' } }
-        }
-      }
-    });
+    // Perform basic pattern analysis without using AI credits
+    const analysis = analyzeFilePatterns(files);
 
     return Response.json({ 
       success: true, 
-      analysis: aiResponse 
+      analysis: {
+        entities: analysis.entities,
+        warnings: analysis.warnings,
+        recommendations: [
+          'Review the detected entities below',
+          'Select which data you want to import',
+          'The system will map your file columns to database fields'
+        ]
+      }
     });
   } catch (error) {
     console.error('Error parsing data:', error);

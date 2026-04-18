@@ -130,28 +130,22 @@ export default function DataParsingGuide({ files, onComplete, onError }) {
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold">Select which data to import:</p>
-          {Object.entries(parseResults.entities || {}).map(([entity, info]) => (
-            <Card key={entity} className={`cursor-pointer border-2 transition-all ${selectedEntities[entity] ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
-              <CardHeader className="pb-2" onClick={() => setSelectedEntities(prev => ({ ...prev, [entity]: !prev[entity] }))}>
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <input type="checkbox" checked={selectedEntities[entity]} onChange={() => {}} className="cursor-pointer" />
-                  {entity}
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  {info.count} records • {info.confidence}% confidence
-                </CardDescription>
-              </CardHeader>
-              {info.preview && info.preview.length > 0 && (
-                <CardContent className="pt-0">
-                  <div className="bg-muted rounded p-2 text-xs font-mono max-h-32 overflow-y-auto">
-                    <pre>{JSON.stringify(info.preview[0], null, 2)}</pre>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          ))}
-        </div>
+           <p className="text-sm font-semibold">Select which data to import:</p>
+           {Object.entries(parseResults.entities || {}).map(([entity, info]) => (
+             <Card key={entity} className={`cursor-pointer border-2 transition-all ${selectedEntities[entity] ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40'}`}>
+               <CardHeader className="pb-2" onClick={() => setSelectedEntities(prev => ({ ...prev, [entity]: !prev[entity] }))}>
+                 <CardTitle className="text-sm flex items-center gap-2">
+                   <input type="checkbox" checked={selectedEntities[entity]} onChange={() => {}} className="cursor-pointer" />
+                   {entity}
+                 </CardTitle>
+                 <CardDescription className="text-xs">
+                   {info.fileName && `Found in: ${info.fileName}`}
+                   {info.confidence && ` • ${info.confidence}% confidence`}
+                 </CardDescription>
+               </CardHeader>
+             </Card>
+           ))}
+         </div>
 
         <div className="flex gap-3">
           <Button variant="outline" onClick={() => setParsingState('preview')} disabled={isImporting}>
