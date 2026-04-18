@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { base44 } from '@/api/base44Client';
+import DataParsingGuide from '@/components/onboarding/DataParsingGuide';
 
 const slides = [
   { title: 'Welcome to Age UK Handyperson Coordinator Portal', subtitle: 'Your command centre for service delivery', image: '📋', description: 'Manage appointments, supervise teams, and track service quality—all in one place.' },
@@ -46,6 +47,8 @@ export default function RoleOnboarding() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [parseError, setParseError] = useState(null);
+  const [dataImported, setDataImported] = useState(false);
 
   const TOTAL = STEPS.length;
 
@@ -64,17 +67,23 @@ export default function RoleOnboarding() {
   }, []);
 
   const handleContinue = async () => {
+    // For step 4 with upload, show parsing guide instead of auto-continuing
+    if (currentStep === 4 && demoDataAction === 'upload' && uploadedFiles.length > 0 && !dataImported) {
+      return; // Stay on step 4, the parsing guide will handle the flow
+    }
+
     setCompletedSteps(prev => new Set([...prev, currentStep]));
     
     // Handle demo data actions on step 4
-    if (currentStep === 4 && demoDataAction) {
+    if (currentStep === 4 && demoDataAction && !isProcessing) {
       setIsProcessing(true);
       try {
         if (demoDataAction === 'clear') {
           await clearDemoData();
-        } else if (demoDataAction === 'upload' && uploadedFiles.length > 0) {
-          await uploadUserData();
+        } else if (demoDataAction === 'keep') {
+          // Just continue
         }
+        // 'upload' is handled by DataParsingGuide component
       } catch (error) {
         console.error('Error processing data:', error);
       } finally {
@@ -207,55 +216,67 @@ export default function RoleOnboarding() {
       case 4:
         return (
           <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-              <p className="text-sm font-semibold text-blue-900">What would you like to do with the demo data?</p>
+            {!demoDataAction ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                <p className="text-sm font-semibold text-blue-900">What would you like to do with the demo data?</p>
 
-              {['keep', 'clear', 'upload'].map(action => (
-                <Card
-                  key={action}
-                  onClick={() => setDemoDataAction(action)}
-                  className={`cursor-pointer border-2 transition-all ${
-                    demoDataAction === action ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
-                  }`}
-                >
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      {action === 'keep' && '✓ Keep Demo Data'}
-                      {action === 'clear' && '🗑️ Clear Demo Data'}
-                      {action === 'upload' && '📤 Replace with My Data'}
-                      {demoDataAction === action && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      {action === 'keep' && 'Explore the system with sample records'}
-                      {action === 'clear' && 'Start fresh with an empty portal'}
-                      {action === 'upload' && 'Import your real client, volunteer & job records'}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-
-              {demoDataAction === 'upload' && (
-                <div className="mt-4 p-4 border-2 border-dashed border-primary rounded-lg">
-                  <p className="text-xs text-muted-foreground mb-2">Supported formats: CSV, Excel (.xlsx), JSON</p>
-                  <input
-                    type="file"
-                    multiple
-                    accept=".csv,.xlsx,.json"
-                    onChange={(e) => {
-                      setUploadedFiles(Array.from(e.target.files || []));
+                {['keep', 'clear', 'upload'].map(action => (
+                  <Card
+                    key={action}
+                    onClick={() => setDemoDataAction(action)}
+                    className={`cursor-pointer border-2 transition-all ${
+                      demoDataAction === action ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
+                    }`}
+                  >
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        {action === 'keep' && '✓ Keep Demo Data'}
+                        {action === 'clear' && '🗑️ Clear Demo Data'}
+                        {action === 'upload' && '📤 Replace with My Data'}
+                        {demoDataAction === action && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        {action === 'keep' && 'Explore the system with sample records'}
+                        {action === 'clear' && 'Start fresh with an empty portal'}
+                        {action === 'upload' && 'Import your real client, volunteer & job records'}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            ) : demoDataAction === 'upload' ? (
+              <div className="space-y-4">
+                {!uploadedFiles.length ? (
+                  <div className="p-4 border-2 border-dashed border-primary rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-3">Supported formats: CSV, Excel (.xlsx), JSON</p>
+                    <input
+                      type="file"
+                      multiple
+                      accept=".csv,.xlsx,.json"
+                      onChange={(e) => {
+                        setUploadedFiles(Array.from(e.target.files || []));
+                        setParseError(null);
+                      }}
+                      className="text-sm w-full cursor-pointer"
+                    />
+                    {parseError && (
+                      <p className="text-xs text-red-600 mt-2">Error: {parseError}</p>
+                    )}
+                  </div>
+                ) : (
+                  <DataParsingGuide
+                    files={uploadedFiles}
+                    onComplete={(result) => {
+                      setDataImported(true);
+                      setParseError(null);
                     }}
-                    className="text-sm w-full"
+                    onError={(error) => {
+                      setParseError(error);
+                    }}
                   />
-                  {uploadedFiles.length > 0 && (
-                    <div className="mt-3 space-y-1">
-                      {uploadedFiles.map((f, i) => (
-                        <p key={i} className="text-xs text-green-600 flex items-center gap-1">✓ {f.name}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            ) : null}
           </div>
         );
 
@@ -353,13 +374,20 @@ export default function RoleOnboarding() {
                 )}
                 <Button 
                   onClick={handleContinue} 
-                  disabled={isTransitioning || isProcessing || (currentStep === 4 && !demoDataAction)} 
+                  disabled={
+                    isTransitioning || 
+                    isProcessing || 
+                    (currentStep === 4 && !demoDataAction) ||
+                    (currentStep === 4 && demoDataAction === 'upload' && !dataImported && !uploadedFiles.length)
+                  } 
                   className="flex-1 py-5 text-base"
                 >
                   {isProcessing
                     ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing...</span>
                     : isTransitioning
                     ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Please wait...</span>
+                    : (currentStep === 4 && demoDataAction === 'upload' && uploadedFiles.length > 0 && !dataImported)
+                    ? <span className="flex items-center justify-center gap-2">Select Files Above First</span>
                     : currentStep === TOTAL
                       ? <span className="flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4" /> Finish & Enter Portal</span>
                       : <span className="flex items-center justify-center gap-2">Continue <ChevronRight className="w-4 h-4" /></span>
