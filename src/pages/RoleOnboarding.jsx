@@ -18,9 +18,10 @@ const STEPS = [
   { title: 'Understand Your Role', desc: 'We have researched your Handyperson Coordinator responsibilities.' },
   { title: 'Choose Your Workspace', desc: 'Customise how you want to work.' },
   { title: 'Select Your Modules', desc: 'Enable additional features you manage.' },
-  { title: 'Manage Demo Data', desc: 'Replace demo data with your real records.' },
+  { title: 'Import Your Data', desc: 'Replace demo data with your real records or start fresh.' },
+  { title: 'AI Data Parsing', desc: 'We\'ll intelligently map your data to our system.' },
   { title: 'Data Safety & Compliance', desc: 'Your data is protected. Here is how.' },
-  { title: 'You are Ready!', desc: 'Your workspace is set up. What is next?' },
+  { title: 'You are Ready!', desc: 'Your workspace is fully set up. Enter the portal.' },
 ];
 
 const WORKSPACE_OPTIONS = [
@@ -67,30 +68,18 @@ export default function RoleOnboarding() {
   }, []);
 
   const handleContinue = async () => {
-    // For step 4 with upload, show parsing guide instead of auto-continuing
+    // If on step 4 with upload and files shown but not yet parsed, don't advance
     if (currentStep === 4 && demoDataAction === 'upload' && uploadedFiles.length > 0 && !dataImported) {
-      return; // Stay on step 4, the parsing guide will handle the flow
+      return; // Stay on step 4, DataParsingGuide handles progression
+    }
+
+    // If on step 4 and no action selected yet, don't advance
+    if (currentStep === 4 && !demoDataAction) {
+      return;
     }
 
     setCompletedSteps(prev => new Set([...prev, currentStep]));
     
-    // Handle demo data actions on step 4
-    if (currentStep === 4 && demoDataAction && !isProcessing) {
-      setIsProcessing(true);
-      try {
-        if (demoDataAction === 'clear') {
-          await clearDemoData();
-        } else if (demoDataAction === 'keep') {
-          // Just continue
-        }
-        // 'upload' is handled by DataParsingGuide component
-      } catch (error) {
-        console.error('Error processing data:', error);
-      } finally {
-        setIsProcessing(false);
-      }
-    }
-
     if (currentStep >= TOTAL) {
       setTimeout(() => { window.location.href = '/coordinator-portal'; }, 400);
     } else {
@@ -216,107 +205,146 @@ export default function RoleOnboarding() {
       case 4:
         return (
           <div className="space-y-4">
+            <p className="text-sm text-muted-foreground mb-2">How would you like to start?</p>
+            
             {!demoDataAction ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-                <p className="text-sm font-semibold text-blue-900">What would you like to do with the demo data?</p>
+              <div className="space-y-2">
+                <Card
+                  onClick={() => setDemoDataAction('upload')}
+                  className={`cursor-pointer border-2 transition-all ${
+                    demoDataAction === 'upload' ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      📤 Import Your Data
+                      {demoDataAction === 'upload' && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                    </CardTitle>
+                    <CardDescription className="text-xs">Upload your client, volunteer & job records (CSV, Excel, JSON)</CardDescription>
+                  </CardHeader>
+                </Card>
 
-                {['keep', 'clear', 'upload'].map(action => (
-                  <Card
-                    key={action}
-                    onClick={() => setDemoDataAction(action)}
-                    className={`cursor-pointer border-2 transition-all ${
-                      demoDataAction === action ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
-                    }`}
-                  >
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm flex items-center gap-2">
-                        {action === 'keep' && '✓ Keep Demo Data'}
-                        {action === 'clear' && '🗑️ Clear Demo Data'}
-                        {action === 'upload' && '📤 Replace with My Data'}
-                        {demoDataAction === action && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
-                      </CardTitle>
-                      <CardDescription className="text-xs">
-                        {action === 'keep' && 'Explore the system with sample records'}
-                        {action === 'clear' && 'Start fresh with an empty portal'}
-                        {action === 'upload' && 'Import your real client, volunteer & job records'}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                ))}
+                <Card
+                  onClick={() => setDemoDataAction('fresh')}
+                  className={`cursor-pointer border-2 transition-all ${
+                    demoDataAction === 'fresh' ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      ✨ Start Fresh
+                      {demoDataAction === 'fresh' && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                    </CardTitle>
+                    <CardDescription className="text-xs">Begin with an empty portal and add data manually</CardDescription>
+                  </CardHeader>
+                </Card>
+
+                <Card
+                  onClick={() => setDemoDataAction('explore')}
+                  className={`cursor-pointer border-2 transition-all ${
+                    demoDataAction === 'explore' ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent hover:border-primary/40'
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      👀 Explore Demo Data
+                      {demoDataAction === 'explore' && <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />}
+                    </CardTitle>
+                    <CardDescription className="text-xs">Play with sample records first, import real data later</CardDescription>
+                  </CardHeader>
+                </Card>
               </div>
-            ) : demoDataAction === 'upload' ? (
-              <div className="space-y-4">
-                {!uploadedFiles.length ? (
-                  <div className="p-4 border-2 border-dashed border-primary rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-3">Supported formats: CSV, Excel (.xlsx), JSON</p>
-                    <input
-                      type="file"
-                      multiple
-                      accept=".csv,.xlsx,.json"
-                      onChange={(e) => {
-                        setUploadedFiles(Array.from(e.target.files || []));
-                        setParseError(null);
-                      }}
-                      className="text-sm w-full cursor-pointer"
-                    />
-                    {parseError && (
-                      <p className="text-xs text-red-600 mt-2">Error: {parseError}</p>
-                    )}
-                  </div>
-                ) : (
-                  <DataParsingGuide
-                    files={uploadedFiles}
-                    onComplete={(result) => {
-                      setDataImported(true);
-                      setParseError(null);
-                    }}
-                    onError={(error) => {
-                      setParseError(error);
-                    }}
-                  />
+            ) : demoDataAction === 'upload' && !uploadedFiles.length ? (
+              <div className="p-4 border-2 border-dashed border-primary rounded-lg">
+                <p className="text-xs text-muted-foreground mb-3">Supported formats: CSV, Excel (.xlsx), JSON</p>
+                <input
+                  type="file"
+                  multiple
+                  accept=".csv,.xlsx,.json"
+                  onChange={(e) => {
+                    setUploadedFiles(Array.from(e.target.files || []));
+                    setParseError(null);
+                  }}
+                  className="text-sm w-full cursor-pointer"
+                />
+                {parseError && (
+                  <p className="text-xs text-red-600 mt-2">Error: {parseError}</p>
                 )}
               </div>
+            ) : demoDataAction === 'upload' && uploadedFiles.length > 0 ? (
+              <DataParsingGuide
+                files={uploadedFiles}
+                onComplete={(result) => {
+                  setDataImported(true);
+                  setParseError(null);
+                }}
+                onError={(error) => {
+                  setParseError(error);
+                }}
+              />
             ) : null}
           </div>
         );
 
       case 5:
-         return (
-           <div className="space-y-4">
-             {[
-               { icon: Lock, title: 'Bank-Level Encryption', desc: 'All data is encrypted in transit and at rest.' },
-               { icon: Shield, title: 'GDPR Compliant', desc: 'We follow UK data protection regulations. Only you control who sees what data.' },
-               { icon: FileText, title: 'Role-Based Access', desc: 'Your handypeople see jobs—not compliance data. Role-specific visibility.' },
-               { icon: CheckCircle2, title: 'Your Data, Your Control', desc: 'You can download or delete all your data at any time. No lock-in.' },
-             ].map(({ icon: Icon, title, desc }) => (
-               <div key={title} className="border border-border rounded-lg p-4 flex items-start gap-3">
-                 <Icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                 <div>
-                   <h4 className="font-semibold text-sm">{title}</h4>
-                   <p className="text-sm text-muted-foreground">{desc}</p>
-                 </div>
-               </div>
-             ))}
-           </div>
-         );
+        return (
+          <div className="space-y-4">
+            {demoDataAction === 'upload' && dataImported ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-3">
+                <h4 className="font-semibold text-green-900 text-sm">✓ Data Import Complete</h4>
+                <p className="text-xs text-green-800">Your files have been parsed and mapped to your system. The next step covers data security.</p>
+              </div>
+            ) : demoDataAction === 'fresh' ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                <h4 className="font-semibold text-blue-900 text-sm">Fresh Portal Ready</h4>
+                <p className="text-xs text-blue-800">Your portal is empty and ready. Add clients, volunteers, and jobs as needed. You can always import data later from settings.</p>
+              </div>
+            ) : demoDataAction === 'explore' ? (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+                <h4 className="font-semibold text-amber-900 text-sm">Demo Data Loaded</h4>
+                <p className="text-xs text-amber-800">Sample data is ready to explore. When you're ready to use real data, go to Settings → Data Import.</p>
+              </div>
+            ) : null}
+          </div>
+        );
 
       case 6:
-         return (
-           <div className="space-y-4">
-             <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
-               <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto" />
-               <h4 className="font-semibold text-green-900 text-lg">Welcome to Your Coordinator Portal!</h4>
-               <p className="text-sm text-green-800">Everything is ready. Start managing appointments, supervising your team, and tracking impact.</p>
-               {demoDataAction && (
-                 <p className="text-xs text-green-700 pt-2 border-t border-green-200 mt-3">
-                   {demoDataAction === 'keep' && '✓ Demo data ready to explore'}
-                   {demoDataAction === 'clear' && '✓ Portal cleared and ready for your data'}
-                   {demoDataAction === 'upload' && '✓ Your data imported and ready to use'}
-                 </p>
-               )}
-             </div>
-           </div>
-         );
+        return (
+          <div className="space-y-4">
+            {[
+              { icon: Lock, title: 'Bank-Level Encryption', desc: 'All data is encrypted in transit and at rest.' },
+              { icon: Shield, title: 'GDPR Compliant', desc: 'We follow UK data protection regulations. Only you control who sees what data.' },
+              { icon: FileText, title: 'Role-Based Access', desc: 'Your handypeople see jobs—not compliance data. Role-specific visibility.' },
+              { icon: CheckCircle2, title: 'Your Data, Your Control', desc: 'You can download or delete all your data at any time. No lock-in.' },
+            ].map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="border border-border rounded-lg p-4 flex items-start gap-3">
+                <Icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-sm">{title}</h4>
+                  <p className="text-sm text-muted-foreground">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+
+      case 7:
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center space-y-3">
+              <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto" />
+              <h4 className="font-semibold text-green-900 text-lg">Welcome to Your Coordinator Portal!</h4>
+              <p className="text-sm text-green-800">Everything is ready. Start managing appointments, supervising your team, and tracking impact.</p>
+              {demoDataAction && (
+                <p className="text-xs text-green-700 pt-2 border-t border-green-200 mt-3">
+                  {demoDataAction === 'upload' && dataImported && '✓ Your data imported and ready to use'}
+                  {demoDataAction === 'fresh' && '✓ Fresh portal ready for your data'}
+                  {demoDataAction === 'explore' && '✓ Demo data loaded for exploration'}
+                </p>
+              )}
+            </div>
+          </div>
+        );
 
       default:
         return null;
@@ -378,16 +406,14 @@ export default function RoleOnboarding() {
                     isTransitioning || 
                     isProcessing || 
                     (currentStep === 4 && !demoDataAction) ||
-                    (currentStep === 4 && demoDataAction === 'upload' && !dataImported && !uploadedFiles.length)
+                    (currentStep === 4 && demoDataAction === 'upload' && uploadedFiles.length > 0 && !dataImported)
                   } 
                   className="flex-1 py-5 text-base"
                 >
-                  {isProcessing
-                    ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing...</span>
-                    : isTransitioning
+                  {isTransitioning
                     ? <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Please wait...</span>
                     : (currentStep === 4 && demoDataAction === 'upload' && uploadedFiles.length > 0 && !dataImported)
-                    ? <span className="flex items-center justify-center gap-2">Select Files Above First</span>
+                    ? <span className="flex items-center justify-center gap-2">Parsing data...</span>
                     : currentStep === TOTAL
                       ? <span className="flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4" /> Finish & Enter Portal</span>
                       : <span className="flex items-center justify-center gap-2">Continue <ChevronRight className="w-4 h-4" /></span>
