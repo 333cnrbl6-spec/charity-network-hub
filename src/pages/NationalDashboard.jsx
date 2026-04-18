@@ -32,12 +32,7 @@ export default function NationalDashboard() {
   const { user: currentUser, logout } = useAuth();
   const isSueBradley = currentUser?.email === 'sue.bradley1@ntlworld.com';
 
-  // Non-admin users should not see the national dashboard
-  useEffect(() => {
-    if (currentUser && currentUser.role !== 'admin') {
-      window.location.href = '/role-onboarding';
-    }
-  }, [currentUser]);
+
 
   // Fetch branch configs
   const { data: branches = [] } = useQuery({

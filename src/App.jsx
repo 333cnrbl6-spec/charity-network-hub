@@ -35,6 +35,15 @@ import ProjectTasks from './pages/ProjectTasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import BuryCoordinatorPortal from './pages/BuryCoordinatorPortal';
 
+const AdminOnly = ({ children }) => {
+  const { user } = useAuth();
+  if (user && user.role !== 'admin') {
+    window.location.replace('/coordinator-portal');
+    return null;
+  }
+  return children;
+};
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -58,7 +67,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<NationalDashboard />} />
+        <Route path="/" element={<AdminOnly><NationalDashboard /></AdminOnly>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/network" element={<NetworkOverview />} />
         <Route path="/regional/:region" element={<RegionalOverview />} />
