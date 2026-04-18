@@ -26,7 +26,7 @@ import OnboardingDashboard from './pages/OnboardingDashboard';
 import DataImport from './pages/DataImport';
 import SubscriptionManagement from './pages/SubscriptionManagement';
 import SueBradleyOnboarding from './pages/SueBradleyOnboarding';
-import RoleOnboarding from './pages/RoleOnboarding';
+import RoleOnboarding from './pages/RoleOnboarding.jsx';
 import ImpactDashboard from './pages/ImpactDashboard';
 import VolunteerOnboarding from './pages/VolunteerOnboarding';
 import Boardroom from './pages/Boardroom';
