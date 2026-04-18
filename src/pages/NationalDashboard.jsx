@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,6 +31,13 @@ export default function NationalDashboard() {
   const [populateProgress, setPopulateProgress] = useState(null);
   const { user: currentUser, logout } = useAuth();
   const isSueBradley = currentUser?.email === 'sue.bradley1@ntlworld.com';
+
+  // Non-admin users should not see the national dashboard
+  useEffect(() => {
+    if (currentUser && currentUser.role !== 'admin') {
+      window.location.href = '/role-onboarding';
+    }
+  }, [currentUser]);
 
   // Fetch branch configs
   const { data: branches = [] } = useQuery({
