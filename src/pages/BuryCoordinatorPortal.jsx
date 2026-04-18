@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,8 +14,15 @@ import { format, isToday, isTomorrow, parseISO } from 'date-fns';
 const BRANCH_ID = 'bury';
 
 export default function BuryCoordinatorPortal() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+
+  // Check if user needs onboarding
+  useEffect(() => {
+    if (user && !user.onboarding_complete) {
+      window.location.replace('/role-onboarding');
+    }
+  }, [user]);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['bury-clients'],

@@ -41,6 +41,11 @@ const AdminOnly = ({ children }) => {
     window.location.replace('/coordinator-portal');
     return null;
   }
+  // Sue Bradley is coordinator-only, not admin
+  if (user?.email === 'sue.bradley1@ntlworld.com') {
+    window.location.replace('/coordinator-portal');
+    return null;
+  }
   return children;
 };
 
