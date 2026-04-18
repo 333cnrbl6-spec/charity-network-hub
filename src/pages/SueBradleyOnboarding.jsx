@@ -10,11 +10,17 @@ export default function SueBradleyOnboarding() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = checking
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(setIsAuthenticated);
+    base44.auth.isAuthenticated().then((authed) => {
+      setIsAuthenticated(authed);
+      // If already logged in, skip the welcome page and go straight to the portal
+      if (authed) {
+        window.location.href = '/dashboard';
+      }
+    });
   }, []);
 
   if (step === 'onboarding') {
-    window.location.href = '/role-onboarding';
+    window.location.href = '/dashboard';
     return null;
   }
 

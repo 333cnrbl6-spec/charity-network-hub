@@ -344,7 +344,13 @@ export default function RoleOnboarding() {
                   </Button>
                 )}
                 <Button
-                  onClick={() => handleStepComplete(currentStep - 1)}
+                  onClick={() => {
+                    if (currentStep === onboardingSteps.length) {
+                      window.location.href = '/dashboard';
+                    } else {
+                      handleStepComplete(currentStep - 1);
+                    }
+                  }}
                   className="flex-1"
                 >
                   {currentStep === onboardingSteps.length ? 'Finish & Enter Portal' : 'Continue'}{' '}
