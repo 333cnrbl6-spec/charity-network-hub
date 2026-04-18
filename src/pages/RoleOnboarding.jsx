@@ -231,7 +231,7 @@ export default function RoleOnboarding() {
     setCompletedSteps(prev => new Set([...prev, currentStep]));
     if (currentStep >= TOTAL) {
       playSuccess();
-      setTimeout(() => { window.location.href = '/clients'; }, 400);
+      setTimeout(() => { window.location.href = '/coordinator-portal'; }, 400);
     } else {
       playSuccess();
       goTo(currentStep + 1);

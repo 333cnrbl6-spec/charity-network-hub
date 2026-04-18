@@ -33,6 +33,7 @@ import Boardroom from './pages/Boardroom';
 import UserProfile from './pages/UserProfile';
 import ProjectTasks from './pages/ProjectTasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import BuryCoordinatorPortal from './pages/BuryCoordinatorPortal';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -84,6 +85,7 @@ const AuthenticatedApp = () => {
       <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
       <Route path="/role-onboarding" element={<RoleOnboarding />} />
       <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
+      <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
