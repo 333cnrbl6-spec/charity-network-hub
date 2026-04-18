@@ -99,8 +99,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(false);
       setAuthChecked(true);
 
-      // Auto-redirect non-admin users to their role onboarding on first load
-      const isRootPath = window.location.pathname === '/';
+      // Auto-redirect non-admin users away from root to their role onboarding
+      const path = window.location.pathname;
+      const isRootPath = path === '/';
       if (currentUser?.role !== 'admin' && isRootPath) {
         window.location.href = '/role-onboarding';
       }
@@ -120,17 +121,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      base44.auth.logout();
-    }
+    base44.auth.logout();
   };
 
   const navigateToLogin = () => {

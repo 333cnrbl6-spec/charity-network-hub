@@ -346,7 +346,7 @@ export default function RoleOnboarding() {
                 <Button
                   onClick={() => {
                     if (currentStep === onboardingSteps.length) {
-                      window.location.href = '/dashboard';
+                      window.location.href = '/clients';
                     } else {
                       handleStepComplete(currentStep - 1);
                     }
