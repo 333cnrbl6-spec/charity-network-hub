@@ -98,6 +98,12 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
       setAuthChecked(true);
+
+      // Auto-redirect non-admin users to their role onboarding on first load
+      const isRootPath = window.location.pathname === '/';
+      if (currentUser?.role !== 'admin' && isRootPath) {
+        window.location.href = '/role-onboarding';
+      }
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);

@@ -4,7 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, CheckCircle2, Clock, Network, Zap, Users, Users2, Briefcase, Gift, MapPin, Globe, ArrowRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, Network, Zap, Users, Users2, Briefcase, Gift, MapPin, Globe, ArrowRight, LogOut } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import StatusLight from '@/components/ui/StatusLight';
 import CollectivePerformanceChart from '@/components/dashboard/CollectivePerformanceChart';
@@ -28,12 +29,7 @@ export default function NationalDashboard() {
   const queryClient = useQueryClient();
   const [syncLoading, setSyncLoading] = useState(null);
   const [populateProgress, setPopulateProgress] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
-  }, []);
-
+  const { user: currentUser, logout } = useAuth();
   const isSueBradley = currentUser?.email === 'sue.bradley1@ntlworld.com';
 
   // Fetch branch configs
@@ -177,13 +173,23 @@ export default function NationalDashboard() {
             <h2 className="text-xl font-bold">You're looking at the National Hub</h2>
             <p className="text-sm opacity-80 mt-1">Your personal Age UK Bury Coordinator Portal is ready and waiting for you.</p>
           </div>
-          <Button
-            size="lg"
-            className="bg-white text-primary hover:bg-white/90 font-bold shrink-0"
-            onClick={() => window.location.href = '/sue-bradley-onboarding'}
-          >
-            Go to My Portal <ArrowRight className="w-5 h-5 ml-1" />
-          </Button>
+          <div className="flex gap-2 shrink-0">
+            <Button
+              size="lg"
+              className="bg-white text-primary hover:bg-white/90 font-bold"
+              onClick={() => window.location.href = '/role-onboarding'}
+            >
+              Go to My Portal <ArrowRight className="w-5 h-5 ml-1" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/50 text-white hover:bg-white/20"
+              onClick={() => logout()}
+            >
+              <LogOut className="w-4 h-4 mr-1" /> Log Out
+            </Button>
+          </div>
         </div>
       )}
 
