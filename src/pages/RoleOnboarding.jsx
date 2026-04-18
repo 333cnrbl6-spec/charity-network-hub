@@ -93,9 +93,7 @@ export default function RoleOnboarding() {
     try {
       const response = await base44.functions.invoke('clearSueBradleyData', {});
       if (response.data.success) {
-        console.log('All data cleared. Session will refresh.');
-        // Clear local session cache and redirect to fresh login
-        await base44.auth.logout('/role-onboarding');
+        console.log('All data cleared successfully');
       }
     } catch (error) {
       console.error('Failed to clear demo data:', error);
