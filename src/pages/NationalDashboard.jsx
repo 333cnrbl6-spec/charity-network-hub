@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, CheckCircle2, Clock, Network, Zap, Users, Users2, Briefcase, Gift, MapPin, Globe } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, Network, Zap, Users, Users2, Briefcase, Gift, MapPin, Globe, ArrowRight } from 'lucide-react';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import StatusLight from '@/components/ui/StatusLight';
 import CollectivePerformanceChart from '@/components/dashboard/CollectivePerformanceChart';
@@ -28,6 +28,14 @@ export default function NationalDashboard() {
   const queryClient = useQueryClient();
   const [syncLoading, setSyncLoading] = useState(null);
   const [populateProgress, setPopulateProgress] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
+
+  const isSueBradley = currentUser?.email?.toLowerCase().includes('sue') || 
+                       currentUser?.full_name?.toLowerCase().includes('sue bradley');
 
   // Fetch branch configs
   const { data: branches = [] } = useQuery({
@@ -162,6 +170,24 @@ export default function NationalDashboard() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Sue Bradley personalised banner */}
+      {isSueBradley && (
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl p-5 flex items-center justify-between gap-4 shadow-lg">
+          <div>
+            <p className="text-sm font-medium opacity-90">👋 Welcome, Sue!</p>
+            <h2 className="text-xl font-bold">You're looking at the National Hub</h2>
+            <p className="text-sm opacity-80 mt-1">Your personal Age UK Bury Coordinator Portal is ready and waiting for you.</p>
+          </div>
+          <Button
+            size="lg"
+            className="bg-white text-primary hover:bg-white/90 font-bold shrink-0"
+            onClick={() => window.location.href = '/sue-bradley-onboarding'}
+          >
+            Go to My Portal <ArrowRight className="w-5 h-5 ml-1" />
+          </Button>
+        </div>
+      )}
+
       <LoadingIndicator 
         isLoading={!!syncLoading} 
         message={syncLoading === 'populate' ? 'Auto-populating all branches...' : 'Syncing all branches...'}
