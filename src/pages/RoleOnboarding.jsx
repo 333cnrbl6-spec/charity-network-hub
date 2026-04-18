@@ -3,6 +3,7 @@ import { ChevronRight, Lock, Shield, FileText, CheckCircle2, Loader2 } from 'luc
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { base44 } from '@/api/base44Client';
 
 const slides = [
   { title: 'Welcome to Age UK Handyperson Coordinator Portal', subtitle: 'Your command centre for service delivery', image: '📋', description: 'Manage appointments, supervise teams, and track service quality—all in one place.' },
@@ -89,26 +90,32 @@ export default function RoleOnboarding() {
   };
 
   const clearDemoData = async () => {
-    // Call backend function to clear demo data
     try {
-      await fetch('/api/clearDemoData', { method: 'POST' });
+      const response = await base44.functions.invoke('clearSueBradleyData', {});
+      if (response.data.success) {
+        console.log('Demo data cleared successfully');
+      }
     } catch (error) {
       console.error('Failed to clear demo data:', error);
+      throw error;
     }
   };
 
   const uploadUserData = async () => {
-    // Call backend function to process uploaded files
-    const formData = new FormData();
-    uploadedFiles.forEach(file => formData.append('files', file));
-    
     try {
-      await fetch('/api/importUserData', {
-        method: 'POST',
-        body: formData
+      const formData = new FormData();
+      uploadedFiles.forEach(file => formData.append('files', file));
+      
+      const response = await base44.functions.invoke('importUserData', {
+        files: uploadedFiles
       });
+      
+      if (response.data.success) {
+        console.log('Data imported successfully');
+      }
     } catch (error) {
       console.error('Failed to upload data:', error);
+      throw error;
     }
   };
 

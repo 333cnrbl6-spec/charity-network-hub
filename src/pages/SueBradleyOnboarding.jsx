@@ -250,7 +250,7 @@ export default function SueBradleyOnboarding() {
           <div className="space-y-4">
             <Button
               size="lg"
-              onClick={() => setStep('onboarding')}
+              onClick={() => window.location.href = '/role-onboarding'}
               className="w-full bg-primary hover:bg-primary/90"
             >
               Start Your Setup <ChevronRight className="w-5 h-5 ml-2" />
