@@ -99,11 +99,10 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(false);
       setAuthChecked(true);
 
-      // Auto-redirect non-admin users away from root directly to their portal
+      // Auto-redirect non-admin users away from root to onboarding, unless already there
       const path = window.location.pathname;
-      const blockedPaths = ['/', '/role-onboarding'];
-      if (currentUser?.role !== 'admin' && blockedPaths.includes(path)) {
-        window.location.href = '/clients';
+      if (currentUser?.role !== 'admin' && path === '/') {
+        window.location.href = '/role-onboarding';
       }
     } catch (error) {
       console.error('User auth check failed:', error);
