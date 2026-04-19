@@ -3,6 +3,7 @@ import { Award, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import VolunteerTrainingForm from '@/components/training/VolunteerTrainingForm';
 import TrainingExpiryDashboard from '@/components/training/TrainingExpiryDashboard';
+import TrainingComplianceDashboard from '@/components/training/TrainingComplianceDashboard';
 
 export default function TrainingModule() {
   return (
@@ -43,6 +44,9 @@ export default function TrainingModule() {
         {/* Expiry Dashboard */}
         <TrainingExpiryDashboard />
       </div>
+
+      {/* Compliance Dashboard */}
+      <TrainingComplianceDashboard />
     </div>
   );
 }
