@@ -34,6 +34,7 @@ import UserProfile from './pages/UserProfile';
 import ProjectTasks from './pages/ProjectTasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import BuryCoordinatorPortal from './pages/BuryCoordinatorPortal';
+import NetworkExpansion from './pages/NetworkExpansion';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/tasks" element={<ProjectTasks />} />
         <Route path="/analytics" element={<AnalyticsDashboard />} />
+        <Route path="/expansion" element={<NetworkExpansion />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

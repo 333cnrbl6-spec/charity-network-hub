@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
@@ -93,6 +93,7 @@ export default function Sidebar() {
       { icon: Rocket, label: 'Branch Onboarding', path: '/onboarding' },
       { icon: Upload, label: 'Data Import', path: '/import' },
       { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
+      { icon: GitBranch, label: 'Network Expansion', path: '/expansion' },
     ];
   };
 
