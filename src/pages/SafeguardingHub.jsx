@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import SafeguardingIncidentForm from '@/components/safeguarding/SafeguardingIncidentForm';
 import SafeguardingAlertsDashboard from '@/components/safeguarding/SafeguardingAlertsDashboard';
 import DBSVerificationTool from '@/components/safeguarding/DBSVerificationTool';
+import SafeguardingFollowUpTracker from '@/components/safeguarding/SafeguardingFollowUpTracker';
 
 export default function SafeguardingHub() {
   return (
@@ -47,6 +48,9 @@ export default function SafeguardingHub() {
 
       {/* DBS Verification Tool */}
       <DBSVerificationTool />
+
+      {/* Follow-Up Tracker */}
+      <SafeguardingFollowUpTracker />
 
       {/* Guidance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

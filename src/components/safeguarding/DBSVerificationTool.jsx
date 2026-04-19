@@ -254,10 +254,16 @@ export default function DBSVerificationTool() {
         )}
 
         {/* Usage Notes */}
-        <div className="border-t pt-4 mt-4 text-xs text-muted-foreground">
+        <div className="border-t pt-4 mt-4 text-xs text-muted-foreground space-y-1">
           <p className="flex items-center gap-2">
             <AlertTriangle className="w-3 h-3" />
-            This tool uses GOV.UK Verify DBS service and Local Government Association API for real-time verification
+            DBS certificate format validation + local authority lookup
+          </p>
+          <p>
+            For full DBS status verification, organisations must register with DBS. Contact: 0300 020 0190
+          </p>
+          <p>
+            Local authority contacts provided for statutory safeguarding referrals
           </p>
         </div>
       </CardContent>
