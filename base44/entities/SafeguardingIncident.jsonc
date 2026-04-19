@@ -260,6 +260,40 @@
       "type": "string",
       "format": "date",
       "description": "Date when record should be archived (6 years from incident)"
+    },
+    "attached_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_id": {
+            "type": "string"
+          },
+          "file_reference": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "file_type": {
+            "type": "string"
+          },
+          "file_size_bytes": {
+            "type": "number"
+          },
+          "file_category": {
+            "type": "string"
+          },
+          "uploaded_by": {
+            "type": "string"
+          },
+          "uploaded_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "List of securely attached evidence files"
     }
   },
   "required": [

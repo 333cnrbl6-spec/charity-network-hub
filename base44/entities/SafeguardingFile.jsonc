@@ -1,0 +1,173 @@
+{
+  "name": "SafeguardingFile",
+  "type": "object",
+  "properties": {
+    "file_reference": {
+      "type": "string",
+      "description": "Unique file reference (e.g., SG-FILE-1234567890-ABC123DEF)"
+    },
+    "incident_id": {
+      "type": "string",
+      "description": "Reference to safeguarding incident"
+    },
+    "uploaded_by": {
+      "type": "string",
+      "description": "Email of user who uploaded file"
+    },
+    "uploaded_by_name": {
+      "type": "string",
+      "description": "Name of user who uploaded file"
+    },
+    "original_filename": {
+      "type": "string",
+      "description": "Original filename"
+    },
+    "file_type": {
+      "type": "string",
+      "description": "MIME type of file"
+    },
+    "file_size_bytes": {
+      "type": "number",
+      "description": "File size in bytes"
+    },
+    "file_category": {
+      "type": "string",
+      "enum": [
+        "evidence",
+        "witness_statement",
+        "medical_report",
+        "police_report",
+        "social_care_report",
+        "photo",
+        "document",
+        "correspondence",
+        "other"
+      ],
+      "description": "Category of uploaded file"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "Private storage URI (encrypted)"
+    },
+    "signed_url": {
+      "type": "string",
+      "description": "Time-limited signed URL for access"
+    },
+    "url_expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When signed URL expires"
+    },
+    "virus_scan_status": {
+      "type": "string",
+      "enum": [
+        "clean",
+        "infected",
+        "scanning",
+        "failed",
+        "not_scanned"
+      ],
+      "default": "not_scanned",
+      "description": "Virus scan result"
+    },
+    "virus_scan_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When virus scan was performed"
+    },
+    "encryption_status": {
+      "type": "string",
+      "enum": [
+        "encrypted",
+        "unencrypted"
+      ],
+      "default": "encrypted",
+      "description": "Encryption status"
+    },
+    "access_level": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "restricted",
+        "highly_confidential"
+      ],
+      "default": "restricted",
+      "description": "Access restriction level"
+    },
+    "download_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times file has been accessed"
+    },
+    "last_accessed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last access timestamp"
+    },
+    "access_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "access_type": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Complete access audit log"
+    },
+    "retention_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when file should be deleted (6 years from upload)"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Soft delete flag"
+    },
+    "deletion_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When file was deleted"
+    },
+    "deleted_by": {
+      "type": "string",
+      "description": "User who deleted the file"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the file"
+    }
+  },
+  "required": [
+    "file_reference",
+    "incident_id",
+    "uploaded_by",
+    "uploaded_by_name",
+    "original_filename",
+    "file_type",
+    "file_size_bytes",
+    "file_category",
+    "file_uri"
+  ]
+}

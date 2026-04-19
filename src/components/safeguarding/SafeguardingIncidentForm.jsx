@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/AuthContext';
+import SecureFileUpload from './SecureFileUpload';
 
 const INCIDENT_TYPES = [
   { value: 'physical_abuse', label: 'Physical Abuse', icon: '🚨' },
@@ -55,6 +56,7 @@ export default function SafeguardingIncidentForm() {
   });
   const [aiAssessment, setAiAssessment] = useState(null);
   const [runningAI, setRunningAI] = useState(false);
+  const [createdIncidentId, setCreatedIncidentId] = useState(null);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -205,13 +207,19 @@ Output structured JSON for incident management.`,
         actions_taken: '',
       });
       setAiAssessment(null);
-      setStep(1);
+      setCreatedIncidentId(incident.id);
+      setStep(4); // Move to file upload step
     } catch (error) {
       console.error('Failed to submit incident:', error);
       toast.error('Failed to submit incident', { description: error.message });
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleFilesUpdate = () => {
+    // Refresh incident data after file upload
+    console.log('Files updated for incident');
   };
 
   const triggerManagementAlert = async (incident, assessment) => {
@@ -462,6 +470,33 @@ Output structured JSON for incident management.`,
                 )}
               </Button>
             )}
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4 bg-green-50">
+              <p className="font-semibold text-green-900 mb-2">✓ Incident Successfully Reported</p>
+              <p className="text-sm text-green-800">
+                Reference: <strong>{existingIncidents?.incident_reference || 'Pending'}</strong>
+              </p>
+              <p className="text-xs text-green-700 mt-2">
+                You can now attach supporting evidence files (photos, documents, witness statements).
+              </p>
+            </div>
+
+            {createdIncidentId && (
+              <SecureFileUpload
+                incidentId={createdIncidentId}
+                existingFiles={existingIncidents?.attached_files || []}
+                onFilesUpdate={handleFilesUpdate}
+              />
+            )}
+
+            <Button onClick={() => { setCreatedIncidentId(null); setStep(1); }} className="w-full" variant="outline">
+              Report Another Incident
+            </Button>
           </div>
         );
 
