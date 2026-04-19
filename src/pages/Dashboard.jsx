@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle, Network, CheckCircle2 } from 'lucide-react';
+import { Users, Zap, Briefcase, Users2, Gift, AlertCircle, Network, CheckCircle2 } from 'lucide-react';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import StatusLight from '@/components/ui/StatusLight';
-import { playClick, playLoading, playSuccess } from '@/lib/audio';
+import { playLoading, playSuccess } from '@/lib/audio';
 import CharityAlerts from '@/components/alerts/CharityAlerts';
 import PDFExporter from '@/components/reports/PDFExporter';
+import { useClients, useVolunteers, useJobs, useSessions, useGrants, useCompliance, useBranches, useBranchReports, useSyncLogs } from '@/hooks/useEntityQueries';
 
 export default function Dashboard() {
   const [syncLoading, setSyncLoading] = useState(false);
@@ -23,50 +23,15 @@ export default function Dashboard() {
     setSelectedBranch(branch);
   }, []);
 
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
-  });
-
-  const { data: volunteers = [] } = useQuery({
-    queryKey: ['volunteers'],
-    queryFn: () => base44.entities.Volunteer.list(),
-  });
-
-  const { data: jobs = [] } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list(),
-  });
-
-  const { data: sessions = [] } = useQuery({
-    queryKey: ['sessions'],
-    queryFn: () => base44.entities.Session.list(),
-  });
-
-  const { data: grants = [] } = useQuery({
-    queryKey: ['grants'],
-    queryFn: () => base44.entities.Grant.list(),
-  });
-
-  const { data: syncLogs = [] } = useQuery({
-    queryKey: ['syncLogs'],
-    queryFn: () => base44.entities.SyncLog.list(),
-  });
-
-  const { data: branches = [] } = useQuery({
-    queryKey: ['branches'],
-    queryFn: () => base44.entities.BranchConfig.list(),
-  });
-
-  const { data: branchReports = [] } = useQuery({
-    queryKey: ['branchReports'],
-    queryFn: () => base44.entities.BranchReport.list(),
-  });
-
-  const { data: compliance = [] } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceRecord.list(),
-  });
+  const { data: clients = [] } = useClients();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: jobs = [] } = useJobs();
+  const { data: sessions = [] } = useSessions();
+  const { data: grants = [] } = useGrants();
+  const { data: compliance = [] } = useCompliance();
+  const { data: branches = [] } = useBranches();
+  const { data: branchReports = [] } = useBranchReports();
+  const { data: syncLogs = [] } = useSyncLogs();
 
   const handleManualSync = async () => {
     setSyncLoading(true);

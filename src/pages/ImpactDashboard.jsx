@@ -1,43 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, Clock, Users, TrendingUp, Download, Award } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-export default function ImpactDashboard() {
-  const [exportLoading, setExportLoading] = useState(false);
-
-  const { data: jobs = [] } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list(),
-  });
-
-  const { data: sessions = [] } = useQuery({
-    queryKey: ['sessions'],
-    queryFn: () => base44.entities.Session.list(),
-  });
-
-  const { data: volunteers = [] } = useQuery({
-    queryKey: ['volunteers'],
-    queryFn: () => base44.entities.Volunteer.list(),
-  });
-
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
-  });
-
-  const { data: grants = [] } = useQuery({
-    queryKey: ['grants'],
-    queryFn: () => base44.entities.Grant.list(),
-  });
-
-  const { data: branchReports = [] } = useQuery({
-    queryKey: ['branchReports'],
-    queryFn: () => base44.entities.BranchReport.list(),
-  });
+import { useJobs, useSessions, useVolunteers, useClients, useGrants, useBranchReports } from '@/hooks/useEntityQueries';
+...
+  const { data: jobs = [] } = useJobs();
+  const { data: sessions = [] } = useSessions();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: clients = [] } = useClients();
+  const { data: grants = [] } = useGrants();
+  const { data: branchReports = [] } = useBranchReports();
 
   // Calculate impact metrics
   const metrics = useMemo(() => {

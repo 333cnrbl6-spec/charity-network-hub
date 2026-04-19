@@ -1,23 +1,21 @@
 import React, { useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Users, Heart, Gift, Clock, AlertCircle } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  FunnelChart, Funnel, LabelList
 } from 'recharts';
+import KPICard from '@/components/ui/KPICard';
+import { useClients, useVolunteers, useJobs, useGrants, useSessions } from '@/hooks/useEntityQueries';
 
 const COLORS = ['#7c3aed', '#eab308', '#3b82f6', '#10b981', '#f97316', '#ec4899'];
 
 export default function CharityAnalytics() {
-  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
-  const { data: volunteers = [] } = useQuery({ queryKey: ['volunteers'], queryFn: () => base44.entities.Volunteer.list() });
-  const { data: jobs = [] } = useQuery({ queryKey: ['jobs'], queryFn: () => base44.entities.Job.list() });
-  const { data: grants = [] } = useQuery({ queryKey: ['grants'], queryFn: () => base44.entities.Grant.list() });
-  const { data: sessions = [] } = useQuery({ queryKey: ['sessions'], queryFn: () => base44.entities.Session.list() });
+  const { data: clients = [] } = useClients();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: jobs = [] } = useJobs();
+  const { data: grants = [] } = useGrants();
+  const { data: sessions = [] } = useSessions();
 
   // KPIs
   const kpis = useMemo(() => {
@@ -105,23 +103,6 @@ export default function CharityAnalytics() {
     });
     return Object.values(types).sort((a, b) => b.attendees - a.attendees).slice(0, 6);
   }, [sessions]);
-
-  const KPICard = ({ icon: IconComp, label, value, sub, color = 'text-primary' }) => (
-    <Card>
-      <CardContent className="pt-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
-            <p className={`text-3xl font-bold mt-1 ${color}`}>{value}</p>
-            {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
-          </div>
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <IconComp className="w-5 h-5 text-primary" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   return (
     <div className="p-6 space-y-6">

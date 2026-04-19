@@ -1,30 +1,19 @@
-import React, { useState, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Download, FileText, Loader2, CheckCircle2 } from 'lucide-react';
+import { Download, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-
-const REPORTS = [
-  { id: 'impact', label: 'Annual Impact Report', desc: 'Comprehensive overview of all activities and outcomes', color: 'text-purple-600' },
-  { id: 'volunteer', label: 'Volunteer Activity Log', desc: 'Volunteer hours, roles and contributions', color: 'text-green-600' },
-  { id: 'grants', label: 'Grant Pipeline Report', desc: 'All grant applications, awards and values', color: 'text-amber-600' },
-  { id: 'compliance', label: 'Compliance Summary', desc: 'Compliance status across all required areas', color: 'text-blue-600' },
-];
+import { useClients, useVolunteers, useJobs, useGrants, useCompliance } from '@/hooks/useEntityQueries';
 
 export default function PDFExporter() {
   const [generating, setGenerating] = useState(null);
-  const reportRef = useRef(null);
 
-  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
-  const { data: volunteers = [] } = useQuery({ queryKey: ['volunteers'], queryFn: () => base44.entities.Volunteer.list() });
-  const { data: jobs = [] } = useQuery({ queryKey: ['jobs'], queryFn: () => base44.entities.Job.list() });
-  const { data: grants = [] } = useQuery({ queryKey: ['grants'], queryFn: () => base44.entities.Grant.list() });
-  const { data: compliance = [] } = useQuery({ queryKey: ['compliance'], queryFn: () => base44.entities.ComplianceRecord.list() });
+  const { data: clients = [] } = useClients();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: jobs = [] } = useJobs();
+  const { data: grants = [] } = useGrants();
+  const { data: compliance = [] } = useCompliance();
 
   const generatePDF = async (reportId) => {
     setGenerating(reportId);

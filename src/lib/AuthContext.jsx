@@ -124,10 +124,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (user) => {
+  const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    // Non-admin users go back to coordinator portal after re-login
     base44.auth.logout('/');
   };
 

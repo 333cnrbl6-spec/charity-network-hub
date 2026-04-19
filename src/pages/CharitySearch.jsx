@@ -1,19 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Users, UserCheck, Briefcase, Gift, X } from 'lucide-react';
-
-const ENTITY_TYPES = [
-  { id: 'all', label: 'All' },
-  { id: 'client', label: 'Clients', icon: Users },
-  { id: 'volunteer', label: 'Volunteers', icon: UserCheck },
-  { id: 'job', label: 'Jobs', icon: Briefcase },
-  { id: 'grant', label: 'Grants', icon: Gift },
-];
+import { Search, X } from 'lucide-react';
+import { useClients, useVolunteers, useJobs, useGrants } from '@/hooks/useEntityQueries';
 
 export default function CharitySearch() {
   const [query, setQuery] = useState('');
@@ -22,10 +13,10 @@ export default function CharitySearch() {
   const [amountMin, setAmountMin] = useState('');
   const [amountMax, setAmountMax] = useState('');
 
-  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
-  const { data: volunteers = [] } = useQuery({ queryKey: ['volunteers'], queryFn: () => base44.entities.Volunteer.list() });
-  const { data: jobs = [] } = useQuery({ queryKey: ['jobs'], queryFn: () => base44.entities.Job.list() });
-  const { data: grants = [] } = useQuery({ queryKey: ['grants'], queryFn: () => base44.entities.Grant.list() });
+  const { data: clients = [] } = useClients();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: jobs = [] } = useJobs();
+  const { data: grants = [] } = useGrants();
 
   const results = useMemo(() => {
     const q = query.toLowerCase();

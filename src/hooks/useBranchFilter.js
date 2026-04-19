@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 /**
- * Unified hook for branch-aware filtering across all pages
- * Ensures consistent data isolation across branch, regional, and national views
+ * Unified hook for branch-aware filtering across all pages.
+ * Priority: URL path > sessionStorage (set by Sidebar selector).
  */
 export function useBranchFilter() {
   const location = useLocation();
-  const [viewMode, setViewMode] = useState('national'); // 'national', 'regional', 'branch'
+  const [viewMode, setViewMode] = useState('national');
   const [currentBranch, setCurrentBranch] = useState(null);
   const [currentRegion, setCurrentRegion] = useState(null);
 
   useEffect(() => {
-    // Detect view mode from URL
     if (location.pathname.startsWith('/branch/')) {
       const branchId = location.pathname.split('/')[2];
       setViewMode('branch');
@@ -24,9 +23,22 @@ export function useBranchFilter() {
       setCurrentRegion(region);
       setCurrentBranch(null);
     } else {
-      setViewMode('national');
-      setCurrentBranch(null);
-      setCurrentRegion(null);
+      // Fall back to Sidebar-selected context from sessionStorage
+      const storedRegion = sessionStorage.getItem('selectedRegion') || 'national';
+      const storedBranch = JSON.parse(sessionStorage.getItem('selectedBranch') || 'null');
+      if (storedBranch) {
+        setViewMode('branch');
+        setCurrentBranch(storedBranch.branch_id);
+        setCurrentRegion(null);
+      } else if (storedRegion !== 'national') {
+        setViewMode('regional');
+        setCurrentRegion(storedRegion);
+        setCurrentBranch(null);
+      } else {
+        setViewMode('national');
+        setCurrentBranch(null);
+        setCurrentRegion(null);
+      }
     }
   }, [location.pathname]);
 

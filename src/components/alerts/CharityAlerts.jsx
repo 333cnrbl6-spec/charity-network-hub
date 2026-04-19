@@ -1,20 +1,18 @@
 import React, { useMemo, useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { AlertCircle, Bell, Clock, Users, Gift, Calendar, ChevronRight, X } from 'lucide-react';
+import { AlertCircle, Bell, Clock, Users, Gift, Calendar, X } from 'lucide-react';
+import { useClients, useVolunteers, useJobs, useGrants, useSessions, useCompliance } from '@/hooks/useEntityQueries';
 
 export default function CharityAlerts({ compact = false }) {
   const [dismissed, setDismissed] = useState(new Set());
 
-  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
-  const { data: volunteers = [] } = useQuery({ queryKey: ['volunteers'], queryFn: () => base44.entities.Volunteer.list() });
-  const { data: jobs = [] } = useQuery({ queryKey: ['jobs'], queryFn: () => base44.entities.Job.list() });
-  const { data: grants = [] } = useQuery({ queryKey: ['grants'], queryFn: () => base44.entities.Grant.list() });
-  const { data: sessions = [] } = useQuery({ queryKey: ['sessions'], queryFn: () => base44.entities.Session.list() });
-  const { data: compliance = [] } = useQuery({ queryKey: ['compliance'], queryFn: () => base44.entities.ComplianceRecord.list() });
+  const { data: clients = [] } = useClients();
+  const { data: volunteers = [] } = useVolunteers();
+  const { data: jobs = [] } = useJobs();
+  const { data: grants = [] } = useGrants();
+  const { data: sessions = [] } = useSessions();
+  const { data: compliance = [] } = useCompliance();
 
   const alerts = useMemo(() => {
     const now = new Date();
