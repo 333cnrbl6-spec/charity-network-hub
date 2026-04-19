@@ -46,6 +46,7 @@ import CharityAnalytics from './pages/CharityAnalytics';
 import CharityOnboarding from './pages/CharityOnboarding';
 import ComplianceHub from './pages/ComplianceHub';
 import SafeguardingHub from './pages/SafeguardingHub';
+import TrainingModule from './pages/TrainingModule';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -113,6 +114,7 @@ const AuthenticatedApp = () => {
         <Route path="/charity-analytics" element={<CharityAnalytics />} />
         <Route path="/compliance-hub" element={<ComplianceHub />} />
         <Route path="/safeguarding" element={<SafeguardingHub />} />
+        <Route path="/training" element={<TrainingModule />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

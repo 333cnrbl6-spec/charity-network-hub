@@ -1,0 +1,137 @@
+{
+  "name": "VolunteerTraining",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string",
+      "description": "Reference to volunteer"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Volunteer name for reference"
+    },
+    "volunteer_email": {
+      "type": "string",
+      "description": "Volunteer email"
+    },
+    "training_type": {
+      "type": "string",
+      "enum": [
+        "dbs_basic",
+        "dbs_enhanced",
+        "safeguarding_adults",
+        "safeguarding_children",
+        "manual_handling",
+        "first_aid",
+        "food_hygiene",
+        "dementia_awareness",
+        "mental_capacity_act",
+        "gdpr_data_protection",
+        "health_safety",
+        "boundaries_confidentiality",
+        "equality_diversity",
+        "moving_handling",
+        "medication_awareness",
+        "infection_control",
+        "fire_safety",
+        "safeguarding_refresher",
+        "dbs_renewal",
+        "other"
+      ],
+      "description": "Type of training"
+    },
+    "training_provider": {
+      "type": "string",
+      "description": "Organisation providing training"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date training completed"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date training expires (if applicable)"
+    },
+    "certificate_number": {
+      "type": "string",
+      "description": "Certificate reference number"
+    },
+    "certificate_url": {
+      "type": "string",
+      "description": "URL to uploaded certificate file"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "in_progress",
+        "booked",
+        "expired",
+        "expiring_soon"
+      ],
+      "default": "completed",
+      "description": "Training status"
+    },
+    "expiry_alerts_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to send expiry alerts"
+    },
+    "days_until_expiry": {
+      "type": "number",
+      "description": "Calculated days until expiry"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about training"
+    },
+    "compliance_category": {
+      "type": "string",
+      "enum": [
+        "mandatory",
+        "recommended",
+        "optional"
+      ],
+      "default": "mandatory",
+      "description": "Compliance requirement level"
+    },
+    "renewal_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this training requires renewal"
+    },
+    "renewal_frequency_months": {
+      "type": "number",
+      "description": "How often renewal is required (e.g., 12, 24, 36 months)"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "volunteer_name",
+    "training_type",
+    "completion_date"
+  ]
+}
