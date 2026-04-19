@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, AlertTriangle, Shield, FileText } from 'lucide-react';
 import IncidentTimeline from '@/components/safeguarding/IncidentTimeline';
 import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
+import ReferralStatusTracker from '@/components/safeguarding/ReferralStatusTracker';
 import { format } from 'date-fns';
 
 export default function IncidentDetail() {
@@ -306,6 +307,9 @@ export default function IncidentDetail() {
               </CardContent>
             </Card>
           )}
+
+          {/* Referral Status Tracker */}
+          <ReferralStatusTracker incident={incident} />
 
           {/* Timeline */}
           <IncidentTimeline incident={incident} />
