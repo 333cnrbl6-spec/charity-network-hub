@@ -1,0 +1,157 @@
+{
+  "name": "PeerReview",
+  "type": "object",
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "description": "Reference to the SafeguardingIncident being reviewed"
+    },
+    "incident_reference": {
+      "type": "string",
+      "description": "Incident reference number for easy identification"
+    },
+    "submitted_by": {
+      "type": "string",
+      "description": "Email of Safeguarding Lead submitting for review"
+    },
+    "submitted_by_name": {
+      "type": "string",
+      "description": "Name of Safeguarding Lead"
+    },
+    "submission_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was submitted for review"
+    },
+    "executive_summary": {
+      "type": "string",
+      "description": "Executive summary of the incident and actions taken"
+    },
+    "investigation_summary": {
+      "type": "string",
+      "description": "Summary of investigation findings"
+    },
+    "recommended_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "responsible_person": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "description": "List of recommended actions from the review"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "changes_requested",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Review status"
+    },
+    "assigned_reviewer": {
+      "type": "string",
+      "description": "Email of senior manager assigned to review"
+    },
+    "assigned_reviewer_name": {
+      "type": "string",
+      "description": "Name of senior manager"
+    },
+    "reviewer_notes": {
+      "type": "string",
+      "description": "Comments and feedback from reviewer"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the review was completed"
+    },
+    "changes_requested_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When changes were requested"
+    },
+    "sign_off_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was officially signed off"
+    },
+    "risk_factors_identified": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional risk factors identified during review"
+    },
+    "compliance_issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Any compliance or procedural issues noted"
+    },
+    "lessons_learned": {
+      "type": "string",
+      "description": "Organizational learning points from this case"
+    },
+    "follow_up_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether follow-up review is required"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for follow-up review"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "incident_id",
+    "incident_reference",
+    "submitted_by",
+    "submitted_by_name"
+  ]
+}

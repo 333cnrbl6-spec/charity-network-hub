@@ -9,6 +9,7 @@ import DBSVerificationTool from '@/components/safeguarding/DBSVerificationTool';
 import SafeguardingFollowUpTracker from '@/components/safeguarding/SafeguardingFollowUpTracker';
 import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
 import KnowledgeBaseManager from '@/components/knowledge-base/KnowledgeBaseManager';
+import PeerReviewQueue from '@/components/peer-review/PeerReviewQueue';
 
 export default function SafeguardingHub() {
   const [selectedIncident, setSelectedIncident] = useState(null);
@@ -168,6 +169,9 @@ export default function SafeguardingHub() {
 
       {/* Knowledge Base Manager */}
       <KnowledgeBaseManager />
+
+      {/* Peer Review Queue */}
+      <PeerReviewQueue />
     </div>
   );
 }

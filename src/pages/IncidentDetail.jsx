@@ -11,6 +11,7 @@ import IncidentTimeline from '@/components/safeguarding/IncidentTimeline';
 import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
 import ReferralStatusTracker from '@/components/safeguarding/ReferralStatusTracker';
 import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
+import PeerReviewSubmission from '@/components/peer-review/PeerReviewSubmission';
 import { format } from 'date-fns';
 
 export default function IncidentDetail() {
@@ -405,6 +406,12 @@ export default function IncidentDetail() {
             </CardContent>
           </Card>
           </div>
+          </div>
+
+          {/* Peer Review Section - Only show if not closed */}
+          {incident.status !== 'closed' && (
+          <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
+          )}
       </div>
 
       {/* Referral Modal */}
