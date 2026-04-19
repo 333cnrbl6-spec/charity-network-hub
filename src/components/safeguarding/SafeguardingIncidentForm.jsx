@@ -478,9 +478,6 @@ Output structured JSON for incident management.`,
           <div className="space-y-4">
             <div className="border rounded-lg p-4 bg-green-50">
               <p className="font-semibold text-green-900 mb-2">✓ Incident Successfully Reported</p>
-              <p className="text-sm text-green-800">
-                Reference: <strong>{existingIncidents?.incident_reference || 'Pending'}</strong>
-              </p>
               <p className="text-xs text-green-700 mt-2">
                 You can now attach supporting evidence files (photos, documents, witness statements).
               </p>
@@ -489,7 +486,7 @@ Output structured JSON for incident management.`,
             {createdIncidentId && (
               <SecureFileUpload
                 incidentId={createdIncidentId}
-                existingFiles={existingIncidents?.attached_files || []}
+                existingFiles={[]}
                 onFilesUpdate={handleFilesUpdate}
               />
             )}

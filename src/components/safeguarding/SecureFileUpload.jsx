@@ -253,8 +253,8 @@ export default function SecureFileUpload({ incidentId, existingFiles = [], onFil
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span>{formatFileSize(file.file_size_bytes)}</span>
                         <span>•</span>
-                        <span className={getCategoryBadge(file.file_category)} px-2 py-0.5 rounded-full text-xs">
-                          {file.file_category.replace(/_/g, ' ')}
+                        <span className={`${getCategoryBadge(file.file_category)} px-2 py-0.5 rounded-full text-xs`}>
+                            {file.file_category.replace(/_/g, ' ')}
                         </span>
                         <span>•</span>
                         <span>Uploaded by {file.uploaded_by}</span>
