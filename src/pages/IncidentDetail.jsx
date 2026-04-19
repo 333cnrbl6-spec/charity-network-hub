@@ -14,7 +14,6 @@ import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
 import PeerReviewSubmission from '@/components/peer-review/PeerReviewSubmission';
 import AuditLogViewer from '@/components/safeguarding/AuditLogViewer';
 import { format } from 'date-fns';
-import { useState } from 'react';
 
 export default function IncidentDetail() {
   const { incidentId } = useParams();
