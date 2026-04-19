@@ -5,7 +5,7 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, TrendingUp, MapPin, Shield } from 'lucide-react';
+import { AlertTriangle, TrendingUp, MapPin, Shield, Activity, Clock } from 'lucide-react';
 import { format, startOfMonth, subMonths } from 'date-fns';
 
 const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
@@ -122,6 +122,44 @@ export default function SafeguardingAnalytics() {
       .slice(0, 10);
   }, [filteredData]);
 
+  // Response time analysis
+  const responseMetrics = useMemo(() => {
+    const openIncidents = filteredData.filter(i => i.status !== 'closed');
+    const daysInSystem = openIncidents.map(i => {
+      const days = Math.floor((new Date() - new Date(i.incident_date)) / (1000 * 60 * 60 * 24));
+      return days;
+    });
+    
+    return {
+      avgDaysOpen: daysInSystem.length > 0 ? Math.round(daysInSystem.reduce((a, b) => a + b) / daysInSystem.length) : 0,
+      overdue: daysInSystem.filter(d => d > 28).length
+    };
+  }, [filteredData]);
+
+  // Risk trend analysis
+  const riskTrendData = useMemo(() => {
+    const timeGroups = {};
+    filteredData.forEach(incident => {
+      const month = format(new Date(incident.incident_date), 'MMM yyyy');
+      if (!timeGroups[month]) timeGroups[month] = { critical: 0, high: 0, medium: 0, low: 0 };
+      const severity = incident.ai_severity_classification || 'low';
+      timeGroups[month][severity]++;
+    });
+
+    const months = [];
+    for (let i = parseInt(dateRange) - 1; i >= 0; i--) {
+      months.push(format(subMonths(new Date(), i), 'MMM yyyy'));
+    }
+
+    return months.map(month => ({
+      month,
+      critical: timeGroups[month]?.critical || 0,
+      high: timeGroups[month]?.high || 0,
+      medium: timeGroups[month]?.medium || 0,
+      low: timeGroups[month]?.low || 0,
+    }));
+  }, [filteredData, dateRange]);
+
   // KPI calculations
   const stats = useMemo(() => ({
     total: filteredData.length,
@@ -172,7 +210,7 @@ export default function SafeguardingAnalytics() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Incidents</CardTitle>
@@ -218,10 +256,49 @@ export default function SafeguardingAnalytics() {
             <p className="text-xs text-muted-foreground mt-1">external agencies</p>
           </CardContent>
         </Card>
-      </div>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-purple-600 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Avg. Days Open
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-purple-600">{responseMetrics.avgDaysOpen}</p>
+            <p className="text-xs text-muted-foreground mt-1">{responseMetrics.overdue} overdue</p>
+          </CardContent>
+        </Card>
+        </div>
 
       {/* Charts */}
       <div className="grid grid-cols-2 gap-6">
+        {/* Risk Trend Over Time */}
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="w-5 h-5" />
+              Risk Trend Analysis
+            </CardTitle>
+            <CardDescription>Incident severity distribution over time</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={riskTrendData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="critical" stackId="a" fill="#ef4444" name="Critical" />
+                <Bar dataKey="high" stackId="a" fill="#f97316" name="High" />
+                <Bar dataKey="medium" stackId="a" fill="#eab308" name="Medium" />
+                <Bar dataKey="low" stackId="a" fill="#84cc16" name="Low" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
         {/* Trend Over Time */}
         <Card>
           <CardHeader>
@@ -229,7 +306,7 @@ export default function SafeguardingAnalytics() {
               <TrendingUp className="w-5 h-5" />
               Incident Trend
             </CardTitle>
-            <CardDescription>Monthly incident count</CardDescription>
+            <CardDescription>Total incidents monthly</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -238,7 +315,7 @@ export default function SafeguardingAnalytics() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="count" stroke="#8b5cf6" strokeWidth={2} />
+                <Line type="monotone" dataKey="count" stroke="#8b5cf6" strokeWidth={2} name="Total" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
