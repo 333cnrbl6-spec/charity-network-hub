@@ -1,8 +1,8 @@
 import React from 'react';
 import { Award, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import VolunteerTrainingForm from './VolunteerTrainingForm';
-import TrainingExpiryDashboard from './TrainingExpiryDashboard';
+import VolunteerTrainingForm from '@/components/training/VolunteerTrainingForm';
+import TrainingExpiryDashboard from '@/components/training/TrainingExpiryDashboard';
 
 export default function TrainingModule() {
   return (
