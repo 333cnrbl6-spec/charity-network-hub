@@ -40,6 +40,7 @@ import StaffPortal from './pages/StaffPortal';
 import BranchOpsPortal from './pages/BranchOpsPortal';
 import BranchCEOPortal from './pages/BranchCEOPortal';
 import GovernancePortal from './pages/GovernancePortal';
+import SmartOnboarding from './pages/SmartOnboarding';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -120,6 +121,8 @@ function App() {
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
             <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
             <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
+            {/* Smart onboarding — open to all */}
+            <Route path="/onboard" element={<SmartOnboarding />} />
             {/* Role-based portals — each tier of the Age UK hierarchy */}
             <Route path="/staff-portal" element={<StaffPortal />} />
             <Route path="/branch-ops" element={<BranchOpsPortal />} />

@@ -70,8 +70,13 @@ export function getDefaultPortalPath(user) {
     return '/staff-portal';
   }
 
+  // No org_role set yet → send to smart onboarding
+  if (!orgRole) {
+    return '/onboard';
+  }
+
   // Fallback for old-style 'user' role (non-admin)
-  return '/coordinator-portal';
+  return '/onboard';
 }
 
 /**
