@@ -12,7 +12,9 @@ import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGen
 import ReferralStatusTracker from '@/components/safeguarding/ReferralStatusTracker';
 import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
 import PeerReviewSubmission from '@/components/peer-review/PeerReviewSubmission';
+import AuditLogViewer from '@/components/safeguarding/AuditLogViewer';
 import { format } from 'date-fns';
+import { useState } from 'react';
 
 export default function IncidentDetail() {
   const { incidentId } = useParams();
@@ -410,22 +412,23 @@ export default function IncidentDetail() {
 
           {/* Peer Review Section - Only show if not closed */}
           {incident.status !== 'closed' && (
-            <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
+          <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
           )}
-          </div>
-          </div>
+
+          {/* Audit Log Viewer */}
+          <AuditLogViewer auditTrail={incident.audit_trail} />
 
           {/* Referral Modal */}
-      {showReferralModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <ReferralLetterGenerator
-              incident={incident}
-              onClose={() => setShowReferralModal(false)}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+       {showReferralModal && (
+         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+             <ReferralLetterGenerator
+               incident={incident}
+               onClose={() => setShowReferralModal(false)}
+             />
+           </div>
+         </div>
+       )}
+     </div>
+   );
 }
