@@ -8,6 +8,7 @@ import SafeguardingAlertsDashboard from '@/components/safeguarding/SafeguardingA
 import DBSVerificationTool from '@/components/safeguarding/DBSVerificationTool';
 import SafeguardingFollowUpTracker from '@/components/safeguarding/SafeguardingFollowUpTracker';
 import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
+import KnowledgeBaseManager from '@/components/knowledge-base/KnowledgeBaseManager';
 
 export default function SafeguardingHub() {
   const [selectedIncident, setSelectedIncident] = useState(null);
@@ -164,6 +165,9 @@ export default function SafeguardingHub() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Knowledge Base Manager */}
+      <KnowledgeBaseManager />
     </div>
   );
 }

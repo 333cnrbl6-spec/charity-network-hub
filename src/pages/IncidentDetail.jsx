@@ -10,6 +10,7 @@ import { ArrowLeft, AlertTriangle, Shield, FileText } from 'lucide-react';
 import IncidentTimeline from '@/components/safeguarding/IncidentTimeline';
 import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
 import ReferralStatusTracker from '@/components/safeguarding/ReferralStatusTracker';
+import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
 import { format } from 'date-fns';
 
 export default function IncidentDetail() {
@@ -393,7 +394,17 @@ export default function IncidentDetail() {
               </CardContent>
             </Card>
           )}
-        </div>
+
+          {/* Knowledge Base Resources */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">📚 Guidance & Resources</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <KnowledgeBaseDocs relevantTo="incident_management" compact={true} />
+            </CardContent>
+          </Card>
+          </div>
       </div>
 
       {/* Referral Modal */}

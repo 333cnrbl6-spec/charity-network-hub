@@ -1,0 +1,104 @@
+{
+  "name": "KnowledgeBase",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the document or resource"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the resource"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "policy",
+        "template",
+        "guidance",
+        "legislation",
+        "procedure",
+        "form",
+        "training_material",
+        "other"
+      ],
+      "description": "Category of the knowledge base item"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL to the document or external resource"
+    },
+    "external_link": {
+      "type": "string",
+      "description": "External URL if linking to a third-party resource"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for searchability (e.g., safeguarding, dbs, training, incidents)"
+    },
+    "relevant_to": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "incident_management",
+          "training",
+          "compliance",
+          "referrals",
+          "all"
+        ]
+      },
+      "description": "Which modules/workflows this is relevant to"
+    },
+    "access_level": {
+      "type": "string",
+      "enum": [
+        "public",
+        "restricted",
+        "admin_only"
+      ],
+      "default": "restricted",
+      "description": "Who can access this resource"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Email of person who created this resource"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived",
+        "draft"
+      ],
+      "default": "active",
+      "description": "Current status of the resource"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this resource was last updated"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version number of the document"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when policy/procedure becomes effective"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this resource should be reviewed next"
+    }
+  },
+  "required": [
+    "title",
+    "category"
+  ]
+}

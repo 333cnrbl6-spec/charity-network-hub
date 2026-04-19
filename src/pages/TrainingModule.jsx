@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import VolunteerTrainingForm from '@/components/training/VolunteerTrainingForm';
 import TrainingExpiryDashboard from '@/components/training/TrainingExpiryDashboard';
 import TrainingComplianceDashboard from '@/components/training/TrainingComplianceDashboard';
+import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
 
 export default function TrainingModule() {
   return (
@@ -47,6 +48,22 @@ export default function TrainingModule() {
 
       {/* Compliance Dashboard */}
       <TrainingComplianceDashboard />
+
+      {/* Knowledge Base - Training Resources */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
+            Training Resources & Guidance
+          </CardTitle>
+          <CardDescription>
+            Access policies, templates, and guidance materials for staff training
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <KnowledgeBaseDocs relevantTo="training" />
+        </CardContent>
+      </Card>
     </div>
   );
 }
