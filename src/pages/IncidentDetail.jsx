@@ -13,6 +13,7 @@ import ReferralStatusTracker from '@/components/safeguarding/ReferralStatusTrack
 import KnowledgeBaseDocs from '@/components/knowledge-base/KnowledgeBaseDocs';
 import PeerReviewSubmission from '@/components/peer-review/PeerReviewSubmission';
 import AuditLogViewer from '@/components/safeguarding/AuditLogViewer';
+import ExternalNotificationSender from '@/components/safeguarding/ExternalNotificationSender';
 import { format } from 'date-fns';
 
 export default function IncidentDetail() {
