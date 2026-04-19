@@ -12,9 +12,9 @@ export default function SueBradleyOnboarding() {
   useEffect(() => {
     base44.auth.isAuthenticated().then((authed) => {
       setIsAuthenticated(authed);
-      // If already logged in, skip the welcome page and go straight to the portal
+      // If already logged in, go straight to role onboarding (not the hub dashboard)
       if (authed) {
-        window.location.href = '/dashboard';
+        window.location.href = '/role-onboarding';
       }
     });
   }, []);
