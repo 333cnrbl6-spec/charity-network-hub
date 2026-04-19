@@ -48,6 +48,7 @@ import ComplianceHub from './pages/ComplianceHub';
 import SafeguardingHub from './pages/SafeguardingHub';
 import TrainingModule from './pages/TrainingModule';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
+import IncidentDetail from './pages/IncidentDetail';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -116,6 +117,7 @@ const AuthenticatedApp = () => {
         <Route path="/compliance-hub" element={<ComplianceHub />} />
         <Route path="/safeguarding" element={<SafeguardingHub />} />
         <Route path="/safeguarding/analytics" element={<SafeguardingAnalytics />} />
+        <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
