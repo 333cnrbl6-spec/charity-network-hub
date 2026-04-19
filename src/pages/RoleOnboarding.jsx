@@ -131,7 +131,7 @@ export default function RoleOnboarding() {
     return true;
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!canContinue()) return;
     // Skip step 6 (AI parsing) if not importing files
     if (currentStep === 5 && dataChoice !== 'import') {
@@ -139,6 +139,21 @@ export default function RoleOnboarding() {
       return;
     }
     if (currentStep === TOTAL) {
+      // Save onboarding preferences to user profile
+      try {
+        await base44.auth.updateMe({
+          org_role: 'branch_department_coordinator',
+          branch_id: branchDetails?.branch_id || 'bury',
+          branch_name: branchDetails?.branch_name || 'Age UK Bury',
+          job_title: 'Handyperson Coordinator',
+          department: 'handyperson',
+          workspace_preference: selectedWorkspace,
+          enabled_modules: Array.from(selectedModules),
+          onboarding_complete: true,
+        });
+      } catch (e) {
+        console.warn('Could not save user profile:', e.message);
+      }
       window.location.href = '/coordinator-portal';
       return;
     }

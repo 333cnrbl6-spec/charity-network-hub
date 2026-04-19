@@ -1,0 +1,88 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "Platform-level role: admin has full hub access, user is branch-level",
+      "enum": [
+        "admin",
+        "user"
+      ]
+    },
+    "org_role": {
+      "type": "string",
+      "description": "Age UK organisational role within the hierarchy",
+      "enum": [
+        "national_director",
+        "national_governance",
+        "area_manager",
+        "branch_ceo",
+        "branch_operations_manager",
+        "branch_service_manager",
+        "branch_department_coordinator",
+        "branch_staff",
+        "volunteer"
+      ]
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "The branch this user belongs to (e.g. 'bury', 'manchester')"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Display name of the branch"
+    },
+    "department": {
+      "type": "string",
+      "description": "Department within the branch (e.g. 'handyperson', 'befriending', 'information-advice')",
+      "enum": [
+        "handyperson",
+        "befriending",
+        "information-advice",
+        "digital-inclusion",
+        "transport",
+        "grants-benefits",
+        "men-in-sheds",
+        "ageing-well",
+        "administration",
+        "finance",
+        "governance",
+        "all"
+      ]
+    },
+    "job_title": {
+      "type": "string",
+      "description": "Free-text job title for display"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the user has completed their onboarding flow"
+    },
+    "workspace_preference": {
+      "type": "string",
+      "enum": [
+        "dashboard",
+        "list",
+        "calendar"
+      ],
+      "default": "dashboard",
+      "description": "Preferred workspace view"
+    },
+    "enabled_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Module IDs enabled for this user"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Profile photo URL"
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

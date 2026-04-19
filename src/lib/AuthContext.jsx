@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { getDefaultPortalPath } from '@/lib/roleConfig';
 
 const AuthContext = createContext();
 
@@ -99,11 +100,13 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(false);
       setAuthChecked(true);
 
-      // Auto-redirect non-admin users to their portal, unless already on an onboarding/portal path
+      // Auto-redirect non-admin users to their role-appropriate portal
       const path = window.location.pathname;
-      const portalPaths = ['/role-onboarding', '/coordinator-portal', '/volunteer-onboarding', '/sue-bradley-onboarding'];
-      if (currentUser?.role !== 'admin' && !portalPaths.some(p => path.startsWith(p))) {
-        window.location.href = '/coordinator-portal';
+      const publicPaths = ['/role-onboarding', '/coordinator-portal', '/volunteer-onboarding',
+        '/sue-bradley-onboarding', '/staff-portal', '/branch-ops', '/branch-ceo', '/governance-portal'];
+      if (currentUser?.role !== 'admin' && !publicPaths.some(p => path.startsWith(p))) {
+        const dest = getDefaultPortalPath(currentUser);
+        window.location.href = dest;
       }
     } catch (error) {
       console.error('User auth check failed:', error);

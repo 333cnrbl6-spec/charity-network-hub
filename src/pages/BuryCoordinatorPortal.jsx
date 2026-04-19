@@ -69,8 +69,8 @@ export default function BuryCoordinatorPortal() {
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between shadow-lg">
         <div>
-          <p className="text-xs opacity-70 font-medium">Age UK Bury — Handyperson Coordinator Portal</p>
-          <h1 className="text-xl font-bold">Sue Bradley's Workspace</h1>
+          <p className="text-xs opacity-70 font-medium">{user?.branch_name || 'Age UK Bury'} — {user?.job_title || 'Coordinator'} Portal</p>
+          <h1 className="text-xl font-bold">{user?.full_name ? `${user.full_name}'s Workspace` : 'Coordinator Workspace'}</h1>
         </div>
         <div className="flex items-center gap-3">
           <Badge className="bg-white/20 text-white border-white/30 text-xs">Bury Branch</Badge>

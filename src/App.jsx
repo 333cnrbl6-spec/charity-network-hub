@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { getDefaultPortalPath } from '@/lib/roleConfig';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import AppLayout from './components/layout/AppLayout';
@@ -35,19 +36,24 @@ import ProjectTasks from './pages/ProjectTasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import BuryCoordinatorPortal from './pages/BuryCoordinatorPortal';
 import NetworkExpansion from './pages/NetworkExpansion';
+import StaffPortal from './pages/StaffPortal';
+import BranchOpsPortal from './pages/BranchOpsPortal';
+import BranchCEOPortal from './pages/BranchCEOPortal';
+import GovernancePortal from './pages/GovernancePortal';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
-  if (user && user.role !== 'admin') {
-    window.location.replace('/coordinator-portal');
-    return null;
-  }
-  // Sue Bradley is coordinator-only, not admin
-  if (user?.email === 'sue.bradley1@ntlworld.com') {
-    window.location.replace('/coordinator-portal');
-    return null;
-  }
-  return children;
+  if (!user) return null;
+  
+  // Platform admin role = full hub access
+  if (user.role === 'admin') return children;
+
+  // national_director also gets hub access (non-admin platform role but org-level national)
+  if (user.org_role === 'national_director') return children;
+
+  // Everyone else: redirect to their appropriate portal
+  window.location.replace(getDefaultPortalPath(user));
+  return null;
 };
 
 const AuthenticatedApp = () => {
@@ -114,6 +120,11 @@ function App() {
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
             <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
             <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
+            {/* Role-based portals — each tier of the Age UK hierarchy */}
+            <Route path="/staff-portal" element={<StaffPortal />} />
+            <Route path="/branch-ops" element={<BranchOpsPortal />} />
+            <Route path="/branch-ceo" element={<BranchCEOPortal />} />
+            <Route path="/governance-portal" element={<GovernancePortal />} />
             {/* All other routes go through auth guard */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>
