@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+
+const REPORTS = [
+  { id: 'impact', label: 'Annual Impact Report', desc: 'Comprehensive overview of all activities and outcomes', color: 'text-purple-600' },
+  { id: 'volunteer', label: 'Volunteer Activity Log', desc: 'Volunteer hours, roles and contributions', color: 'text-green-600' },
+  { id: 'grants', label: 'Grant Pipeline Report', desc: 'All grant applications, awards and values', color: 'text-amber-600' },
+  { id: 'compliance', label: 'Compliance Summary', desc: 'Compliance status across all required areas', color: 'text-blue-600' },
+];
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, FileText, Loader2 } from 'lucide-react';

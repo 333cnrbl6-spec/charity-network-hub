@@ -1,4 +1,13 @@
 import React, { useState, useMemo } from 'react';
+
+const ENTITY_TYPES = [
+  { id: 'all', label: 'All' },
+  { id: 'client', label: 'Clients' },
+  { id: 'volunteer', label: 'Volunteers' },
+  { id: 'job', label: 'Jobs' },
+  { id: 'grant', label: 'Grants' },
+];
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';

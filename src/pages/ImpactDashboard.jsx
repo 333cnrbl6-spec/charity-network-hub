@@ -1,10 +1,15 @@
 import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, Clock, Users, TrendingUp, Download, Award } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useJobs, useSessions, useVolunteers, useClients, useGrants, useBranchReports } from '@/hooks/useEntityQueries';
-...
+
+export default function ImpactDashboard() {
+  const [exportLoading, setExportLoading] = useState(false);
+
   const { data: jobs = [] } = useJobs();
   const { data: sessions = [] } = useSessions();
   const { data: volunteers = [] } = useVolunteers();
