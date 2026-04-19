@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Shield, AlertTriangle, Bell, FileText, Users, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import SafeguardingIncidentForm from '@/components/safeguarding/SafeguardingIncidentForm';
 import SafeguardingAlertsDashboard from '@/components/safeguarding/SafeguardingAlertsDashboard';
 import DBSVerificationTool from '@/components/safeguarding/DBSVerificationTool';
 import SafeguardingFollowUpTracker from '@/components/safeguarding/SafeguardingFollowUpTracker';
+import ReferralLetterGenerator from '@/components/safeguarding/ReferralLetterGenerator';
 
 export default function SafeguardingHub() {
+  const [selectedIncident, setSelectedIncident] = useState(null);
+
+  const { data: incidents = [] } = useQuery({
+    queryKey: ['safeguarding-incidents'],
+    queryFn: () => base44.entities.SafeguardingIncident.list(),
+  });
+
+  const highRiskIncidents = incidents.filter(
+    i => i.ai_severity_classification === 'critical' || i.ai_severity_classification === 'high'
+  );
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -51,6 +65,55 @@ export default function SafeguardingHub() {
 
       {/* Follow-Up Tracker */}
       <SafeguardingFollowUpTracker />
+
+      {/* Referral Letter Generator */}
+      {selectedIncident && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <ReferralLetterGenerator
+              incident={selectedIncident}
+              onClose={() => setSelectedIncident(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Recent High-Risk Incidents for Quick Referral */}
+      {highRiskIncidents.length > 0 && (
+        <Card className="border-red-200 bg-red-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-900">
+              <AlertTriangle className="w-5 h-5" />
+              Quick Referral Actions
+            </CardTitle>
+            <CardDescription>High-risk incidents requiring external referral</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {highRiskIncidents.slice(0, 5).map(incident => (
+                <div
+                  key={incident.id}
+                  className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                >
+                  <div>
+                    <p className="font-semibold text-sm">{incident.incident_reference}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {incident.incident_type.replace(/_/g, ' ')} •{' '}
+                      {incident.ai_severity_classification.toUpperCase()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedIncident(incident)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium"
+                  >
+                    Generate Referral
+                  </button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Guidance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
