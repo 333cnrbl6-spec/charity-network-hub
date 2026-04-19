@@ -410,11 +410,12 @@ export default function IncidentDetail() {
 
           {/* Peer Review Section - Only show if not closed */}
           {incident.status !== 'closed' && (
-          <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
+            <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
           )}
-      </div>
+          </div>
+          </div>
 
-      {/* Referral Modal */}
+          {/* Referral Modal */}
       {showReferralModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
