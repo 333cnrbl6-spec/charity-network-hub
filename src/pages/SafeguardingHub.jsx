@@ -3,6 +3,7 @@ import { Shield, AlertTriangle, Bell, FileText, Users, Clock } from 'lucide-reac
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SafeguardingIncidentForm from '@/components/safeguarding/SafeguardingIncidentForm';
 import SafeguardingAlertsDashboard from '@/components/safeguarding/SafeguardingAlertsDashboard';
+import DBSVerificationTool from '@/components/safeguarding/DBSVerificationTool';
 
 export default function SafeguardingHub() {
   return (
@@ -43,6 +44,9 @@ export default function SafeguardingHub() {
         {/* Alerts Dashboard */}
         <SafeguardingAlertsDashboard />
       </div>
+
+      {/* DBS Verification Tool */}
+      <DBSVerificationTool />
 
       {/* Guidance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
