@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { playClick } from '@/lib/audio';
@@ -6,11 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Gift } from 'lucide-react';
+import { Plus, Gift, ChevronDown, ChevronUp } from 'lucide-react';
 import { useBranchFilter } from '@/hooks/useBranchFilter';
+import AIGrantAssistant from '@/components/grants/AIGrantAssistant';
 
 export default function Grants() {
   const { filterData } = useBranchFilter();
+  const [expandedGrant, setExpandedGrant] = useState(null);
 
   const { data: grants = [] } = useQuery({
     queryKey: ['grants'],
@@ -91,22 +93,33 @@ export default function Grants() {
               <TableHead>Amount</TableHead>
               <TableHead>Date Awarded</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredGrants.map(grant => (
-              <TableRow key={grant.id}>
-                <TableCell className="font-medium">{grant.grant_name}</TableCell>
-                <TableCell className="text-sm capitalize">{grant.grant_type?.replace('-', ' ')}</TableCell>
-                <TableCell className="text-sm">{grant.client_name || '-'}</TableCell>
-                <TableCell className="text-sm font-medium">£{grant.amount_awarded?.toFixed(2) || '0.00'}</TableCell>
-                <TableCell className="text-sm">{grant.date_awarded ? new Date(grant.date_awarded).toLocaleDateString() : '-'}</TableCell>
-                <TableCell>
-                  <Badge className={statusColors[grant.status]}>
-                    {grant.status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
+              <React.Fragment key={grant.id}>
+                <TableRow className="cursor-pointer hover:bg-accent/30" onClick={() => setExpandedGrant(expandedGrant === grant.id ? null : grant.id)}>
+                  <TableCell className="font-medium">{grant.grant_name}</TableCell>
+                  <TableCell className="text-sm capitalize">{grant.grant_type?.replace('-', ' ')}</TableCell>
+                  <TableCell className="text-sm">{grant.client_name || '-'}</TableCell>
+                  <TableCell className="text-sm font-medium">£{grant.amount_awarded?.toFixed(2) || '0.00'}</TableCell>
+                  <TableCell className="text-sm">{grant.date_awarded ? new Date(grant.date_awarded).toLocaleDateString() : '-'}</TableCell>
+                  <TableCell>
+                    <Badge className={statusColors[grant.status]}>{grant.status}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {expandedGrant === grant.id ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                  </TableCell>
+                </TableRow>
+                {expandedGrant === grant.id && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="bg-amber-50/30 p-4">
+                      <AIGrantAssistant grant={grant} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>

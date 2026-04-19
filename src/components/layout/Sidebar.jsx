@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
@@ -61,7 +61,9 @@ export default function Sidebar() {
         { icon: Users2, label: 'Volunteers', path: '/volunteers' },
         { icon: Briefcase, label: 'Jobs', path: '/jobs' },
         { icon: Zap, label: 'Sessions', path: '/sessions' },
-        { icon: Gift, label: 'Grants', path: '/grants' },
+        { icon: Gift, label: 'Grants & AI', path: '/grants' },
+        { icon: Search, label: 'Smart Search', path: '/search' },
+        { icon: TrendingUp, label: 'Analytics', path: '/charity-analytics' },
         { icon: AlertCircle, label: 'Compliance', path: '/compliance' },
         { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
       ];
@@ -86,6 +88,8 @@ export default function Sidebar() {
     return [
       { icon: LayoutDashboard, label: 'Hub Dashboard', path: '/' },
       { icon: Heart, label: 'Impact Dashboard', path: '/impact' },
+      { icon: TrendingUp, label: 'Impact Analytics', path: '/charity-analytics' },
+      { icon: Search, label: 'Smart Search', path: '/search' },
       { icon: Globe, label: 'Network Overview', path: '/network' },
       { icon: MapPin, label: 'Branch Locations', path: '/locations' },
       { icon: Map, label: 'Network Map', path: '/map' },

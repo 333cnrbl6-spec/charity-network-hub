@@ -41,6 +41,9 @@ import BranchOpsPortal from './pages/BranchOpsPortal';
 import BranchCEOPortal from './pages/BranchCEOPortal';
 import GovernancePortal from './pages/GovernancePortal';
 import SmartOnboarding from './pages/SmartOnboarding';
+import CharitySearch from './pages/CharitySearch';
+import CharityAnalytics from './pages/CharityAnalytics';
+import CharityOnboarding from './pages/CharityOnboarding';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -104,6 +107,8 @@ const AuthenticatedApp = () => {
         <Route path="/tasks" element={<ProjectTasks />} />
         <Route path="/analytics" element={<AnalyticsDashboard />} />
         <Route path="/expansion" element={<NetworkExpansion />} />
+        <Route path="/search" element={<CharitySearch />} />
+        <Route path="/charity-analytics" element={<CharityAnalytics />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -123,6 +128,7 @@ function App() {
             <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
             {/* Smart onboarding — open to all */}
             <Route path="/onboard" element={<SmartOnboarding />} />
+            <Route path="/charity-onboarding" element={<CharityOnboarding />} />
             {/* Role-based portals — each tier of the Age UK hierarchy */}
             <Route path="/staff-portal" element={<StaffPortal />} />
             <Route path="/branch-ops" element={<BranchOpsPortal />} />

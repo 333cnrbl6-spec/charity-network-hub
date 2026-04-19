@@ -8,6 +8,8 @@ import { Users, Zap, Briefcase, Users2, Gift, RotateCw, AlertCircle, Network, Ch
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import StatusLight from '@/components/ui/StatusLight';
 import { playClick, playLoading, playSuccess } from '@/lib/audio';
+import CharityAlerts from '@/components/alerts/CharityAlerts';
+import PDFExporter from '@/components/reports/PDFExporter';
 
 export default function Dashboard() {
   const [syncLoading, setSyncLoading] = useState(false);
@@ -289,6 +291,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       )}
+
+      <CharityAlerts />
+      <PDFExporter />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
