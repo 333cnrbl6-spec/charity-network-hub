@@ -1,8 +1,8 @@
 import React from 'react';
 import { Shield, AlertTriangle, Bell, FileText, Users, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import SafeguardingIncidentForm from './SafeguardingIncidentForm';
-import SafeguardingAlertsDashboard from './SafeguardingAlertsDashboard';
+import SafeguardingIncidentForm from '@/components/safeguarding/SafeguardingIncidentForm';
+import SafeguardingAlertsDashboard from '@/components/safeguarding/SafeguardingAlertsDashboard';
 
 export default function SafeguardingHub() {
   return (
