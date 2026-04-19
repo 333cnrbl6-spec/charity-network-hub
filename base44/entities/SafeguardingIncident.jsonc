@@ -1,0 +1,273 @@
+{
+  "name": "SafeguardingIncident",
+  "type": "object",
+  "properties": {
+    "incident_reference": {
+      "type": "string",
+      "description": "Auto-generated unique reference (e.g., SG-2026-001)"
+    },
+    "reported_by": {
+      "type": "string",
+      "description": "Email of person reporting incident"
+    },
+    "reported_by_name": {
+      "type": "string",
+      "description": "Name of person reporting"
+    },
+    "reported_by_role": {
+      "type": "string",
+      "enum": [
+        "staff",
+        "volunteer",
+        "trustee",
+        "external"
+      ],
+      "description": "Role of reporter"
+    },
+    "incident_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the incident occurred"
+    },
+    "incident_location": {
+      "type": "string",
+      "description": "Where the incident occurred"
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "physical_abuse",
+        "emotional_abuse",
+        "sexual_abuse",
+        "financial_abuse",
+        "neglect",
+        "discriminatory_abuse",
+        "domestic_violence",
+        "modern_slavery",
+        "organisational_abuse",
+        "self_neglect",
+        "radicalisation",
+        "cse_child_sexual_exploitation",
+        "fgm_female_genital_mutilation",
+        "honour_based_violence",
+        "near_miss",
+        "concern_disclosure",
+        "allegation_against_staff",
+        "allegation_against_volunteer",
+        "other"
+      ],
+      "description": "Type of safeguarding incident"
+    },
+    "incident_description": {
+      "type": "string",
+      "description": "Detailed description of what happened"
+    },
+    "people_involved": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "contact_details": {
+            "type": "string"
+          },
+          "involvement": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Individuals involved in the incident"
+    },
+    "vulnerable_adult_details": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "number"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "risk_factors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capacity_concerns": {
+          "type": "boolean"
+        },
+        "immediate_danger": {
+          "type": "boolean"
+        }
+      }
+    },
+    "witnesses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "contact_details": {
+            "type": "string"
+          },
+          "statement_taken": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "actions_taken": {
+      "type": "string",
+      "description": "Immediate actions taken by reporter"
+    },
+    "ai_severity_classification": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "AI-classified severity level"
+    },
+    "ai_risk_assessment": {
+      "type": "object",
+      "properties": {
+        "immediate_risk": {
+          "type": "boolean"
+        },
+        "risk_score": {
+          "type": "number"
+        },
+        "risk_factors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommended_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "statutory_referral_required": {
+          "type": "boolean"
+        },
+        "referral_type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "reported",
+        "under_review",
+        "investigating",
+        "external_referral_made",
+        "closed",
+        "escalated_to_authorities"
+      ],
+      "default": "reported",
+      "description": "Current status"
+    },
+    "safeguarding_lead_assigned": {
+      "type": "string",
+      "description": "Email of assigned safeguarding lead"
+    },
+    "external_referrals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "agency": {
+            "type": "string"
+          },
+          "referral_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "reference_number": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "investigation_notes": {
+      "type": "string",
+      "description": "Confidential investigation notes"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Final outcome and resolution"
+    },
+    "lessons_learned": {
+      "type": "string",
+      "description": "Organisational learning points"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "confidentiality_level": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "restricted",
+        "highly_confidential"
+      ],
+      "default": "restricted",
+      "description": "Access restriction level"
+    },
+    "data_retention_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when record should be archived (6 years from incident)"
+    }
+  },
+  "required": [
+    "incident_reference",
+    "reported_by",
+    "reported_by_name",
+    "incident_date",
+    "incident_type",
+    "incident_description"
+  ]
+}

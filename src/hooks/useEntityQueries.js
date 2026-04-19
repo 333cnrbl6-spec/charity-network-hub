@@ -14,3 +14,4 @@ export const useCompliance = () => useQuery({ queryKey: ['compliance'], queryFn:
 export const useBranches   = () => useQuery({ queryKey: ['branches'],   queryFn: () => base44.entities.BranchConfig.list() });
 export const useBranchReports = () => useQuery({ queryKey: ['branchReports'], queryFn: () => base44.entities.BranchReport.list() });
 export const useSyncLogs   = () => useQuery({ queryKey: ['syncLogs'],   queryFn: () => base44.entities.SyncLog.list() });
+export const useSafeguardingIncidents = () => useQuery({ queryKey: ['safeguardingIncidents'], queryFn: () => base44.entities.SafeguardingIncident.list() });
