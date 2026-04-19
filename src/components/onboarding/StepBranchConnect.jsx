@@ -9,13 +9,24 @@ export default function StepBranchConnect({ branch, status, branchRecord, onRetr
 
   return (
     <div className="space-y-4">
-      {/* Checking */}
+      {/* Checking / provisioning */}
       {status === 'checking' && (
-        <div className="flex flex-col items-center py-10 gap-3">
-          <Loader2 className="w-9 h-9 text-primary animate-spin" />
-          <p className="text-sm text-muted-foreground text-center">
-            Connecting <strong>{branch?.name}</strong> to the hub network…
-          </p>
+        <div className="flex flex-col items-center py-8 gap-4">
+          <div className="relative">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-sm font-medium">Provisioning <strong>{branch?.name}</strong>…</p>
+            <p className="text-xs text-muted-foreground">Setting up your branch workspace, loading regional data and compliance templates</p>
+          </div>
+          <div className="w-full space-y-2 text-xs text-muted-foreground">
+            {['Registering branch in hub network', 'Generating regional demo data', 'Loading compliance templates', 'Configuring your workspace'].map((step, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Loader2 className="w-3 h-3 animate-spin text-primary/60 flex-shrink-0" />
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -43,7 +54,7 @@ export default function StepBranchConnect({ branch, status, branchRecord, onRetr
             <div>
               <p className="font-semibold text-blue-900 text-sm">Branch Provisioned & Connected ✓</p>
               <p className="text-xs text-blue-800 mt-0.5">
-                <strong>{branch?.name}</strong> is the first subscriber from this branch — we've provisioned it from the regional template and connected it to the hub. Demo data has been pre-loaded.
+                <strong>{branch?.name}</strong> is the first subscriber from this branch — it's been provisioned with realistic regional data and connected to the national hub. Your workspace is ready.
               </p>
             </div>
           </div>

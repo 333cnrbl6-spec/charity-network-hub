@@ -96,6 +96,7 @@ export default function SmartOnboarding() {
         await base44.functions.invoke('populateBranchData', {
           branch_id: selectedBranch.id,
           branch_name: selectedBranch.name,
+          branch_region: selectedBranch.region,
         });
       } catch (e) {
         console.warn('Demo seed skipped:', e.message);

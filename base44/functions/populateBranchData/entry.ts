@@ -1,231 +1,244 @@
+/**
+ * populateBranchData — Universal branch provisioning orchestrator
+ *
+ * Called automatically during SmartOnboarding when a subscriber selects
+ * a branch that has not yet been provisioned in the hub.
+ *
+ * • If branch_id === 'bristol': delegates to the high-fidelity Bristol seeder
+ * • All other branches: generates realistic scaled demo data in-function
+ *
+ * Accepts: { branch_id, branch_name }
+ */
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const COMPLIANCE_AREAS = [
-  'dbs_checks', 'safeguarding_training', 'health_safety', 'manual_handling', 'dementia_awareness',
-  'boundary_training', 'financial_audit', 'data_protection', 'insurance', 'accessibility_standards',
-  'quality_standards', 'incident_reporting'
-];
+// ── Full national postcode map (mirrors ageukBranches.js) ─────────────────
+const BRANCH_POSTCODES = {
+  bury: 'BL9', manchester: 'M1', stockport: 'SK1', bolton: 'BL1',
+  salford_trafford: 'M41', lancashire: 'PR1', cheshire: 'CH1', cumbria: 'CA1',
+  wirral: 'CH41', halton_warrington: 'WA1', st_helens: 'WA10', knowsley: 'L34',
+  oldham: 'OL1', rochdale: 'OL16', tameside: 'SK14', wigan: 'WN1',
+  newcastle: 'NE1', sunderland: 'SR1', gateshead: 'NE8', county_durham: 'DH1',
+  teesside: 'TS1', northumberland: 'NE46',
+  leeds: 'LS1', sheffield: 'S1', bradford: 'BD1', calderdale: 'HX1',
+  hull: 'HU1', east_riding: 'HU17', york: 'YO1', north_yorkshire: 'HG1',
+  barnsley: 'S70', rotherham: 'S60',
+  leicester: 'LE1', nottingham: 'NG1', derby: 'DE1', lincolnshire: 'LN1',
+  northamptonshire: 'NN1',
+  birmingham: 'B1', coventry_warwick: 'CV1', wolverhampton: 'WV1',
+  sandwell: 'B69', dudley: 'DY1', walsall: 'WS1', staffordshire: 'ST1',
+  shropshire: 'SY1', hereford_worcester: 'WR1',
+  norfolk: 'NR1', suffolk: 'IP1', cambridgeshire: 'CB1', hertfordshire: 'AL1',
+  bedfordshire: 'MK40', essex_south: 'SS1', essex_north: 'CO1',
+  camden_islington: 'NW1', islington: 'N1', east_london: 'E1',
+  westminster: 'W1', lambeth_southwark: 'SE1', lewisham: 'SE6',
+  bromley: 'BR1', croydon: 'CR0', richmond: 'TW9', wandsworth: 'SW18',
+  haringey: 'N15', hackney: 'E8',
+  kent: 'ME14', sussex: 'BN1', west_sussex: 'RH10', surrey: 'GU1',
+  oxfordshire: 'OX1', berkshire: 'RG1', buckinghamshire: 'HP20',
+  hampshire: 'SO14', isle_of_wight: 'PO30',
+  bristol: 'BS1', somerset: 'TA1', bath_nes: 'BA1', wiltshire: 'SN1',
+  dorset: 'BH1', devon: 'EX1', cornwall: 'TR1', gloucestershire: 'GL1',
+  cardiff: 'CF10', swansea: 'SA1', north_wales: 'LL30', mid_wales: 'SY16',
+};
+
+// ── Scale per region (city-size heuristic) ────────────────────────────────
+const REGION_SCALES = {
+  london:           { clients: 90, volunteers: 38, jobs: 160, sessions: 48, grants: 70 },
+  north_west:       { clients: 55, volunteers: 24, jobs: 100, sessions: 30, grants: 42 },
+  west_midlands:    { clients: 60, volunteers: 26, jobs: 110, sessions: 33, grants: 45 },
+  yorkshire:        { clients: 52, volunteers: 22, jobs:  95, sessions: 28, grants: 40 },
+  south_east:       { clients: 50, volunteers: 21, jobs:  90, sessions: 27, grants: 38 },
+  south_west:       { clients: 48, volunteers: 20, jobs:  85, sessions: 26, grants: 36 },
+  east_midlands:    { clients: 46, volunteers: 19, jobs:  82, sessions: 24, grants: 34 },
+  east:             { clients: 44, volunteers: 18, jobs:  78, sessions: 23, grants: 32 },
+  north_east:       { clients: 42, volunteers: 17, jobs:  75, sessions: 22, grants: 30 },
+  wales:            { clients: 38, volunteers: 15, jobs:  68, sessions: 20, grants: 28 },
+  scotland:         { clients: 40, volunteers: 16, jobs:  72, sessions: 21, grants: 29 },
+  northern_ireland: { clients: 35, volunteers: 14, jobs:  62, sessions: 18, grants: 25 },
+};
+
+// ── Branch-specific overrides for key large branches ─────────────────────
+const BRANCH_OVERRIDES = {
+  manchester: { clients: 80, volunteers: 35, jobs: 150, sessions: 45, grants: 65 },
+  birmingham: { clients: 85, volunteers: 36, jobs: 155, sessions: 46, grants: 68 },
+  leeds:      { clients: 72, volunteers: 30, jobs: 130, sessions: 38, grants: 55 },
+  liverpool:  { clients: 75, volunteers: 32, jobs: 140, sessions: 40, grants: 60 },
+  sheffield:  { clients: 65, volunteers: 27, jobs: 115, sessions: 34, grants: 48 },
+};
 
 const JOB_TYPES = ['home-visit', 'telephone-check', 'transport', 'shopping-assist', 'benefits-advice', 'digital-help', 'befriending', 'scams-advice', 'hospital-discharge', 'other'];
 const VOLUNTEER_ROLES = ['befriender', 'driver', 'admin', 'reception', 'digital-champion', 'men-in-sheds', 'ageing-well-facilitator', 'shop', 'trustee', 'other'];
 const SESSION_TYPES = ['stretch-and-flex', 'men-in-sheds', 'tea-and-tinker', 'out-in-the-city', 'digital-inclusion', 'scams-awareness', 'information-advice', 'ageing-well', 'hospital-aftercare', 'other'];
 const GRANT_TYPES = ['attendance-allowance', 'pension-credit', 'warm-homes', 'energy-support', 'housing', 'carers-support', 'dementia-support', 'general', 'other'];
 const REFERRAL_SOURCES = ['self-referral', 'nhs', 'social-care', 'family', 'gp', 'community-partner', 'other'];
-const BRANCH_POSTCODES = {
-  manchester: 'M1', bury: 'BL9', stockport: 'SK2', wigan: 'WN1', trafford: 'M32', 
-  salford: 'M5', bolton: 'BL1', lancashire: 'PR1', wirral: 'CH41', sefton: 'L37', liverpool: 'L1'
-};
-const FIRST_NAMES = ['Joan', 'Margaret', 'Patricia', 'Barbara', 'Jennifer', 'Linda', 'Susan', 'David', 'Michael', 'Robert', 'James', 'Richard', 'John', 'Paul', 'Peter', 'Andrew'];
-const LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Taylor', 'Anderson', 'Thomas', 'Moore', 'Jackson'];
+const COMPLIANCE_AREAS = ['dbs_checks', 'safeguarding_training', 'health_safety', 'manual_handling', 'dementia_awareness', 'boundary_training', 'financial_audit', 'data_protection', 'insurance', 'accessibility_standards', 'quality_standards', 'incident_reporting'];
+const FUNDING_BODIES = ['National Lottery Community Fund', 'Age UK', 'Local Authority', 'NHS England', 'Comic Relief', 'Joseph Rowntree Foundation', 'DWP', 'BNSSG ICB'];
+const FIRST_NAMES = ['Joan', 'Margaret', 'Patricia', 'Barbara', 'Jennifer', 'Linda', 'Susan', 'David', 'Michael', 'Robert', 'James', 'Richard', 'John', 'Paul', 'Peter', 'Andrew', 'Christine', 'Elizabeth', 'Dorothy', 'Kathleen'];
+const LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Taylor', 'Davies', 'Wilson', 'Evans', 'Thomas', 'Roberts', 'Walker', 'White', 'Thompson', 'Hughes', 'Robinson'];
 
-function randomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randomName() { return `${randomItem(FIRST_NAMES)} ${randomItem(LAST_NAMES)}`; }
-function randomDate(daysBack = 365) {
-  const now = new Date();
-  const past = new Date(now.getTime() - Math.random() * daysBack * 24 * 60 * 60 * 1000);
-  return past.toISOString().split('T')[0];
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randName() { return `${rand(FIRST_NAMES)} ${rand(LAST_NAMES)}`; }
+function randDate(daysBack = 365) {
+  return new Date(Date.now() - Math.random() * daysBack * 864e5).toISOString().split('T')[0];
 }
-function randomFutureDate(daysAhead = 90) {
-  const now = new Date();
-  const future = new Date(now.getTime() + Math.random() * daysAhead * 24 * 60 * 60 * 1000);
-  return future.toISOString().split('T')[0];
+function randFuture(daysAhead = 90) {
+  return new Date(Date.now() + Math.random() * daysAhead * 864e5).toISOString().split('T')[0];
 }
-function randomBirthDate() {
+function randBirth() {
   const age = Math.floor(Math.random() * 30) + 65;
-  const date = new Date();
-  date.setFullYear(date.getFullYear() - age);
-  date.setDate(Math.floor(Math.random() * 28) + 1);
-  return date.toISOString().split('T')[0];
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - age);
+  d.setDate(Math.floor(Math.random() * 28) + 1);
+  return d.toISOString().split('T')[0];
 }
+function slug(str) { return str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''); }
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const { branch_id, branch_name } = body;
+    const { branch_id, branch_name, branch_region } = body;
 
     if (!branch_id || !branch_name) {
       return Response.json({ error: 'Missing branch_id or branch_name' }, { status: 400 });
     }
 
-    // Generate extensive realistic counts based on branch population
-    const scales = {
-      manchester: { clients: 80, volunteers: 35, jobs: 150, sessions: 45, grants: 65 },
-      liverpool: { clients: 75, volunteers: 32, jobs: 140, sessions: 40, grants: 60 },
-      bury: { clients: 45, volunteers: 20, jobs: 85, sessions: 25, grants: 35 },
-      stockport: { clients: 50, volunteers: 22, jobs: 95, sessions: 28, grants: 40 },
-      salford: { clients: 48, volunteers: 21, jobs: 90, sessions: 27, grants: 38 },
-      trafford: { clients: 52, volunteers: 23, jobs: 100, sessions: 30, grants: 42 },
-      wigan: { clients: 42, volunteers: 18, jobs: 80, sessions: 24, grants: 32 },
-      bolton: { clients: 48, volunteers: 21, jobs: 92, sessions: 27, grants: 38 },
-      lancashire: { clients: 35, volunteers: 15, jobs: 65, sessions: 20, grants: 28 },
-      wirral: { clients: 50, volunteers: 22, jobs: 95, sessions: 28, grants: 40 },
-      sefton: { clients: 40, volunteers: 18, jobs: 75, sessions: 22, grants: 30 }
-    };
-    const counts = scales[branch_id] || { clients: 50, volunteers: 22, jobs: 95, sessions: 28, grants: 40 };
+    // ── Route Bristol to its high-fidelity seeder ─────────────────────────
+    if (branch_id === 'bristol') {
+      const res = await base44.asServiceRole.functions.invoke('populateBristolBranch', {
+        branch_id, branch_name
+      });
+      return Response.json(res.data || { success: true, source: 'bristol_seeder' });
+    }
 
-    // Populate Clients with realistic data
-    const clientsData = [];
+    // ── Generic seeder for any other branch ───────────────────────────────
+    const postcode = BRANCH_POSTCODES[branch_id] || branch_id.toUpperCase().slice(0, 3);
+    const region = branch_region || 'north_west';
+    const counts = BRANCH_OVERRIDES[branch_id] || REGION_SCALES[region] || REGION_SCALES['north_west'];
+
+    // Clients
     const clientNames = [];
+    const clientsData = [];
     for (let i = 0; i < counts.clients; i++) {
-      const name = randomName();
+      const name = randName();
       clientNames.push(name);
       clientsData.push({
         full_name: name,
-        date_of_birth: randomBirthDate(),
-        address: `${Math.floor(Math.random() * 999) + 1} ${randomItem(['High Street', 'Mill Road', 'Park Lane', 'Church Road', 'School Lane'])}`,
-        postcode: `${BRANCH_POSTCODES[branch_id]} ${Math.floor(Math.random() * 9) + 1}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`,
-        phone: `020${Math.floor(Math.random() * 9000) + 1000} ${Math.floor(Math.random() * 900000) + 100000}`,
-        email: `${name.toLowerCase().replace(' ', '.')}${Math.floor(Math.random() * 100)}@example.com`,
-        referral_source: randomItem(REFERRAL_SOURCES),
-        status: randomItem(['active', 'active', 'active', 'inactive']),
-        date_registered: randomDate(365),
-        key_worker: randomName(),
-        notes: `Registered with ${branch_name}. Referred via ${randomItem(REFERRAL_SOURCES)}.`
+        date_of_birth: randBirth(),
+        address: `${Math.floor(Math.random() * 200) + 1} ${rand(['High Street', 'Mill Road', 'Park Lane', 'Church Road', 'Victoria Road'])}`,
+        postcode: `${postcode} ${Math.floor(Math.random() * 9) + 1}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`,
+        phone: `07${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900000) + 100000}`,
+        referral_source: rand(REFERRAL_SOURCES),
+        status: rand(['active', 'active', 'active', 'inactive']),
+        date_registered: randDate(730),
+        key_worker: randName(),
+        notes: `Registered with ${branch_name}.`,
       });
     }
-    if (clientsData.length > 0) await base44.asServiceRole.entities.Client.bulkCreate(clientsData);
+    if (clientsData.length) await base44.asServiceRole.entities.Client.bulkCreate(clientsData);
 
-    // Populate Volunteers with realistic data
-    const volunteersData = [];
+    // Volunteers
     const volunteerNames = [];
+    const volunteersData = [];
     for (let i = 0; i < counts.volunteers; i++) {
-      const name = randomName();
+      const name = randName();
       volunteerNames.push(name);
       volunteersData.push({
         full_name: name,
-        email: `${name.toLowerCase().replace(' ', '.')}@volunteer.org`,
-        phone: `020${Math.floor(Math.random() * 9000) + 1000} ${Math.floor(Math.random() * 900000) + 100000}`,
-        role: randomItem(VOLUNTEER_ROLES),
-        status: randomItem(['active', 'active', 'active', 'inactive']),
+        email: `${slug(name)}@volunteer.${slug(branch_name)}.org.uk`,
+        phone: `07${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900000) + 100000}`,
+        role: rand(VOLUNTEER_ROLES),
+        status: rand(['active', 'active', 'active', 'inactive']),
         dbs_checked: Math.random() > 0.2,
-        dbs_expiry: randomFutureDate(1095),
-        date_joined: randomDate(730),
+        dbs_expiry: randFuture(1095),
+        date_joined: randDate(730),
         hours_contributed: Math.floor(Math.random() * 1200) + 50,
-        area: branch_name
+        area: branch_name,
       });
     }
-    if (volunteersData.length > 0) await base44.asServiceRole.entities.Volunteer.bulkCreate(volunteersData);
+    if (volunteersData.length) await base44.asServiceRole.entities.Volunteer.bulkCreate(volunteersData);
 
-    // Populate Jobs with realistic distribution
+    // Jobs (no fake IDs — use names as the client/volunteer reference)
     const jobsData = [];
     for (let i = 0; i < counts.jobs; i++) {
-      const clientName = clientNames[i % clientNames.length];
-      const volunteerName = volunteerNames[i % volunteerNames.length];
       jobsData.push({
-        client_id: `client-${i % counts.clients}`,
-        client_name: clientName,
-        volunteer_id: `volunteer-${i % counts.volunteers}`,
-        volunteer_name: volunteerName,
-        job_type: randomItem(JOB_TYPES),
-        scheduled_date: new Date(new Date().getTime() + (Math.random() - 0.3) * 60 * 24 * 60 * 60 * 1000).toISOString(),
-        status: randomItem(['scheduled', 'scheduled', 'completed', 'completed', 'completed', 'cancelled']),
-        notes: `${randomItem(JOB_TYPES)} support arranged at ${branch_name}.`,
-        duration_minutes: Math.floor(Math.random() * 150) + 45
+        client_id: `pending-${i}`,
+        client_name: clientNames[i % clientNames.length],
+        volunteer_id: `pending-${i}`,
+        volunteer_name: volunteerNames[i % volunteerNames.length],
+        job_type: rand(JOB_TYPES),
+        scheduled_date: new Date(Date.now() + (Math.random() - 0.3) * 60 * 864e5).toISOString(),
+        status: rand(['scheduled', 'scheduled', 'completed', 'completed', 'completed', 'cancelled']),
+        notes: `Support arranged at ${branch_name}.`,
+        duration_minutes: Math.floor(Math.random() * 120) + 30,
       });
     }
-    if (jobsData.length > 0) await base44.asServiceRole.entities.Job.bulkCreate(jobsData);
+    if (jobsData.length) await base44.asServiceRole.entities.Job.bulkCreate(jobsData);
 
-    // Populate Sessions with realistic variety
-    const sessionLocations = [`${branch_name} Community Centre`, `${branch_name} Library`, `${branch_name} Health Hub`, `Local Church Hall`, `Leisure Centre`];
+    // Sessions
+    const sessionLocations = [`${branch_name} Community Centre`, `${branch_name} Library`, 'Local Church Hall', 'Leisure Centre'];
     const sessionsData = [];
     for (let i = 0; i < counts.sessions; i++) {
-      const sessionType = randomItem(SESSION_TYPES);
+      const t = rand(SESSION_TYPES);
       sessionsData.push({
-        session_name: `${sessionType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} - Weekly`,
-        session_type: sessionType,
-        location: randomItem(sessionLocations),
-        scheduled_date: randomFutureDate(90),
-        attendees_count: Math.floor(Math.random() * 25) + 8,
+        session_name: `${t.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} — Weekly`,
+        session_type: t,
+        location: rand(sessionLocations),
+        scheduled_date: new Date(Date.now() + (Math.random() * 90 * 864e5)).toISOString().split('T')[0],
+        attendees_count: Math.floor(Math.random() * 22) + 8,
         max_capacity: 35,
-        status: randomItem(['scheduled', 'scheduled', 'completed']),
-        facilitator: randomName(),
-        notes: `Regular ${sessionType} session at ${branch_name} branch`
+        status: rand(['scheduled', 'scheduled', 'completed']),
+        facilitator: randName(),
+        notes: `Regular session at ${branch_name}.`,
       });
     }
-    if (sessionsData.length > 0) await base44.asServiceRole.entities.Session.bulkCreate(sessionsData);
+    if (sessionsData.length) await base44.asServiceRole.entities.Session.bulkCreate(sessionsData);
 
-    // Fetch real grant data from backend function
-    let grantsData = [];
-    try {
-      const grantsResponse = await base44.asServiceRole.functions.invoke('fetchRealComplianceAndGrants', {
-        branch_id
+    // Grants
+    const grantsData = [];
+    for (let i = 0; i < counts.grants; i++) {
+      grantsData.push({
+        grant_name: `${rand(['Pension Credit', 'Attendance Allowance', 'Warm Homes', 'Community Grant', 'Carer Support'])} — ${branch_name}`,
+        funder: rand(FUNDING_BODIES),
+        amount_awarded: Math.floor(Math.random() * 70000) + 3000,
+        date_awarded: randDate(365),
+        grant_type: rand(GRANT_TYPES),
+        client_id: `pending-${i}`,
+        client_name: clientNames[i % clientNames.length],
+        status: rand(['awarded', 'awarded', 'awarded', 'applied']),
+        notes: `Grant for ${branch_name} client.`,
       });
-      if (grantsResponse.data?.success) {
-        grantsData = grantsResponse.data.grant_opportunities;
-      }
-    } catch (error) {
-      console.log('Using fallback grant data');
-      // Fallback: generate realistic grant records
-      const fundingBodies = ['National Lottery Community Fund', 'Age UK', 'Local Authority', 'NHS England', 'Comic Relief', 'Joseph Rowntree Foundation'];
-      for (let i = 0; i < counts.grants; i++) {
-        const clientName = clientNames[i % clientNames.length];
-        grantsData.push({
-          grant_name: `Real Funding - ${randomItem(GRANT_TYPES).split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`,
-          funder: randomItem(fundingBodies),
-          amount_awarded: Math.floor(Math.random() * 75000) + 5000,
-          date_awarded: randomDate(365),
-          grant_type: randomItem(GRANT_TYPES),
-          client_id: `client-${i % counts.clients}`,
-          client_name: clientName,
-          status: randomItem(['awarded', 'awarded', 'awarded', 'applied']),
-          notes: `Real funding grant from major UK funder for ${clientName} at ${branch_name}`
-        });
-      }
     }
-    if (grantsData.length > 0) await base44.asServiceRole.entities.Grant.bulkCreate(grantsData);
+    if (grantsData.length) await base44.asServiceRole.entities.Grant.bulkCreate(grantsData);
 
-    // Fetch real compliance data from backend function
-    let complianceData = [];
-    try {
-      const complianceResponse = await base44.asServiceRole.functions.invoke('fetchRealComplianceAndGrants', {
-        branch_id
-      });
-      if (complianceResponse.data?.success) {
-        complianceData = complianceResponse.data.compliance_records;
-      }
-    } catch (error) {
-      console.log('Using fallback compliance data');
-      // Fallback: generate basic compliance records
-      for (const area of COMPLIANCE_AREAS) {
-        complianceData.push({
-          branch_id,
-          branch_name,
-          compliance_area: area,
-          status: randomItem(['compliant', 'at_risk', 'pending_review']),
-          deadline: randomFutureDate(365),
-          last_completed: randomDate(180),
-          assigned_to: `Compliance Manager`,
-          notes: `${area} - ${branch_name} branch`,
-          risk_level: randomItem(['low', 'medium', 'high'])
-        });
-      }
-    }
-    if (complianceData.length > 0) await base44.asServiceRole.entities.ComplianceRecord.bulkCreate(complianceData);
-
-    console.log(`[populateBranchData] Successfully populated ${branch_name}:`, {
-      clients: clientsData.length,
-      volunteers: volunteersData.length,
-      jobs: jobsData.length,
-      sessions: sessionsData.length,
-      grants: grantsData.length,
-      compliance: complianceData.length
-    });
+    // Compliance
+    const complianceData = COMPLIANCE_AREAS.map(area => ({
+      branch_id,
+      branch_name,
+      compliance_area: area,
+      status: rand(['compliant', 'compliant', 'at_risk', 'pending_review']),
+      deadline: randFuture(365),
+      last_completed: randDate(180),
+      assigned_to: randName(),
+      notes: `${area.replace(/_/g, ' ')} — ${branch_name}`,
+      risk_level: rand(['low', 'low', 'medium', 'high']),
+    }));
+    if (complianceData.length) await base44.asServiceRole.entities.ComplianceRecord.bulkCreate(complianceData);
 
     return Response.json({
       success: true,
-      message: `Successfully populated data for ${branch_name}`,
+      message: `Successfully provisioned ${branch_name}`,
       stats: {
         clients: clientsData.length,
         volunteers: volunteersData.length,
         jobs: jobsData.length,
         sessions: sessionsData.length,
         grants: grantsData.length,
-        compliance: complianceData.length
-      }
+        compliance: complianceData.length,
+      },
     });
   } catch (error) {
-    console.error(`[populateBranchData] Error for ${branch_id}:`, error.message);
-    return Response.json({ error: error.message, branch_id }, { status: 500 });
+    console.error('[populateBranchData]', error.message);
+    return Response.json({ error: error.message }, { status: 500 });
   }
 });
