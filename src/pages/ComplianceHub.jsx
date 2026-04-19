@@ -2,9 +2,9 @@ import React from 'react';
 import { FileText, CheckCircle2, AlertCircle, Shield, Banknote, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import UniversalFileUpload from './UniversalFileUpload';
-import ComplianceChecklist from './ComplianceChecklist';
-import GiftAidEligibilityChecker from './GiftAidEligibilityChecker';
+import UniversalFileUpload from '@/components/compliance/UniversalFileUpload';
+import ComplianceChecklist from '@/components/compliance/ComplianceChecklist';
+import GiftAidEligibilityChecker from '@/components/compliance/GiftAidEligibilityChecker';
 
 export default function ComplianceHub() {
   return (
