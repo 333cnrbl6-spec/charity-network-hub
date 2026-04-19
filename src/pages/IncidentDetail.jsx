@@ -411,8 +411,11 @@ export default function IncidentDetail() {
 
           {/* Peer Review Section - Only show if not closed */}
           {incident.status !== 'closed' && (
-          <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
+            <PeerReviewSubmission incident={incident} onSubmitSuccess={() => window.location.reload()} />
           )}
+
+          {/* External Notifications */}
+          <ExternalNotificationSender incident={incident} onNotificationSent={() => window.location.reload()} />
 
           {/* Audit Log Viewer */}
           <AuditLogViewer auditTrail={incident.audit_trail} />
