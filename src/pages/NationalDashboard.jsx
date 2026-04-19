@@ -8,7 +8,6 @@ import { AlertCircle, CheckCircle2, Clock, Network, Zap, Users, Users2, Briefcas
 import { useAuth } from '@/lib/AuthContext';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import StatusLight from '@/components/ui/StatusLight';
-import CollectivePerformanceChart from '@/components/dashboard/CollectivePerformanceChart';
 import { playClick, playSuccess, playLoading } from '@/lib/audio';
 
 const BRANCHES = [
@@ -364,9 +363,6 @@ export default function NationalDashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* SynergyFlow Collective Performance */}
-      <CollectivePerformanceChart />
 
       {/* Recent Sync Log */}
       <Card>
