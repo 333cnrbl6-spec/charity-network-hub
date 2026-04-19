@@ -49,6 +49,7 @@ import SafeguardingHub from './pages/SafeguardingHub';
 import TrainingModule from './pages/TrainingModule';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
 import IncidentDetail from './pages/IncidentDetail';
+import PricingComparison from './pages/PricingComparison';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -119,7 +120,8 @@ const AuthenticatedApp = () => {
         <Route path="/safeguarding/analytics" element={<SafeguardingAnalytics />} />
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
-      </Route>
+        <Route path="/pricing" element={<PricingComparison />} />
+        </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
