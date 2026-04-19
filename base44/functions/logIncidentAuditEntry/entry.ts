@@ -9,7 +9,14 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { incident_id, action, details, previous_value, new_value } = await req.json();
+    const { 
+      incident_id, 
+      action, 
+      details, 
+      previous_value, 
+      new_value, 
+      changed_fields 
+    } = await req.json();
 
     if (!incident_id || !action) {
       return Response.json(
@@ -25,14 +32,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Incident not found' }, { status: 404 });
     }
 
-    // Create audit entry
+    // Create audit entry with comprehensive tracking
     const auditEntry = {
       timestamp: new Date().toISOString(),
       user: user.email,
+      user_name: user.full_name || user.email,
       action: action,
       details: details || null,
       previous_value: previous_value !== undefined ? previous_value : null,
       new_value: new_value !== undefined ? new_value : null,
+      changed_fields: changed_fields || null,
+      ip_address: req.headers.get('x-forwarded-for') || 'unknown',
     };
 
     // Add to audit trail (or create if doesn't exist)
