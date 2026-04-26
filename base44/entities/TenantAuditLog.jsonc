@@ -1,0 +1,60 @@
+{
+  "name": "TenantAuditLog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "tenant_created",
+        "tenant_updated",
+        "tenant_suspended",
+        "tenant_reactivated",
+        "user_invited",
+        "user_removed",
+        "user_role_changed",
+        "module_enabled",
+        "module_disabled",
+        "subscription_changed",
+        "billing_updated",
+        "data_exported",
+        "data_deleted",
+        "login",
+        "logout"
+      ]
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "old_value": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "new_value": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "actor_email",
+    "action"
+  ]
+}

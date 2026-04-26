@@ -50,6 +50,9 @@ import TrainingModule from './pages/TrainingModule';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
 import IncidentDetail from './pages/IncidentDetail';
 import PricingComparison from './pages/PricingComparison';
+import PlatformAdmin from './pages/PlatformAdmin';
+import TenantPortal from './pages/TenantPortal';
+import { TenantProvider } from '@/lib/tenantContext.jsx';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -121,6 +124,8 @@ const AuthenticatedApp = () => {
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
         <Route path="/pricing" element={<PricingComparison />} />
+        <Route path="/platform-admin" element={<PlatformAdmin />} />
+        <Route path="/my-organisation" element={<TenantPortal />} />
         </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -131,6 +136,7 @@ function App() {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
+        <TenantProvider>
         <Router>
           <Routes>
             {/* Public routes — no auth required */}
@@ -151,6 +157,7 @@ function App() {
           </Routes>
         </Router>
         <Toaster />
+        </TenantProvider>
       </QueryClientProvider>
     </AuthProvider>
   )

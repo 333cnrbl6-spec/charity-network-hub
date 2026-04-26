@@ -1,0 +1,71 @@
+{
+  "name": "TenantUser",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Reference to Tenant"
+    },
+    "user_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "tenant_role": {
+      "type": "string",
+      "enum": [
+        "tenant_admin",
+        "safeguarding_lead",
+        "manager",
+        "staff",
+        "volunteer",
+        "trustee"
+      ],
+      "default": "staff",
+      "description": "Role within this tenant"
+    },
+    "org_role": {
+      "type": "string",
+      "description": "Detailed org role from roleConfig"
+    },
+    "department": {
+      "type": "string"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "invited_by": {
+      "type": "string"
+    },
+    "invite_accepted_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_login_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "enabled_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Fine-grained permissions override",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "tenant_id",
+    "user_email",
+    "tenant_role"
+  ]
+}

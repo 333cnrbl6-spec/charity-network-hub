@@ -1,0 +1,148 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Unique slug identifier (e.g., age-uk-bury, mind-manchester)"
+    },
+    "org_name": {
+      "type": "string",
+      "description": "Organisation display name"
+    },
+    "org_type": {
+      "type": "string",
+      "enum": [
+        "age_uk_branch",
+        "independent_charity",
+        "local_authority",
+        "nhs_trust",
+        "housing_association",
+        "other"
+      ],
+      "description": "Type of organisation"
+    },
+    "charity_number": {
+      "type": "string",
+      "description": "Registered charity number"
+    },
+    "primary_contact_name": {
+      "type": "string"
+    },
+    "primary_contact_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "primary_contact_phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "postcode": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "essential",
+        "professional",
+        "enterprise"
+      ],
+      "default": "professional",
+      "description": "Pricing tier"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "suspended",
+        "cancelled",
+        "pending_payment"
+      ],
+      "default": "trial",
+      "description": "Billing status"
+    },
+    "trial_ends_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
+    "monthly_fee_gbp": {
+      "type": "number"
+    },
+    "enabled_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of enabled feature modules for this tenant"
+    },
+    "max_users": {
+      "type": "number",
+      "description": "Maximum allowed users (null = unlimited)"
+    },
+    "user_count": {
+      "type": "number",
+      "default": 0
+    },
+    "onboarded": {
+      "type": "boolean",
+      "default": false
+    },
+    "onboarding_complete_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "safeguarding_lead_email": {
+      "type": "string"
+    },
+    "data_retention_years": {
+      "type": "number",
+      "default": 6
+    },
+    "custom_branding": {
+      "type": "object",
+      "properties": {
+        "logo_url": {
+          "type": "string"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "org_short_name": {
+          "type": "string"
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal admin notes"
+    },
+    "health_score": {
+      "type": "number",
+      "description": "Computed platform engagement score 0-100"
+    },
+    "last_active_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "org_name",
+    "org_type",
+    "primary_contact_email"
+  ]
+}

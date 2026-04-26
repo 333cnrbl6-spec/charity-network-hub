@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search, TrendingUp, ShieldCheck, Building2, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import RegionalSelector from './RegionalSelector';
@@ -98,6 +98,8 @@ export default function Sidebar() {
       { icon: Upload, label: 'Data Import', path: '/import' },
       { icon: Network, label: 'Sync & Reports', path: '/sync-log' },
       { icon: GitBranch, label: 'Network Expansion', path: '/expansion' },
+      { icon: ShieldCheck, label: 'Safeguarding Hub', path: '/safeguarding' },
+      { icon: Building2, label: 'Platform Admin', path: '/platform-admin' },
     ];
   };
 
@@ -145,8 +147,16 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-sidebar-border">
+        <div className="space-y-1 mb-2">
+          <Link to="/my-organisation" className="flex items-center gap-2 px-2 py-1.5 rounded text-xs text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors">
+            <Building2 className="w-3.5 h-3.5" /> My Organisation
+          </Link>
+          <Link to="/pricing" className="flex items-center gap-2 px-2 py-1.5 rounded text-xs text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors">
+            <Settings className="w-3.5 h-3.5" /> Pricing & Plans
+          </Link>
+        </div>
         <div className="text-xs text-sidebar-foreground/40">
-          Federation Admin v1.0
+          SafeGuard Pro v2.0
         </div>
       </div>
     </aside>
