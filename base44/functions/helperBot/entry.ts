@@ -101,16 +101,24 @@ UI CONTEXT: ${context || 'none'}
 
 RESPONSE RULES:
 1. MAX 3-4 short sentences unless user asks for more detail
-2. Be page-relevant — give hints about what they can do HERE
-3. Be data-aware — if no data, guide them to import; if data exists, reference it specifically
+2. CRITICAL PRIORITY FOR NEW USERS: If minimal/no data exists, make data import the hero message — it's essential to unlock the platform's full power
+3. Be data-aware — if no data, make import the call-to-action; if data exists, reference it specifically
 4. Be role-specific — only mention features this role has access to
-5. If coordinator with no jobs/volunteers: warmly guide them to import their records first via the Import Data tab
+5. For coordinators with no data: "Your data is the heartbeat of this platform! Let's get your clients, volunteers and jobs uploaded first — everything else flows from that."
 6. Plain English only — no tech jargon or IDs
 7. Thought-bubble chat style. Occasional emoji ✨ is fine
-8. For greetings: mention today's date context, what they should focus on, one specific actionable tip`;
+8. For greetings: If no data → "First things first: upload your legacy data. This unlocks everything." If data exists → mention today's priorities and one actionable tip`;
+
+    // Override greeting if new user with no data
+    let userPrompt = message;
+    if (!message && context === 'initial_greeting' && !dataContext.hasData) {
+      userPrompt = `Hi Vera! I just opened the platform and I'm brand new. I have no data uploaded yet. Give me a VERY warm, encouraging greeting that makes me excited about uploading my critical data (clients, volunteers, jobs). Tell me this is the KEY first step to unlock the platform's power, and give me ONE specific tip about what to expect from the upload process. Make it feel achievable and motivating!`;
+    } else if (!message) {
+      userPrompt = `Hi Vera! I just opened the platform. Give me a warm greeting, tell me what I should focus on today based on my role and data, and one specific tip for the page I'm on.`;
+    }
 
     const reply = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `${systemPrompt}\n\nUSER SAYS: "${message || `Hi Vera! I just opened the platform. Give me a warm greeting, tell me what I should focus on today based on my role and data, and one specific tip for the page I'm on.`}"\n\nVera's response:`,
+      prompt: `${systemPrompt}\n\nUSER SAYS: "${userPrompt}"\n\nVera's response:`,
       model: 'claude_sonnet_4_6',
     });
 
