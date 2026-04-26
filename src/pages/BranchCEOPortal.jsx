@@ -12,8 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Users, Briefcase, Gift, TrendingUp, ShieldCheck,
-  AlertCircle, Network, Building2, BarChart3, Globe
+  AlertCircle, Network, Building2, BarChart3, Globe, Upload
 } from 'lucide-react';
+import AIFileDropZone from '@/components/import/AIFileDropZone';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
@@ -64,6 +65,7 @@ export default function BranchCEOPortal() {
     { id: 'performance', label: 'Performance', icon: BarChart3 },
     { id: 'compliance', label: 'Compliance', icon: ShieldCheck, badge: complianceIssues.length },
     { id: 'hub', label: 'Hub Reports', icon: Globe },
+    { id: 'import', label: 'Import Data', icon: Upload },
   ];
 
   return (
@@ -216,6 +218,16 @@ export default function BranchCEOPortal() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'import' && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold">Import Data</h2>
+              <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word or image — and AI will read and guide you through importing it into the system.</p>
+            </div>
+            <AIFileDropZone onImportComplete={() => {}} />
           </div>
         )}
 

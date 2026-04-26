@@ -11,8 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Users, Briefcase, CalendarDays, Gift, TrendingUp,
-  ShieldCheck, CheckCircle2, AlertCircle, Clock, ClipboardList, Building2
+  ShieldCheck, CheckCircle2, AlertCircle, Clock, ClipboardList, Building2, Upload
 } from 'lucide-react';
+import AIFileDropZone from '@/components/import/AIFileDropZone';
 import { format, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 
@@ -64,6 +65,7 @@ export default function BranchOpsPortal() {
     { id: 'jobs', label: 'Jobs', icon: Briefcase },
     { id: 'compliance', label: 'Compliance', icon: ShieldCheck, badge: complianceAt_risk.length },
     { id: 'finance', label: 'Finance', icon: Gift },
+    { id: 'import', label: 'Import Data', icon: Upload },
   ];
 
   const isOpsManager = user?.org_role === 'branch_operations_manager';
@@ -99,7 +101,7 @@ export default function BranchOpsPortal() {
               {[
                 { label: 'Active Clients', value: clients.length, icon: Users, color: 'text-blue-600' },
                 { label: 'Active Volunteers', value: volunteers.length, icon: ClipboardList, color: 'text-green-600' },
-                { label: 'Jobs This Month', value: jobs.length, icon: Briefcase, color: 'text-primary' },
+                { label: 'Jobs Logged', value: jobs.length, icon: Briefcase, color: 'text-primary' },
                 { label: 'Grants Awarded', value: `£${awardsGrantsValue.toLocaleString()}`, icon: Gift, color: 'text-amber-600' },
               ].map(({ label, value, icon: Icon, color }) => (
                 <Card key={label}>
@@ -110,6 +112,19 @@ export default function BranchOpsPortal() {
                 </Card>
               ))}
             </div>
+
+            {/* Import prompt when no operational data */}
+            {clients.length === 0 && jobs.length === 0 && volunteers.length === 0 && (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2"><Upload className="w-4 h-4 text-primary" /> No operational data yet — import to get started</CardTitle>
+                  <p className="text-xs text-muted-foreground">Drop a spreadsheet, PDF or Word doc and AI will extract clients, jobs or volunteers for you.</p>
+                </CardHeader>
+                <CardContent>
+                  <AIFileDropZone compact onImportComplete={() => {}} />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Alerts */}
             {(complianceAt_risk.length > 0 || dbsExpiring.length > 0) && (
@@ -248,6 +263,16 @@ export default function BranchOpsPortal() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'import' && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold">Import Data</h2>
+              <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word or image — and AI will read and guide you through importing it into the system.</p>
+            </div>
+            <AIFileDropZone onImportComplete={() => {}} />
           </div>
         )}
 
