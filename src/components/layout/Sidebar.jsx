@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe,
   Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search,
   TrendingUp, ShieldCheck, Building2, Settings, CalendarDays, ClipboardList,
-  LogOut, ChevronDown, GraduationCap, FileBarChart, BookOpen, BarChart3, FileText
+  LogOut, ChevronDown, GraduationCap, FileBarChart, BookOpen, BarChart3, FileText,
+  InboxIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -42,6 +43,7 @@ const STAFF_NAV = [
 // Coordinator nav — built dynamically so branch name can be used in labels if needed
 const COORDINATOR_NAV = [
   { icon: LayoutDashboard, label: 'My Dashboard',    path: '/coordinator-portal' },
+  { icon: InboxIcon,       label: 'Referrals',       path: '/referrals' },
   { icon: Briefcase,       label: 'Jobs',            path: '/jobs' },
   { icon: CalendarDays,    label: 'Job Calendar',    path: '/handyperson-calendar' },
   { icon: Users,           label: 'Clients',         path: '/clients' },

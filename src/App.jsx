@@ -48,6 +48,7 @@ import CharityAnalytics from './pages/CharityAnalytics';
 import CharityOnboarding from './pages/CharityOnboarding';
 import ComplianceHub from './pages/ComplianceHub';
 import SafeguardingHub from './pages/SafeguardingHub';
+import ReferralDashboard from './pages/ReferralDashboard';
 import TrainingModule from './pages/TrainingModule';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
 import IncidentDetail from './pages/IncidentDetail';
@@ -126,6 +127,7 @@ const AuthenticatedApp = () => {
         <Route path="/charity-analytics" element={<CharityAnalytics />} />
         <Route path="/compliance-hub" element={<ComplianceHub />} />
         <Route path="/safeguarding" element={<SafeguardingHub />} />
+        <Route path="/referrals" element={<ReferralDashboard />} />
         <Route path="/safeguarding/analytics" element={<SafeguardingAnalytics />} />
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
