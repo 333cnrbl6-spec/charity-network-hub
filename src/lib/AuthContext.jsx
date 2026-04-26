@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
@@ -7,13 +8,14 @@ import { getDefaultPortalPath } from '@/lib/roleConfig';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [appPublicSettings, setAppPublicSettings] = useState(null); // Contains only { id, public_settings }
+  const [appPublicSettings, setAppPublicSettings] = useState(null);
 
   useEffect(() => {
     checkAppState();
@@ -109,7 +111,7 @@ export const AuthProvider = ({ children }) => {
         '/jobs', '/sessions', '/analytics', '/search', '/charity-analytics', '/impact'];
       if (currentUser?.role !== 'admin' && !publicPaths.some(p => path.startsWith(p))) {
         const dest = getDefaultPortalPath(currentUser);
-        window.location.href = dest;
+        navigate(dest, { replace: true });
       }
     } catch (error) {
       console.error('User auth check failed:', error);

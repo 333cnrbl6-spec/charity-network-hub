@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { ChevronDown, Globe, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ const REGIONS = {
 };
 
 export default function RegionalSelector({ onRegionChange, onBranchChange }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState('national');
   const [expandedRegion, setExpandedRegion] = useState(null);
@@ -68,8 +70,7 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
     playClick();
     onBranchChange(branch);
     setIsOpen(false);
-    // Navigate to branch details page
-    window.location.href = `/branch/${branch.branch_id}`;
+    navigate(`/branch/${branch.branch_id}`);
   };
 
   const regionLabel = REGIONS[selectedRegion]?.name || 'National Overview';
