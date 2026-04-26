@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Upload, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import AssetDragDropZone from './AssetDragDropZone';
 
 const JOB_TYPES = [
   'home-visit', 'telephone-check', 'transport', 'shopping-assist',
@@ -133,20 +134,10 @@ export default function AssetUploadForm({ onSuccess }) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* File Upload */}
+          {/* File Upload - Smart Drag & Drop */}
           <div>
             <label className="block text-sm font-medium mb-2">PDF File</label>
-            <div className="border-2 border-dashed rounded-lg p-4">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="w-full"
-              />
-              {file && (
-                <p className="text-sm text-green-600 mt-2">✓ {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>
-              )}
-            </div>
+            <AssetDragDropZone onFileSelect={setFile} />
           </div>
 
           {/* Title */}
