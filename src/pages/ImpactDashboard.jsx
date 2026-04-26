@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Heart, Clock, Users, TrendingUp, Download, Award } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useJobs, useSessions, useVolunteers, useClients, useGrants, useBranchReports } from '@/hooks/useEntityQueries';
+import ImpactChartsSection from '@/components/impact/ImpactChartsSection';
 
 export default function ImpactDashboard() {
   const [exportLoading, setExportLoading] = useState(false);
@@ -175,7 +176,10 @@ export default function ImpactDashboard() {
         </Card>
       </div>
 
-      {/* Charts */}
+      {/* Interactive Charts Section */}
+      <ImpactChartsSection />
+
+      {/* Legacy Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
