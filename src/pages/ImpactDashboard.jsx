@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, Clock, Users, TrendingUp, Download, Award } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useJobs, useSessions, useVolunteers, useClients, useGrants, useBranchReports } from '@/hooks/useEntityQueries';
 import ImpactChartsSection from '@/components/impact/ImpactChartsSection';
+import SatisfactionTrendsChart from '@/components/impact/SatisfactionTrendsChart';
 
 export default function ImpactDashboard() {
   const [exportLoading, setExportLoading] = useState(false);
@@ -16,6 +18,10 @@ export default function ImpactDashboard() {
   const { data: clients = [] } = useClients();
   const { data: grants = [] } = useGrants();
   const { data: branchReports = [] } = useBranchReports();
+  const { data: jobFeedback = [] } = useQuery({
+    queryKey: ['jobFeedback'],
+    queryFn: () => base44.entities.JobFeedback.list('-feedback_date'),
+  });
 
   // Calculate impact metrics
   const metrics = useMemo(() => {
@@ -175,6 +181,9 @@ export default function ImpactDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Satisfaction Trends */}
+      <SatisfactionTrendsChart jobFeedback={jobFeedback} />
 
       {/* Interactive Charts Section */}
       <ImpactChartsSection />

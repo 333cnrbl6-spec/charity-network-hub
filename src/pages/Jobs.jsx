@@ -6,11 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Clock } from 'lucide-react';
+import { Plus, Clock, X } from 'lucide-react';
 import { useBranchFilter } from '@/hooks/useBranchFilter';
+import JobFeedbackForm from '@/components/feedback/JobFeedbackForm';
 
 export default function Jobs() {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedJob, setSelectedJob] = useState(null);
   const { filterData } = useBranchFilter();
 
   const { data: jobs = [] } = useQuery({
@@ -89,7 +91,15 @@ export default function Jobs() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Button size="sm" variant="ghost">Edit</Button>
+                  {job.status === 'completed' && (
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setSelectedJob(job)}
+                    >
+                      Add Feedback
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -100,6 +110,30 @@ export default function Jobs() {
       <div className="text-sm text-muted-foreground">
         Showing {filtered.length} of {jobs.length} jobs
       </div>
+
+      {/* Feedback Modal */}
+      {selectedJob && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-lg">
+            <div className="sticky top-0 flex items-center justify-between p-4 border-b bg-white">
+              <h2 className="font-semibold">Job Feedback</h2>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setSelectedJob(null)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="p-4">
+              <JobFeedbackForm
+                job={selectedJob}
+                onSubmit={() => setSelectedJob(null)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
