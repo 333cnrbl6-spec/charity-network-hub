@@ -61,6 +61,10 @@
       "type": "string",
       "description": "Assigned volunteer or staff member"
     },
+    "branch_id": {
+      "type": "string",
+      "description": "Branch this client belongs to (e.g. bury, manchester)"
+    },
     "notes": {
       "type": "string",
       "description": "Additional notes about the client"
