@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe,
   Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search,
   TrendingUp, ShieldCheck, Building2, Settings, CalendarDays, ClipboardList,
-  LogOut, ChevronDown
+  LogOut, ChevronDown, GraduationCap, FileBarChart, BookOpen, BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -17,9 +17,11 @@ import { playClick } from '@/lib/audio';
 // ─────────────────────────────────────────────
 
 const VOLUNTEER_NAV = [
-  { icon: LayoutDashboard, label: 'My Schedule', path: '/staff-portal' },
-  { icon: Briefcase,       label: 'My Jobs',     path: '/jobs' },
-  { icon: Users,           label: 'My Clients',  path: '/clients' },
+  { icon: LayoutDashboard, label: 'My Schedule',   path: '/staff-portal' },
+  { icon: Briefcase,       label: 'My Jobs',       path: '/jobs' },
+  { icon: Users,           label: 'My Clients',    path: '/clients' },
+  { icon: ShieldCheck,     label: 'Safeguarding',  path: '/safeguarding' },
+  { icon: GraduationCap,   label: 'My Training',   path: '/training' },
 ];
 
 const STAFF_NAV = [
@@ -27,16 +29,24 @@ const STAFF_NAV = [
   { icon: Briefcase,       label: 'Jobs',            path: '/jobs' },
   { icon: Users,           label: 'Clients',         path: '/clients' },
   { icon: Zap,             label: 'Sessions',        path: '/sessions' },
+  { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
+  { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
+  { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
 ];
 
+// Coordinator nav — built dynamically so branch name can be used in labels if needed
 const COORDINATOR_NAV = [
-  { icon: LayoutDashboard, label: 'Coordinator Dashboard', path: '/coordinator-portal' },
-  { icon: Briefcase,       label: 'Jobs',                  path: '/jobs' },
-  { icon: Users,           label: 'Clients',               path: '/clients' },
-  { icon: ClipboardList,   label: 'Team',                  path: '/volunteers' },
-  { icon: CalendarDays,    label: 'Sessions',               path: '/sessions' },
-  { icon: Gift,            label: 'Grants',                 path: '/grants' },
-  { icon: ShieldCheck,     label: 'Safeguarding',           path: '/safeguarding' },
+  { icon: LayoutDashboard, label: 'My Dashboard',    path: '/coordinator-portal' },
+  { icon: Briefcase,       label: 'Jobs',            path: '/jobs' },
+  { icon: Users,           label: 'Clients',         path: '/clients' },
+  { icon: ClipboardList,   label: 'Team',            path: '/volunteers' },
+  { icon: CalendarDays,    label: 'Sessions',        path: '/sessions' },
+  { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
+  { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
+  { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
+  { icon: AlertCircle,     label: 'Compliance',      path: '/compliance' },
+  { icon: Upload,          label: 'Import Data',     path: '/import' },
+  { icon: BarChart3,       label: 'Analytics',       path: '/charity-analytics' },
 ];
 
 const OPS_MANAGER_NAV = [
@@ -45,23 +55,30 @@ const OPS_MANAGER_NAV = [
   { icon: Users2,          label: 'Volunteers & Staff',   path: '/volunteers' },
   { icon: Briefcase,       label: 'Jobs',                 path: '/jobs' },
   { icon: Zap,             label: 'Sessions',             path: '/sessions' },
-  { icon: Gift,            label: 'Grants',               path: '/grants' },
+  { icon: Gift,            label: 'Grants & Benefits',    path: '/grants' },
+  { icon: GraduationCap,   label: 'Training & DBS',       path: '/training' },
   { icon: AlertCircle,     label: 'Compliance',           path: '/compliance' },
   { icon: ShieldCheck,     label: 'Safeguarding',         path: '/safeguarding' },
+  { icon: BarChart3,       label: 'Branch Analytics',     path: '/charity-analytics' },
+  { icon: Upload,          label: 'Import Data',          path: '/import' },
   { icon: Network,         label: 'Sync & Reports',       path: '/sync-log' },
 ];
 
 const BRANCH_CEO_NAV = [
-  { icon: LayoutDashboard, label: 'CEO Dashboard',    path: '/branch-ceo' },
-  { icon: TrendingUp,      label: 'Branch Analytics', path: '/charity-analytics' },
-  { icon: Users,           label: 'Clients',          path: '/clients' },
-  { icon: Users2,          label: 'Volunteers',       path: '/volunteers' },
-  { icon: Briefcase,       label: 'Jobs',             path: '/jobs' },
-  { icon: Gift,            label: 'Grants',           path: '/grants' },
-  { icon: AlertCircle,     label: 'Compliance',       path: '/compliance' },
-  { icon: ShieldCheck,     label: 'Safeguarding',     path: '/safeguarding' },
-  { icon: Network,         label: 'Hub Reports',      path: '/sync-log' },
-  { icon: Search,          label: 'Smart Search',     path: '/search' },
+  { icon: LayoutDashboard, label: 'CEO Dashboard',        path: '/branch-ceo' },
+  { icon: BarChart3,       label: 'Branch Analytics',     path: '/charity-analytics' },
+  { icon: Users,           label: 'Clients',              path: '/clients' },
+  { icon: Users2,          label: 'Volunteers & Staff',   path: '/volunteers' },
+  { icon: Briefcase,       label: 'Jobs',                 path: '/jobs' },
+  { icon: Zap,             label: 'Sessions',             path: '/sessions' },
+  { icon: Gift,            label: 'Grants & Benefits',    path: '/grants' },
+  { icon: GraduationCap,   label: 'Training & DBS',       path: '/training' },
+  { icon: AlertCircle,     label: 'Compliance',           path: '/compliance' },
+  { icon: ShieldCheck,     label: 'Safeguarding',         path: '/safeguarding' },
+  { icon: FileBarChart,    label: 'Impact Report',        path: '/impact' },
+  { icon: Network,         label: 'Hub Reports',          path: '/sync-log' },
+  { icon: Upload,          label: 'Import Data',          path: '/import' },
+  { icon: Search,          label: 'Smart Search',         path: '/search' },
 ];
 
 const BRANCH_NAV = (branchId) => [
@@ -196,6 +213,30 @@ export default function Sidebar() {
     return NATIONAL_NAV;
   };
 
+  // Group coordinator & above nav into sections for readability
+  const getNavSections = (items) => {
+    if (!isRoleScoped) return [{ label: null, items }];
+    if (orgRole === 'branch_department_coordinator') {
+      return [
+        { label: 'Operations', items: items.slice(0, 6) },
+        { label: 'Compliance & Admin', items: items.slice(6) },
+      ];
+    }
+    if (orgRole === 'branch_operations_manager' || orgRole === 'branch_service_manager') {
+      return [
+        { label: 'Operations', items: items.slice(0, 7) },
+        { label: 'Admin & Reports', items: items.slice(7) },
+      ];
+    }
+    if (orgRole === 'branch_ceo') {
+      return [
+        { label: 'Service Delivery', items: items.slice(0, 7) },
+        { label: 'Governance & Reports', items: items.slice(7) },
+      ];
+    }
+    return [{ label: null, items }];
+  };
+
   const branchLabel = isRoleScoped
     ? (user?.branch_name || branchId || 'Age UK Branch')
     : (currentBranch?.branch_name || 'Age UK Network');
@@ -210,11 +251,14 @@ export default function Sidebar() {
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-9 h-9 rounded-lg bg-sidebar-primary flex items-center justify-center shrink-0">
-            <Network className="w-5 h-5 text-sidebar-primary-foreground" />
+            <Heart className="w-5 h-5 text-sidebar-primary-foreground" />
           </div>
           <div className="min-w-0">
             <h1 className="font-heading font-bold text-sm leading-tight truncate">{branchLabel}</h1>
             <p className="text-xs text-sidebar-foreground/60 truncate">{roleLabel}</p>
+            {isRoleScoped && user?.job_title && (
+              <p className="text-xs text-sidebar-primary/80 font-medium truncate mt-0.5">{user.job_title}</p>
+            )}
           </div>
         </div>
 
@@ -241,27 +285,38 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {getNavItems().map((item, index) => {
-          const isActive = location.pathname === item.path ||
-            (item.path !== '/' && location.pathname.startsWith(item.path));
-          return (
-            <Link
-              key={`${item.label}-${index}`}
-              to={item.path}
-              onClick={playClick}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
-                isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-              )}
-            >
-              <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 p-3 overflow-y-auto">
+        {getNavSections(getNavItems()).map((section, si) => (
+          <div key={si} className="mb-3">
+            {section.label && (
+              <p className="text-xs font-semibold text-sidebar-foreground/35 uppercase tracking-wider px-3 py-1.5 mt-1">
+                {section.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {section.items.map((item, index) => {
+                const isActive = location.pathname === item.path ||
+                  (item.path !== '/' && location.pathname.startsWith(item.path));
+                return (
+                  <Link
+                    key={`${item.label}-${index}`}
+                    to={item.path}
+                    onClick={playClick}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                    )}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Footer */}
