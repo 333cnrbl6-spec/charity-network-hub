@@ -1,0 +1,58 @@
+{
+  "name": "Alert",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "donor_lapsed",
+        "grant_deadline",
+        "campaign_milestone",
+        "volunteer_uncovered",
+        "filing_deadline"
+      ],
+      "description": "Type of alert"
+    },
+    "title": {
+      "type": "string",
+      "description": "Alert title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Alert details"
+    },
+    "related_id": {
+      "type": "string",
+      "description": "ID of related entity (donor, grant, campaign, etc)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "default": "info",
+      "description": "Alert severity"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether alert has been read"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When alert was created"
+    }
+  },
+  "required": [
+    "charity_id",
+    "alert_type",
+    "title"
+  ]
+}

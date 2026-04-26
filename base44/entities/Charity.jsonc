@@ -1,0 +1,90 @@
+{
+  "name": "Charity",
+  "type": "object",
+  "properties": {
+    "charity_number": {
+      "type": "string",
+      "description": "UK Charity Commission number"
+    },
+    "name": {
+      "type": "string",
+      "description": "Charity name"
+    },
+    "cause_area": {
+      "type": "string",
+      "enum": [
+        "health",
+        "education",
+        "environment",
+        "poverty",
+        "disability",
+        "elderly",
+        "animal_welfare",
+        "arts",
+        "community",
+        "other"
+      ],
+      "description": "Primary cause area"
+    },
+    "description": {
+      "type": "string",
+      "description": "Charity mission statement"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Logo image URL"
+    },
+    "website": {
+      "type": "string",
+      "description": "Charity website"
+    },
+    "annual_income": {
+      "type": "number",
+      "description": "Annual income in GBP"
+    },
+    "team_size": {
+      "type": "number",
+      "description": "Number of staff/volunteers"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter",
+      "description": "Current subscription tier"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "cancelled",
+        "past_due"
+      ],
+      "default": "trial",
+      "description": "Subscription status"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "trial_ends_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Trial expiry date"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Onboarding wizard completed"
+    }
+  },
+  "required": [
+    "charity_number",
+    "name",
+    "cause_area"
+  ]
+}

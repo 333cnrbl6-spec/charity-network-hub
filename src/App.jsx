@@ -59,6 +59,10 @@ import PricingComparison from './pages/PricingComparison';
 import PlatformAdmin from './pages/PlatformAdmin';
 import TenantPortal from './pages/TenantPortal';
 import { TenantProvider } from '@/lib/tenantContext.jsx';
+import CharityDashboard from './pages/CharityDashboard';
+import CharityGrants from './pages/Grants';
+import CharityHubOnboarding from './pages/Onboarding';
+import CharityPricing from './pages/Pricing';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -164,6 +168,11 @@ function App() {
             {/* Smart onboarding — open to all */}
             <Route path="/onboard" element={<SmartOnboarding />} />
             <Route path="/charity-onboarding" element={<CharityOnboarding />} />
+            {/* CharityHub standalone routes */}
+            <Route path="/charity-dashboard" element={<CharityDashboard />} />
+            <Route path="/charity-grants" element={<CharityGrants />} />
+            <Route path="/charity-setup" element={<CharityHubOnboarding />} />
+            <Route path="/charity-pricing" element={<CharityPricing />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>

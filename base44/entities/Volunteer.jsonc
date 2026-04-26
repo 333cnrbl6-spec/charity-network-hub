@@ -2,9 +2,13 @@
   "name": "Volunteer",
   "type": "object",
   "properties": {
-    "full_name": {
+    "charity_id": {
       "type": "string",
-      "description": "Volunteer's full name"
+      "description": "Reference to Charity"
+    },
+    "name": {
+      "type": "string",
+      "description": "Volunteer name"
     },
     "email": {
       "type": "string",
@@ -13,59 +17,44 @@
     },
     "phone": {
       "type": "string",
-      "description": "Contact phone number"
+      "description": "Contact phone"
     },
     "role": {
       "type": "string",
-      "enum": [
-        "befriender",
-        "driver",
-        "admin",
-        "reception",
-        "digital-champion",
-        "men-in-sheds",
-        "ageing-well-facilitator",
-        "shop",
-        "trustee",
-        "other"
-      ],
-      "description": "Volunteer role"
+      "description": "Role/position"
     },
-    "status": {
+    "availability": {
       "type": "string",
       "enum": [
-        "active",
-        "inactive"
+        "available",
+        "limited",
+        "unavailable"
       ],
-      "default": "active",
-      "description": "Current status"
-    },
-    "dbs_checked": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether DBS check has been completed"
-    },
-    "dbs_expiry": {
-      "type": "string",
-      "format": "date",
-      "description": "DBS expiry date"
-    },
-    "date_joined": {
-      "type": "string",
-      "format": "date",
-      "description": "Date joined"
+      "default": "available",
+      "description": "Availability status"
     },
     "hours_contributed": {
       "type": "number",
       "default": 0,
-      "description": "Total hours contributed"
+      "description": "Total volunteer hours"
     },
-    "area": {
+    "start_date": {
       "type": "string",
-      "description": "Manchester area or neighbourhood served"
+      "format": "date",
+      "description": "When volunteer started"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Skills/expertise"
     }
   },
   "required": [
-    "full_name"
+    "charity_id",
+    "name",
+    "email",
+    "role"
   ]
 }

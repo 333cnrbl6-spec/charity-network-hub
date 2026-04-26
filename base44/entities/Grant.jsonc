@@ -2,62 +2,85 @@
   "name": "Grant",
   "type": "object",
   "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
     "grant_name": {
       "type": "string",
-      "description": "Name of grant or benefit"
+      "description": "Grant name"
     },
-    "funder": {
+    "funder_name": {
       "type": "string",
-      "description": "Funding organisation"
+      "description": "Funder name"
     },
-    "amount_awarded": {
+    "amount": {
       "type": "number",
-      "description": "Amount awarded in GBP"
+      "description": "Grant amount in GBP"
     },
-    "date_awarded": {
+    "deadline": {
       "type": "string",
       "format": "date",
-      "description": "Date awarded"
-    },
-    "grant_type": {
-      "type": "string",
-      "enum": [
-        "attendance-allowance",
-        "pension-credit",
-        "warm-homes",
-        "energy-support",
-        "housing",
-        "carers-support",
-        "dementia-support",
-        "general",
-        "other"
-      ],
-      "description": "Type of grant"
-    },
-    "client_id": {
-      "type": "string",
-      "description": "Reference to client"
-    },
-    "client_name": {
-      "type": "string",
-      "description": "Client name for reference"
+      "description": "Application deadline"
     },
     "status": {
       "type": "string",
       "enum": [
-        "applied",
+        "draft",
+        "submitted",
         "awarded",
-        "rejected"
+        "rejected",
+        "closed"
       ],
-      "default": "applied",
-      "description": "Grant status"
+      "default": "draft",
+      "description": "Application status"
     },
-    "notes": {
+    "project_title": {
       "type": "string",
-      "description": "Additional notes"
+      "description": "Project name for this grant"
+    },
+    "project_description": {
+      "type": "string",
+      "description": "Project description"
+    },
+    "beneficiaries": {
+      "type": "string",
+      "description": "Who benefits"
+    },
+    "outcomes": {
+      "type": "string",
+      "description": "Expected outcomes"
+    },
+    "ai_draft_application": {
+      "type": "object",
+      "description": "AI-generated application draft",
+      "properties": {
+        "executive_summary": {
+          "type": "string"
+        },
+        "need_statement": {
+          "type": "string"
+        },
+        "project_description": {
+          "type": "string"
+        },
+        "outcomes_impact": {
+          "type": "string"
+        },
+        "organisation_background": {
+          "type": "string"
+        },
+        "budget_justification": {
+          "type": "string"
+        }
+      }
     }
   },
   "required": [
-    "grant_name"
+    "charity_id",
+    "grant_name",
+    "funder_name",
+    "amount",
+    "deadline"
   ]
 }

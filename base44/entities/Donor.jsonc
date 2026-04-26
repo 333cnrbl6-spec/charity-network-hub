@@ -1,0 +1,70 @@
+{
+  "name": "Donor",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "name": {
+      "type": "string",
+      "description": "Donor name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "lapsed",
+        "major",
+        "prospect"
+      ],
+      "default": "prospect",
+      "description": "Donor status"
+    },
+    "total_donated": {
+      "type": "number",
+      "default": 0,
+      "description": "Total lifetime donations"
+    },
+    "last_donation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date of last donation"
+    },
+    "donation_frequency": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "monthly",
+        "annual"
+      ],
+      "description": "Donation pattern"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "website",
+        "event",
+        "referral",
+        "grant",
+        "corporate",
+        "other"
+      ],
+      "description": "How donor was acquired"
+    }
+  },
+  "required": [
+    "charity_id",
+    "name",
+    "email"
+  ]
+}

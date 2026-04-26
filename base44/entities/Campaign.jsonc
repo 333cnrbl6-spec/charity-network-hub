@@ -1,0 +1,62 @@
+{
+  "name": "Campaign",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "title": {
+      "type": "string",
+      "description": "Campaign title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description"
+    },
+    "goal_amount": {
+      "type": "number",
+      "description": "Fundraising target in GBP"
+    },
+    "raised_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount raised so far"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "draft",
+      "description": "Campaign status"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Campaign start date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Campaign end date"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Campaign image"
+    },
+    "donor_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of donors"
+    }
+  },
+  "required": [
+    "charity_id",
+    "title",
+    "goal_amount"
+  ]
+}

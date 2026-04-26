@@ -1,0 +1,60 @@
+{
+  "name": "Donation",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "donor_id": {
+      "type": "string",
+      "description": "Reference to Donor"
+    },
+    "campaign_id": {
+      "type": "string",
+      "description": "Reference to Campaign (optional)"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Donation amount in GBP"
+    },
+    "donation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When donation was made"
+    },
+    "donor_name": {
+      "type": "string",
+      "description": "Donor name for reference"
+    },
+    "donor_email": {
+      "type": "string",
+      "description": "Donor email for reference"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "card",
+        "bank_transfer",
+        "cash",
+        "cheque"
+      ],
+      "description": "Payment method"
+    },
+    "thank_you_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether thank you letter sent"
+    },
+    "ai_thank_you_letter": {
+      "type": "string",
+      "description": "AI-generated thank you letter"
+    }
+  },
+  "required": [
+    "charity_id",
+    "donor_id",
+    "amount",
+    "donation_date"
+  ]
+}
