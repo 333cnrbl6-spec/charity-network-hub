@@ -12,17 +12,22 @@ import StatusLight from '@/components/ui/StatusLight';
 import { playClick, playSuccess, playLoading } from '@/lib/audio';
 
 const BRANCHES = [
-  { id: 'manchester', name: 'Manchester' },
-  { id: 'bury', name: 'Bury' },
-  { id: 'stockport', name: 'Stockport' },
-  { id: 'wigan', name: 'Wigan' },
-  { id: 'trafford', name: 'Trafford' },
-  { id: 'salford', name: 'Salford' },
-  { id: 'bolton', name: 'Bolton' },
-  { id: 'lancashire', name: 'Lancashire' },
-  { id: 'wirral', name: 'Wirral' },
-  { id: 'sefton', name: 'Sefton' },
-  { id: 'liverpool', name: 'Liverpool' },
+  { id: 'bury',              name: 'Age UK Bury' },
+  { id: 'manchester',        name: 'Age UK Manchester' },
+  { id: 'stockport',         name: 'Age UK Stockport' },
+  { id: 'bolton',            name: 'Age UK Bolton' },
+  { id: 'salford_trafford',  name: 'Age UK Salford & Trafford' },
+  { id: 'lancashire',        name: 'Age UK Lancashire' },
+  { id: 'cheshire',          name: 'Age UK Cheshire' },
+  { id: 'cumbria',           name: 'Age UK Cumbria' },
+  { id: 'wirral',            name: 'Age UK Wirral' },
+  { id: 'halton_warrington', name: 'Age UK Halton & Warrington' },
+  { id: 'st_helens',         name: 'Age UK St Helens' },
+  { id: 'knowsley',          name: 'Age UK Knowsley' },
+  { id: 'oldham',            name: 'Age UK Oldham' },
+  { id: 'rochdale',          name: 'Age UK Rochdale' },
+  { id: 'tameside',          name: 'Age UK Tameside' },
+  { id: 'wigan',             name: 'Age UK Wigan Borough' },
 ];
 
 export default function NationalDashboard() {
@@ -135,6 +140,22 @@ export default function NationalDashboard() {
     } finally {
       setSyncLoading(null);
       setPopulateProgress(null);
+    }
+  };
+
+  const handleSeedNorthWest = async () => {
+    playLoading();
+    setSyncLoading('seed-nw');
+    try {
+      await base44.functions.invoke('seedNorthWestBranches', {});
+      playSuccess();
+      queryClient.invalidateQueries({ queryKey: ['branchReports'] });
+      queryClient.invalidateQueries({ queryKey: ['branchConfigs'] });
+      queryClient.invalidateQueries({ queryKey: ['syncLogs'] });
+    } catch (error) {
+      console.error('Seed NW error:', error);
+    } finally {
+      setSyncLoading(null);
     }
   };
 
@@ -257,15 +278,24 @@ export default function NationalDashboard() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button 
-          onClick={handleAutoPopulate}
+          onClick={handleSeedNorthWest}
           disabled={!!syncLoading}
           className="gap-2"
           variant="default"
         >
+          <MapPin className="w-4 h-4" />
+          {syncLoading === 'seed-nw' ? 'Connecting North West...' : 'Connect All North West Branches'}
+        </Button>
+        <Button 
+          onClick={handleAutoPopulate}
+          disabled={!!syncLoading}
+          className="gap-2"
+          variant="outline"
+        >
           <Zap className="w-4 h-4" />
-          {syncLoading === 'populate' ? `Populating... ${populateProgress || 0}%` : 'Auto-Populate All Branches'}
+          {syncLoading === 'populate' ? `Populating... ${populateProgress || 0}%` : 'Populate Branch Data'}
         </Button>
         <Button 
           onClick={handleSyncAll}
