@@ -6,9 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Users, Briefcase, CalendarDays, ClipboardList,
-  CheckCircle2, Clock, AlertCircle, Phone, MapPin, TrendingUp, Gift, Upload
+  CheckCircle2, Clock, AlertCircle, Phone, MapPin, TrendingUp, Gift, Upload, FileBarChart2
 } from 'lucide-react';
 import AIFileDropZone from '@/components/import/AIFileDropZone';
+import ReportBuilder from '@/components/reports/ReportBuilder';
 import { useAuth } from '@/lib/AuthContext';
 import { format, isToday, isTomorrow, parseISO } from 'date-fns';
 
@@ -64,6 +65,7 @@ export default function BuryCoordinatorPortal() {
     { id: 'sessions', label: 'Sessions', icon: CalendarDays },
     { id: 'grants', label: 'Grants', icon: Gift },
     { id: 'import', label: 'Import Data', icon: Upload },
+    { id: 'reports', label: 'Reports', icon: FileBarChart2 },
   ];
 
   return (
@@ -387,6 +389,9 @@ export default function BuryCoordinatorPortal() {
             <AIFileDropZone onImportComplete={() => {}} />
           </div>
         )}
+
+        {/* REPORTS */}
+        {activeTab === 'reports' && <ReportBuilder />}
 
       </main>
     </div>
