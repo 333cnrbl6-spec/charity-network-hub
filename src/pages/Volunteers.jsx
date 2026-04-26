@@ -16,7 +16,7 @@ export default function Volunteers() {
 
   const { data: volunteers = [] } = useQuery({
     queryKey: ['volunteers'],
-    queryFn: () => base44.entities.Volunteer.list(),
+    queryFn: () => base44.entities.Volunteer.list('-created_date'),
   });
 
   const filtered = filterData(volunteers).filter(v =>

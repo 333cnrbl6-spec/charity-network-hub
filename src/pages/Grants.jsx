@@ -16,7 +16,7 @@ export default function Grants() {
 
   const { data: grants = [] } = useQuery({
     queryKey: ['grants'],
-    queryFn: () => base44.entities.Grant.list(),
+    queryFn: () => base44.entities.Grant.list('-created_date'),
   });
 
   const statusColors = {

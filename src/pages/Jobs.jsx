@@ -15,7 +15,7 @@ export default function Jobs() {
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list(),
+    queryFn: () => base44.entities.Job.list('-created_date'),
   });
 
   const filtered = filterData(jobs).filter(j => statusFilter === 'all' || j.status === statusFilter);

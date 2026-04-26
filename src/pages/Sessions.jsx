@@ -14,7 +14,7 @@ export default function Sessions() {
 
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions'],
-    queryFn: () => base44.entities.Session.list(),
+    queryFn: () => base44.entities.Session.list('-created_date'),
   });
 
   const filteredSessions = filterData(sessions);
