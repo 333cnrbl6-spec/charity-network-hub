@@ -9,27 +9,42 @@ export default function UnifiedBranchView({ branchId, branchName, showPopulator,
   // Fetch all branch data - clients, volunteers, jobs, sessions, grants
   const { data: clients = [] } = useQuery({
     queryKey: ['clients', branchId],
-    queryFn: () => base44.entities.Client.list(),
+    queryFn: async () => {
+      const all = await base44.entities.Client.list();
+      return branchId ? all.filter(c => c.branch_id === branchId) : all;
+    },
   });
 
   const { data: volunteers = [] } = useQuery({
     queryKey: ['volunteers', branchId],
-    queryFn: () => base44.entities.Volunteer.list(),
+    queryFn: async () => {
+      const all = await base44.entities.Volunteer.list();
+      return branchId ? all.filter(v => v.branch_id === branchId) : all;
+    },
   });
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['jobs', branchId],
-    queryFn: () => base44.entities.Job.list(),
+    queryFn: async () => {
+      const all = await base44.entities.Job.list();
+      return branchId ? all.filter(j => j.branch_id === branchId) : all;
+    },
   });
 
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions', branchId],
-    queryFn: () => base44.entities.Session.list(),
+    queryFn: async () => {
+      const all = await base44.entities.Session.list();
+      return branchId ? all.filter(s => s.branch_id === branchId) : all;
+    },
   });
 
   const { data: grants = [] } = useQuery({
     queryKey: ['grants', branchId],
-    queryFn: () => base44.entities.Grant.list(),
+    queryFn: async () => {
+      const all = await base44.entities.Grant.list();
+      return branchId ? all.filter(g => g.branch_id === branchId) : all;
+    },
   });
 
   const { data: report } = useQuery({
