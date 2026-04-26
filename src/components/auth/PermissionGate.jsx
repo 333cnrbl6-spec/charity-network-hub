@@ -1,55 +1,44 @@
-import React from 'react';
-import { AlertCircle } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
+import { AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 /**
- * Wrapper component that gates content based on user permissions
- * 
- * Usage:
- * <PermissionGate resource="clients">
- *   <ClientsList />
- * </PermissionGate>
- * 
- * Or with actions:
- * <PermissionGate action="create_job">
- *   <CreateJobButton />
- * </PermissionGate>
+ * Conditionally render children based on user permissions
+ * Supports resource-based and action-based access control
  */
 export default function PermissionGate({
-  children,
   resource,
   action,
+  role,
   fallback = null,
-  showDeniedMessage = true,
+  showDeniedMessage = false,
+  children,
 }) {
-  const { canView, canPerform } = usePermissions();
+  const { can } = usePermissions();
 
-  // Check permission based on resource or action
-  const hasPermission = resource ? canView(resource) : action ? canPerform(action) : true;
+  const hasAccess = can({
+    resource,
+    action,
+    role: role ? (Array.isArray(role) ? role : [role]) : undefined,
+  });
 
-  if (!hasPermission) {
-    if (fallback) {
-      return fallback;
+  if (!hasAccess) {
+    if (showDeniedMessage) {
+      return (
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardContent className="flex items-start gap-3 py-6">
+            <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-destructive">Access Denied</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                You don't have permission to view this resource.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      );
     }
-
-    if (!showDeniedMessage) {
-      return null;
-    }
-
-    return (
-      <Card className="border-destructive/50 bg-destructive/5">
-        <CardContent className="flex items-center gap-3 py-4">
-          <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
-          <div>
-            <p className="text-sm font-medium text-destructive">Access Denied</p>
-            <p className="text-xs text-muted-foreground">
-              You don't have permission to {resource ? `view ${resource}` : `perform this action`}.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return fallback;
   }
 
   return children;

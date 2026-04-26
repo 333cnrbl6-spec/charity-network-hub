@@ -1,24 +1,29 @@
-import React, { useMemo } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useMemo } from 'react';
 
 /**
- * Component that filters navigation items based on user permissions
- * 
- * Usage:
- * <RoleBasedNav items={navigationItems} />
+ * Filter navigation items based on user role
+ * Hides menu items the user doesn't have access to
  */
-export default function RoleBasedNav({ items = [] }) {
-  const { canView } = usePermissions();
+export default function RoleBasedNav({ items, renderItem }) {
+  const { hasResourceAccess } = usePermissions();
 
-  // Filter navigation items based on viewable resources
-  const filteredItems = useMemo(() => {
+  const visibleItems = useMemo(() => {
     return items.filter(item => {
       // If item has no resource requirement, always show it
       if (!item.resource) return true;
-      // Check if user can view the resource
-      return canView(item.resource);
+      // Otherwise, check if user has access to the resource
+      return hasResourceAccess(item.resource);
     });
-  }, [items, canView]);
+  }, [items, hasResourceAccess]);
 
-  return filteredItems;
+  return (
+    <>
+      {visibleItems.map((item, idx) => (
+        <div key={idx}>
+          {renderItem(item)}
+        </div>
+      ))}
+    </>
+  );
 }

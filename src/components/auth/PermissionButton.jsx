@@ -1,33 +1,35 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
 import { usePermissions } from '@/hooks/usePermissions';
+import { Button } from '@/components/ui/button';
 
 /**
- * Button wrapper that disables/hides based on action permissions
- * 
- * Usage:
- * <PermissionButton action="create_job" onClick={handleCreate}>
- *   Create Job
- * </PermissionButton>
+ * Button wrapper that enforces permission-based access
+ * Can hide or disable button based on user permissions
  */
 export default function PermissionButton({
   action,
-  children,
+  resource,
+  role,
   hideIfDenied = false,
-  ...props
+  children,
+  ...buttonProps
 }) {
-  const { canPerform } = usePermissions();
-  const hasPermission = action ? canPerform(action) : true;
+  const { can } = usePermissions();
 
-  if (hideIfDenied && !hasPermission) {
+  const hasAccess = can({
+    action,
+    resource,
+    role: role ? (Array.isArray(role) ? role : [role]) : undefined,
+  });
+
+  if (!hasAccess && hideIfDenied) {
     return null;
   }
 
   return (
     <Button
-      {...props}
-      disabled={!hasPermission || props.disabled}
-      title={!hasPermission ? `You don't have permission to perform this action` : props.title}
+      disabled={!hasAccess}
+      title={!hasAccess ? 'You do not have permission to perform this action' : undefined}
+      {...buttonProps}
     >
       {children}
     </Button>
