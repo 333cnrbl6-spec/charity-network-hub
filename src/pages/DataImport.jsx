@@ -7,6 +7,7 @@ import { Upload, CheckCircle2, AlertCircle, Download, FileUp, Sparkles } from 'l
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { playSuccess, playClick } from '@/lib/audio';
 import AIFileDropZone from '@/components/import/AIFileDropZone';
+import BuryAssistCSVImporter from '@/components/import/BuryAssistCSVImporter';
 
 const IMPORT_TEMPLATES = {
   Client: {
@@ -115,19 +116,29 @@ export default function DataImport() {
         <p className="text-muted-foreground mt-1">Import real client, volunteer, and operational data</p>
       </div>
 
-      {/* AI Drop Zone — primary method */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
-            AI-Guided File Import
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word, image — and AI will read it, identify the data, and guide you through importing it.</p>
-        </CardHeader>
-        <CardContent>
-          <AIFileDropZone />
-        </CardContent>
-      </Card>
+      {/* BuryAssist CSV Import — dedicated flow */}
+      <BuryAssistCSVImporter />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">Or use AI-guided import</span>
+        </div>
+      </div>
+
+      {/* AI Drop Zone — for other file types */}
+       <Card>
+         <CardHeader>
+           <CardTitle className="flex items-center gap-2">
+             <Sparkles className="w-5 h-5 text-primary" />
+             AI-Guided File Import
+           </CardTitle>
+           <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word, image — and AI will read it, identify the data, and guide you through importing it.</p>
+         </CardHeader>
+         <CardContent>
+           <AIFileDropZone />
+         </CardContent>
+       </Card>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
