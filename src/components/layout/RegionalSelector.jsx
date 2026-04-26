@@ -68,6 +68,8 @@ export default function RegionalSelector({ onRegionChange, onBranchChange }) {
     playClick();
     onBranchChange(branch);
     setIsOpen(false);
+    // Navigate to branch details page
+    window.location.href = `/branch/${branch.branch_id}`;
   };
 
   const regionLabel = REGIONS[selectedRegion]?.name || 'National Overview';
