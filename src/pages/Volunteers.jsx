@@ -52,12 +52,12 @@ export default function Volunteers() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Volunteers</h1>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Volunteer
-        </Button>
-      </div>
+         <h1 className="text-2xl font-bold">Volunteers</h1>
+         <Button className="gap-2" disabled title="Volunteer creation coming soon">
+           <Plus className="w-4 h-4" />
+           Add Volunteer
+         </Button>
+       </div>
 
       <Card>
         <CardHeader>

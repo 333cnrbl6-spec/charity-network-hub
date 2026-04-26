@@ -67,12 +67,12 @@ export default function Clients() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Clients</h1>
-        <Button className="gap-2" onClick={playClick}>
-            <Plus className="w-4 h-4" />
-            Add Client
-          </Button>
-      </div>
+         <h1 className="text-2xl font-bold">Clients</h1>
+         <Button className="gap-2" onClick={playClick} disabled title="Client creation coming soon">
+             <Plus className="w-4 h-4" />
+             Add Client
+           </Button>
+       </div>
 
       {/* Out-of-catchment alert — only shown in branch view */}
       {currentBranch && outOfCatchmentCount > 0 && (
@@ -172,7 +172,7 @@ export default function Clients() {
                   <TableCell className="text-sm">{client.date_registered ? new Date(client.date_registered).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                       <Button size="sm" variant="ghost" onClick={playClick}>
+                       <Button size="sm" variant="ghost" onClick={playClick} disabled title="Edit coming soon">
                          <Pencil className="w-4 h-4" />
                        </Button>
                        <Button 

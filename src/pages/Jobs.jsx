@@ -37,12 +37,12 @@ export default function Jobs() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Jobs</h1>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Job
-        </Button>
-      </div>
+         <h1 className="text-2xl font-bold">Jobs</h1>
+         <Button className="gap-2" disabled title="Job creation coming soon">
+           <Plus className="w-4 h-4" />
+           Add Job
+         </Button>
+       </div>
 
       <Card>
         <CardHeader>
