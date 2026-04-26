@@ -47,6 +47,7 @@ import CharitySearch from './pages/CharitySearch';
 import CharityAnalytics from './pages/CharityAnalytics';
 import CharityOnboarding from './pages/CharityOnboarding';
 import ComplianceHub from './pages/ComplianceHub';
+import NetworkIntelligence from './pages/NetworkIntelligence';
 import SafeguardingHub from './pages/SafeguardingHub';
 import ReferralDashboard from './pages/ReferralDashboard';
 import TrainingModule from './pages/TrainingModule';
@@ -105,6 +106,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<AdminOnly><NationalDashboard /></AdminOnly>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/network" element={<NetworkOverview />} />
+        <Route path="/network-intelligence" element={<NetworkIntelligence />} />
         <Route path="/regional/:region" element={<RegionalOverview />} />
         <Route path="/branch/:branchId" element={<BranchDetails />} />
         <Route path="/map" element={<NetworkMap />} />
