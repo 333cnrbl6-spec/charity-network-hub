@@ -20,6 +20,7 @@ import { playClick } from '@/lib/audio';
 const VOLUNTEER_NAV = [
   { icon: LayoutDashboard, label: 'My Schedule',   path: '/staff-portal' },
   { icon: Briefcase,       label: 'My Jobs',       path: '/jobs' },
+  { icon: LayoutDashboard, label: 'Field Log',     path: '/field-log' },
   { icon: Users,           label: 'My Clients',    path: '/clients' },
   { icon: FileText,        label: 'Asset Library',  path: '/library' },
   { icon: ShieldCheck,     label: 'Safeguarding',  path: '/safeguarding' },

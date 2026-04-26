@@ -1,0 +1,130 @@
+{
+  "name": "VisitOutcome",
+  "type": "object",
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "description": "Reference to Job"
+    },
+    "volunteer_id": {
+      "type": "string",
+      "description": "Volunteer who completed visit"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Volunteer name"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Reference to Client"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name"
+    },
+    "visit_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time of visit"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Duration of visit in minutes"
+    },
+    "completion_status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "partial",
+        "unable_to_complete",
+        "rescheduled"
+      ],
+      "description": "Whether work was completed"
+    },
+    "work_summary": {
+      "type": "string",
+      "description": "Summary of work performed"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_url": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Before/after photos"
+    },
+    "client_feedback": {
+      "type": "string",
+      "description": "Client feedback or comments"
+    },
+    "client_satisfaction": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Client satisfaction rating 1-5"
+    },
+    "client_signed_off": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether client signed off on work"
+    },
+    "client_signature_url": {
+      "type": "string",
+      "description": "URL to client's digital signature"
+    },
+    "location_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether location was verified"
+    },
+    "location_coords": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "accuracy_meters": {
+          "type": "number"
+        }
+      },
+      "description": "GPS coordinates of visit"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or issues"
+    },
+    "follow_up_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether follow-up visit is needed"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When outcome was submitted"
+    }
+  },
+  "required": [
+    "job_id",
+    "volunteer_id",
+    "volunteer_name",
+    "client_id",
+    "client_name",
+    "visit_date",
+    "completion_status"
+  ]
+}
