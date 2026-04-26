@@ -8,7 +8,6 @@ import { getDefaultPortalPath } from '@/lib/roleConfig';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -111,7 +110,7 @@ export const AuthProvider = ({ children }) => {
         '/jobs', '/sessions', '/analytics', '/search', '/charity-analytics', '/impact'];
       if (currentUser?.role !== 'admin' && !publicPaths.some(p => path.startsWith(p))) {
         const dest = getDefaultPortalPath(currentUser);
-        navigate(dest, { replace: true });
+        window.location.replace(dest);
       }
     } catch (error) {
       console.error('User auth check failed:', error);
