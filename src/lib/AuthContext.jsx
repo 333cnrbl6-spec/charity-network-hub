@@ -104,7 +104,9 @@ export const AuthProvider = ({ children }) => {
       const path = window.location.pathname;
       const publicPaths = ['/role-onboarding', '/coordinator-portal', '/volunteer-onboarding',
         '/sue-bradley-onboarding', '/staff-portal', '/branch-ops', '/branch-ceo', '/governance-portal',
-        '/my-organisation', '/platform-admin', '/pricing', '/onboard', '/charity-onboarding'];
+        '/my-organisation', '/platform-admin', '/pricing', '/onboard', '/charity-onboarding',
+        '/safeguarding', '/compliance', '/training', '/grants', '/clients', '/volunteers',
+        '/jobs', '/sessions', '/analytics', '/search', '/charity-analytics', '/impact'];
       if (currentUser?.role !== 'admin' && !publicPaths.some(p => path.startsWith(p))) {
         const dest = getDefaultPortalPath(currentUser);
         window.location.href = dest;

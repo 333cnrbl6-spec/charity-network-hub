@@ -9,11 +9,11 @@ import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Briefcase, Phone, MapPin, Clock, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Briefcase, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { format, isToday, parseISO } from 'date-fns';
 
 export default function StaffPortal() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['my-jobs', user?.full_name],
@@ -31,23 +31,13 @@ export default function StaffPortal() {
   const isVolunteer = user?.org_role === 'volunteer';
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between shadow">
-        <div>
-          <p className="text-xs opacity-70">{user?.branch_name || 'Age UK'} — {isVolunteer ? 'Volunteer Portal' : 'Staff Portal'}</p>
-          <h1 className="text-xl font-bold">Welcome, {user?.full_name?.split(' ')[0] || 'there'}</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-white/20 text-white border-white/30 text-xs">
-            {user?.job_title || (isVolunteer ? 'Volunteer' : 'Staff')}
-          </Badge>
-          <Button size="sm" variant="outline" className="border-white/40 text-white hover:bg-white/20" onClick={() => logout()}>
-            <LogOut className="w-3.5 h-3.5 mr-1.5" /> Log Out
-          </Button>
-        </div>
-      </header>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">{isVolunteer ? 'Volunteer Portal' : 'Staff Portal'}</h1>
+        <p className="text-muted-foreground text-sm">{user?.branch_name || 'Age UK'} — Welcome, {user?.full_name?.split(' ')[0] || 'there'}</p>
+      </div>
 
-      <main className="max-w-2xl mx-auto p-6 space-y-6">
+      <main className="max-w-2xl space-y-6">
         {/* Today's summary */}
         <div className="grid grid-cols-3 gap-3">
           <Card>
@@ -145,4 +135,5 @@ export default function StaffPortal() {
       </main>
     </div>
   );
+
 }

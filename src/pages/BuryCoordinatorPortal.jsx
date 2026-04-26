@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Users, Briefcase, CalendarDays, Star, ClipboardList, LogOut,
-  CheckCircle2, Clock, AlertCircle, Plus, Phone, MapPin, TrendingUp, Gift
+  Users, Briefcase, CalendarDays, ClipboardList,
+  CheckCircle2, Clock, AlertCircle, Phone, MapPin, TrendingUp, Gift
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { format, isToday, isTomorrow, parseISO } from 'date-fns';
@@ -14,7 +14,7 @@ import { format, isToday, isTomorrow, parseISO } from 'date-fns';
 const BRANCH_ID = 'bury';
 
 export default function BuryCoordinatorPortal() {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
   // Check if user needs onboarding
@@ -65,23 +65,14 @@ export default function BuryCoordinatorPortal() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between shadow-lg">
-        <div>
-          <p className="text-xs opacity-70 font-medium">{user?.branch_name || 'Age UK Bury'} — {user?.job_title || 'Coordinator'} Portal</p>
-          <h1 className="text-xl font-bold">{user?.full_name ? `${user.full_name}'s Workspace` : 'Coordinator Workspace'}</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-white/20 text-white border-white/30 text-xs">Bury Branch</Badge>
-          <Button size="sm" variant="outline" className="border-white/40 text-white hover:bg-white/20" onClick={() => logout()}>
-            <LogOut className="w-3.5 h-3.5 mr-1.5" /> Log Out
-          </Button>
-        </div>
-      </header>
+    <div className="space-y-0">
+      <div className="pb-4">
+        <h1 className="text-2xl font-bold">{user?.full_name ? `${user.full_name}'s Workspace` : 'Coordinator Workspace'}</h1>
+        <p className="text-muted-foreground text-sm">{user?.branch_name || 'Age UK Bury'} — {user?.job_title || 'Coordinator'}</p>
+      </div>
 
       {/* Tab Nav */}
-      <nav className="bg-card border-b border-border px-6 overflow-x-auto">
+      <nav className="bg-card border border-border rounded-lg px-4 overflow-x-auto mb-6">
         <div className="flex gap-1 min-w-max">
           {tabs.map(({ id, label, icon: Icon, badge }) => (
             <button
@@ -106,7 +97,7 @@ export default function BuryCoordinatorPortal() {
       </nav>
 
       {/* Content */}
-      <main className="max-w-5xl mx-auto p-6 space-y-6">
+      <main className="max-w-5xl space-y-6">
 
         {/* DASHBOARD */}
         {activeTab === 'dashboard' && (

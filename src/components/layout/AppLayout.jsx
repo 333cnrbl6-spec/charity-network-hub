@@ -7,7 +7,7 @@ export default function AppLayout() {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <main className="ml-64 min-h-screen">
-        <div className="p-8">
+        <div className="p-6">
           <Outlet />
         </div>
       </main>

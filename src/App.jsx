@@ -126,6 +126,12 @@ const AuthenticatedApp = () => {
         <Route path="/pricing" element={<PricingComparison />} />
         <Route path="/platform-admin" element={<PlatformAdmin />} />
         <Route path="/my-organisation" element={<TenantPortal />} />
+        {/* Role-based portals — inside AppLayout so they get the sidebar */}
+        <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
+        <Route path="/staff-portal" element={<StaffPortal />} />
+        <Route path="/branch-ops" element={<BranchOpsPortal />} />
+        <Route path="/branch-ceo" element={<BranchCEOPortal />} />
+        <Route path="/governance-portal" element={<GovernancePortal />} />
         </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -143,16 +149,10 @@ function App() {
             <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
             <Route path="/volunteer-onboarding" element={<VolunteerOnboarding />} />
-            <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
             {/* Smart onboarding — open to all */}
             <Route path="/onboard" element={<SmartOnboarding />} />
             <Route path="/charity-onboarding" element={<CharityOnboarding />} />
-            {/* Role-based portals — each tier of the Age UK hierarchy */}
-            <Route path="/staff-portal" element={<StaffPortal />} />
-            <Route path="/branch-ops" element={<BranchOpsPortal />} />
-            <Route path="/branch-ceo" element={<BranchCEOPortal />} />
-            <Route path="/governance-portal" element={<GovernancePortal />} />
-            {/* All other routes go through auth guard */}
+            {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>
         </Router>

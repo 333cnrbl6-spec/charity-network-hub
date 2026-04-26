@@ -11,14 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Users, Briefcase, Gift, LogOut, TrendingUp, ShieldCheck,
-  AlertCircle, Network, Building2, FileText, BarChart3, Globe
+  Users, Briefcase, Gift, TrendingUp, ShieldCheck,
+  AlertCircle, Network, Building2, BarChart3, Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
 export default function BranchCEOPortal() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const branchId = user?.branch_id || 'bury';
 
@@ -67,21 +67,13 @@ export default function BranchCEOPortal() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between shadow">
-        <div>
-          <p className="text-xs opacity-70">{user?.branch_name || 'Age UK Branch'} — Chief Executive Officer</p>
-          <h1 className="text-xl font-bold">{user?.full_name || 'CEO'}</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-white/20 text-white border-white/30 text-xs">Branch CEO</Badge>
-          <Button size="sm" variant="outline" className="border-white/40 text-white hover:bg-white/20" onClick={() => logout()}>
-            <LogOut className="w-3.5 h-3.5 mr-1.5" /> Log Out
-          </Button>
-        </div>
-      </header>
+    <div className="space-y-0">
+      <div className="pb-4">
+        <h1 className="text-2xl font-bold">CEO Dashboard</h1>
+        <p className="text-muted-foreground text-sm">{user?.branch_name || 'Age UK Branch'} — Chief Executive Officer</p>
+      </div>
 
-      <nav className="bg-card border-b px-6 overflow-x-auto">
+      <nav className="bg-card border border-border rounded-lg px-4 overflow-x-auto mb-6">
         <div className="flex gap-1 min-w-max">
           {tabs.map(({ id, label, icon: Icon, badge }) => (
             <button key={id} onClick={() => setActiveTab(id)}
@@ -93,7 +85,7 @@ export default function BranchCEOPortal() {
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto p-6 space-y-6">
+      <main className="max-w-5xl space-y-6">
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* KPIs */}

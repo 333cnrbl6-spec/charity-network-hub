@@ -10,14 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Users, Briefcase, CalendarDays, Gift, LogOut, TrendingUp,
+  Users, Briefcase, CalendarDays, Gift, TrendingUp,
   ShieldCheck, CheckCircle2, AlertCircle, Clock, ClipboardList, Building2
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 
 export default function BranchOpsPortal() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const branchId = user?.branch_id || 'bury';
 
@@ -69,21 +69,13 @@ export default function BranchOpsPortal() {
   const isOpsManager = user?.org_role === 'branch_operations_manager';
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between shadow">
-        <div>
-          <p className="text-xs opacity-70">{user?.branch_name || 'Age UK Branch'} — {isOpsManager ? 'Operations Manager Portal' : 'Service Manager Portal'}</p>
-          <h1 className="text-xl font-bold">{user?.full_name || 'Manager'}</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-white/20 text-white border-white/30 text-xs">{user?.job_title || 'Operations'}</Badge>
-          <Button size="sm" variant="outline" className="border-white/40 text-white hover:bg-white/20" onClick={() => logout()}>
-            <LogOut className="w-3.5 h-3.5 mr-1.5" /> Log Out
-          </Button>
-        </div>
-      </header>
+    <div className="space-y-0">
+      <div className="pb-4">
+        <h1 className="text-2xl font-bold">{isOpsManager ? 'Operations Dashboard' : 'Service Manager Dashboard'}</h1>
+        <p className="text-muted-foreground text-sm">{user?.branch_name || 'Age UK Branch'}</p>
+      </div>
 
-      <nav className="bg-card border-b border-border px-6 overflow-x-auto">
+      <nav className="bg-card border border-border rounded-lg px-4 overflow-x-auto mb-6">
         <div className="flex gap-1 min-w-max">
           {tabs.map(({ id, label, icon: Icon, badge }) => (
             <button
@@ -100,7 +92,7 @@ export default function BranchOpsPortal() {
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto p-6 space-y-6">
+      <main className="max-w-5xl space-y-6">
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
