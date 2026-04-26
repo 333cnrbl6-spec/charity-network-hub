@@ -16,6 +16,7 @@ import BranchDetails from './pages/BranchDetails';
 import NetworkMap from './pages/NetworkMap';
 import Clients from './pages/Clients';
 import ClientDetail from './pages/ClientDetail';
+import ServiceGapMap from './pages/ServiceGapMap';
 import Volunteers from './pages/Volunteers';
 import Jobs from './pages/Jobs';
 import Sessions from './pages/Sessions';
@@ -99,6 +100,7 @@ const AuthenticatedApp = () => {
         <Route path="/regional/:region" element={<RegionalOverview />} />
         <Route path="/branch/:branchId" element={<BranchDetails />} />
         <Route path="/map" element={<NetworkMap />} />
+        <Route path="/service-gaps" element={<ServiceGapMap />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/clients/:clientId" element={<ClientDetail />} />
         <Route path="/volunteers" element={<Volunteers />} />
