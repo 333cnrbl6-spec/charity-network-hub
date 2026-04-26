@@ -1,0 +1,95 @@
+{
+  "name": "Waitlist",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Reference to Client"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name for reference"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "home-visit",
+        "telephone-check",
+        "transport",
+        "shopping-assist",
+        "benefits-advice",
+        "digital-help",
+        "befriending",
+        "scams-advice",
+        "hospital-discharge",
+        "other"
+      ],
+      "description": "Type of service requested"
+    },
+    "required_area": {
+      "type": "string",
+      "description": "Geographic area or neighbourhood required"
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "Preferred branch ID"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Preferred branch name for reference"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "Priority level for service"
+    },
+    "date_added_to_waitlist": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When client was added to waitlist"
+    },
+    "reason_for_waitlist": {
+      "type": "string",
+      "description": "Why client is on waitlist (e.g., no volunteers available, area coverage gap)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the client's needs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "matched",
+        "activated",
+        "expired"
+      ],
+      "default": "waiting",
+      "description": "Waitlist entry status"
+    },
+    "matched_volunteer_id": {
+      "type": "string",
+      "description": "Volunteer ID when matched"
+    },
+    "matched_volunteer_name": {
+      "type": "string",
+      "description": "Volunteer name when matched"
+    },
+    "date_activated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When client was moved to active status"
+    }
+  },
+  "required": [
+    "client_id",
+    "client_name",
+    "service_type"
+  ]
+}
