@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,15 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, AlertTriangle, MapPin } from 'lucide-react';
 import { useBranchFilter } from '@/hooks/useBranchFilter';
 import { playClick, playSuccess, playError } from '@/lib/audio';
+import { isPostcodeInCatchment } from '@/lib/branchCatchments';
 
 export default function Clients() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const queryClient = useQueryClient();
-  const { isBranchView, filterData } = useBranchFilter();
+  const { isBranchView, filterData, currentBranch } = useBranchFilter();
+  const [showOutOfCatchmentOnly, setShowOutOfCatchmentOnly] = useState(false);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -37,6 +39,24 @@ export default function Clients() {
     return matchesSearch && matchesStatus;
   });
 
+  // Flag clients whose postcode is outside the current branch catchment
+  const catchmentFlags = useMemo(() => {
+    const flags = {};
+    if (!currentBranch) return flags;
+    filtered.forEach(c => {
+      if (c.postcode) {
+        flags[c.id] = isPostcodeInCatchment(c.postcode, currentBranch);
+      }
+    });
+    return flags;
+  }, [filtered, currentBranch]);
+
+  const outOfCatchmentCount = Object.values(catchmentFlags).filter(f => f.valid === false).length;
+
+  const displayedClients = showOutOfCatchmentOnly
+    ? filtered.filter(c => catchmentFlags[c.id]?.valid === false)
+    : filtered;
+
   const statusColors = {
     active: 'bg-green-100 text-green-800',
     inactive: 'bg-yellow-100 text-yellow-800',
@@ -52,6 +72,28 @@ export default function Clients() {
             Add Client
           </Button>
       </div>
+
+      {/* Out-of-catchment alert — only shown in branch view */}
+      {currentBranch && outOfCatchmentCount > 0 && (
+        <div className="flex items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+          <div className="flex items-center gap-2 text-amber-800">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm font-medium">
+              {outOfCatchmentCount} client{outOfCatchmentCount !== 1 ? 's' : ''} may be outside this branch's catchment area
+            </span>
+          </div>
+          <button
+            onClick={() => setShowOutOfCatchmentOnly(v => !v)}
+            className={`text-xs px-3 py-1 rounded-md border font-medium transition-colors ${
+              showOutOfCatchmentOnly
+                ? 'bg-amber-200 border-amber-400 text-amber-900'
+                : 'bg-white border-amber-300 text-amber-700 hover:bg-amber-100'
+            }`}
+          >
+            {showOutOfCatchmentOnly ? 'Show all' : 'Show flagged only'}
+          </button>
+        </div>
+      )}
 
       <Card>
         <CardHeader>
@@ -96,15 +138,26 @@ export default function Clients() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map(client => {
+            {displayedClients.map(client => {
               const age = client.date_of_birth ? 
                 Math.floor((new Date() - new Date(client.date_of_birth)) / (365.25 * 24 * 60 * 60 * 1000)) : 
                 '-';
+              const catchmentFlag = catchmentFlags[client.id];
+              const isOutside = catchmentFlag?.valid === false;
               return (
-                <TableRow key={client.id}>
+                <TableRow key={client.id} className={isOutside ? 'bg-amber-50/50' : ''}>
                   <TableCell className="font-medium">{client.full_name}</TableCell>
                   <TableCell>{age}</TableCell>
-                  <TableCell>{client.postcode || '-'}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span>{client.postcode || '-'}</span>
+                      {isOutside && (
+                        <span title={catchmentFlag.reason}>
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge className={statusColors[client.status]}>
                       {client.status}
@@ -137,7 +190,10 @@ export default function Clients() {
       </Card>
 
       <div className="text-sm text-muted-foreground">
-        Showing {filtered.length} of {clients.length} clients
+        Showing {displayedClients.length} of {clients.length} clients
+        {currentBranch && outOfCatchmentCount > 0 && !showOutOfCatchmentOnly && (
+          <span className="ml-2 text-amber-600">· {outOfCatchmentCount} outside catchment</span>
+        )}
       </div>
     </div>
   );
