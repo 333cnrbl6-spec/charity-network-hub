@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useJobs, useVolunteers } from '@/hooks/useEntityQueries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -78,21 +79,9 @@ export default function NationalDashboard() {
     };
   };
 
-  // Fetch jobs and volunteers for impact metrics
-  const { data: jobs = [] } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list(),
-  });
-
-  const { data: volunteers = [] } = useQuery({
-    queryKey: ['volunteers'],
-    queryFn: () => base44.entities.Volunteer.list(),
-  });
-
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
-  });
+  // Fetch jobs and volunteers for impact metrics (via shared hooks — deduped by React Query)
+  const { data: jobs = [] } = useJobs();
+  const { data: volunteers = [] } = useVolunteers();
 
   // Global stats
   const totalClients = branchReports.reduce((sum, r) => sum + (r.stats?.total_clients || 0), 0);

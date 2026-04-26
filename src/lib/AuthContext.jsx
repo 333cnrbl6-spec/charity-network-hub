@@ -103,7 +103,8 @@ export const AuthProvider = ({ children }) => {
       // Auto-redirect non-admin users to their role-appropriate portal
       const path = window.location.pathname;
       const publicPaths = ['/role-onboarding', '/coordinator-portal', '/volunteer-onboarding',
-        '/sue-bradley-onboarding', '/staff-portal', '/branch-ops', '/branch-ceo', '/governance-portal'];
+        '/sue-bradley-onboarding', '/staff-portal', '/branch-ops', '/branch-ceo', '/governance-portal',
+        '/my-organisation', '/platform-admin', '/pricing', '/onboard', '/charity-onboarding'];
       if (currentUser?.role !== 'admin' && !publicPaths.some(p => path.startsWith(p))) {
         const dest = getDefaultPortalPath(currentUser);
         window.location.href = dest;

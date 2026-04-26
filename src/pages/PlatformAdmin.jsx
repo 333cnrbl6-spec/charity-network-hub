@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import {
 import { TIER_LABELS, STATUS_LABELS } from '@/lib/tenantContext.jsx';
 import CreateTenantModal from '@/components/platform/CreateTenantModal';
 import TenantDetailPanel from '@/components/platform/TenantDetailPanel';
+import KPICard from '@/components/platform/KPICard';
 
 export default function PlatformAdmin() {
   const [stats, setStats] = useState(null);
@@ -21,36 +22,21 @@ export default function PlatformAdmin() {
   const [showCreate, setShowCreate] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const res = await base44.functions.invoke('tenantAdmin', { action: 'get_platform_stats' });
     setStats(res.data.stats);
     setTenants(res.data.tenants || []);
     setLoading(false);
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const filtered = tenants.filter(t => {
     const matchSearch = !search || t.org_name?.toLowerCase().includes(search.toLowerCase()) || t.primary_contact_email?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === 'all' || t.subscription_status === statusFilter;
     return matchSearch && matchStatus;
   });
-
-  const KPICard = ({ icon: IconComp, label, value, sub, color = 'text-primary' }) => (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className={`text-3xl font-bold mt-1 ${color}`}>{value}</p>
-            {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
-          </div>
-          <IconComp className={`w-8 h-8 ${color} opacity-20`} />
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   return (
     <div className="space-y-6">

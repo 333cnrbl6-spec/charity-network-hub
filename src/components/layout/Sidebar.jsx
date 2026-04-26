@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe, Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search, TrendingUp, ShieldCheck, Building2, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,12 +10,12 @@ import { playClick, playCover } from '@/lib/audio';
 
 export default function Sidebar() {
   const location = useLocation();
-  const [currentRegion, setCurrentRegion] = React.useState('national');
-  const [currentBranch, setCurrentBranch] = React.useState(null);
-  const [viewMode, setViewMode] = React.useState('national'); // 'national', 'regional', 'branch'
+  const [currentRegion, setCurrentRegion] = useState('national');
+  const [currentBranch, setCurrentBranch] = useState(null);
+  const [viewMode, setViewMode] = useState('national'); // 'national', 'regional', 'branch'
 
   // Sync sidebar state with URL changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.pathname.startsWith('/regional/')) {
       const region = location.pathname.split('/')[2];
       setCurrentRegion(region);
