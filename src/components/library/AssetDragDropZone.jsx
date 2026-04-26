@@ -2,7 +2,22 @@ import React, { useState } from 'react';
 import { Upload, File, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function AssetDragDropZone({ onFileSelect, acceptedFormats = '.pdf' }) {
+const ACCEPTED_EXTENSIONS = ['.pdf', '.xlsx', '.xls', '.docx', '.doc', '.txt', '.csv', '.pptx', '.ppt', '.ods', '.odp'];
+const ACCEPTED_MIME_TYPES = [
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+  'text/plain',
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.oasis.opendocument.spreadsheet',
+  'application/vnd.oasis.opendocument.presentation',
+];
+
+export default function AssetDragDropZone({ onFileSelect, acceptedFormats = ACCEPTED_EXTENSIONS.join(',') }) {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -33,10 +48,6 @@ export default function AssetDragDropZone({ onFileSelect, acceptedFormats = '.pd
   };
 
   const processFile = (selectedFile) => {
-    if (selectedFile.type !== 'application/pdf') {
-      toast.error('Only PDF files are supported');
-      return;
-    }
     setFile(selectedFile);
     onFileSelect(selectedFile);
   };
@@ -70,7 +81,8 @@ export default function AssetDragDropZone({ onFileSelect, acceptedFormats = '.pd
           <Upload className="w-12 h-12 mx-auto mb-3 text-muted-foreground/60" />
           <p className="text-base font-semibold mb-1">Drag and drop your PDF here</p>
           <p className="text-sm text-muted-foreground mb-3">or click to browse</p>
-          <p className="text-xs text-muted-foreground">PDF files only • Max 50MB</p>
+          <p className="text-xs text-muted-foreground">PDF, Word, Excel, PowerPoint, CSV, TXT • Max 50MB</p>
+          <p className="text-xs text-amber-600 mt-2 font-medium">⚠️ Drag files from your File Explorer directly into this browser window</p>
         </label>
       ) : (
         <div className="space-y-3">

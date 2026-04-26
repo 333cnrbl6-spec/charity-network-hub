@@ -33,13 +33,7 @@ export default function AssetUploadForm({ onSuccess }) {
 
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0];
-    if (selected) {
-      if (selected.type !== 'application/pdf') {
-        toast.error('Only PDF files are supported');
-        return;
-      }
-      setFile(selected);
-    }
+    if (selected) setFile(selected);
   };
 
   const handleAddTag = () => {
