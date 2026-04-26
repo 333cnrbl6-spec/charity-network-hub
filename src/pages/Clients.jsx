@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Pencil, Trash2, AlertTriangle, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useBranchFilter } from '@/hooks/useBranchFilter';
 import { playClick, playSuccess, playError } from '@/lib/audio';
 import { isPostcodeInCatchment } from '@/lib/branchCatchments';
@@ -146,7 +147,11 @@ export default function Clients() {
               const isOutside = catchmentFlag?.valid === false;
               return (
                 <TableRow key={client.id} className={isOutside ? 'bg-amber-50/50' : ''}>
-                  <TableCell className="font-medium">{client.full_name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link to={`/clients/${client.id}`} className="text-primary hover:underline">
+                      {client.full_name}
+                    </Link>
+                  </TableCell>
                   <TableCell>{age}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
