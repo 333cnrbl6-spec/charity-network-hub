@@ -22,6 +22,7 @@ const VOLUNTEER_NAV = [
   { icon: Users,           label: 'My Clients',    path: '/clients' },
   { icon: ShieldCheck,     label: 'Safeguarding',  path: '/safeguarding' },
   { icon: GraduationCap,   label: 'My Training',   path: '/training' },
+  { icon: Upload,          label: 'Import Data',   path: '/import' },
 ];
 
 const STAFF_NAV = [
@@ -32,6 +33,7 @@ const STAFF_NAV = [
   { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
   { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
   { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
+  { icon: Upload,          label: 'Import Data',     path: '/import' },
 ];
 
 // Coordinator nav — built dynamically so branch name can be used in labels if needed
@@ -91,6 +93,7 @@ const BRANCH_NAV = (branchId) => [
   { icon: Search,          label: 'Smart Search',     path: '/search' },
   { icon: TrendingUp,      label: 'Analytics',        path: '/charity-analytics' },
   { icon: AlertCircle,     label: 'Compliance',       path: '/compliance' },
+  { icon: Upload,          label: 'Import Data',      path: '/import' },
   { icon: Network,         label: 'Sync & Reports',   path: '/sync-log' },
 ];
 
@@ -104,6 +107,7 @@ const REGIONAL_NAV = (region) => [
   { icon: MapPin,          label: 'Branch Map',          path: '/map' },
   { icon: AlertCircle,     label: 'Compliance Overview', path: '/compliance' },
   { icon: Network,         label: 'Sync & Reports',      path: '/sync-log' },
+  { icon: Upload,          label: 'Import Data',         path: '/import' },
 ];
 
 const NATIONAL_NAV = [
