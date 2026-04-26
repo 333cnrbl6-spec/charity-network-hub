@@ -7,7 +7,7 @@ import { Send, X, Minimize2, Sparkles } from 'lucide-react';
 const VERA_AVATAR = 'https://media.base44.com/images/public/69e20cef658590cb2c64169c/9eac8d138_generated_image.png';
 
 const INTRO_BUBBLES = [
-  "👋 Hello! I'm Vera — your Age UK AI superhero!",
+  "👋 Hello! I'm Margaret — your Age UK AI helper!",
   "I know your role, your data, and this platform inside out ✨",
   "Ask me anything, or just click to chat with me!",
 ];
@@ -87,7 +87,7 @@ function ChatMessage({ role, content }) {
   return (
     <div className={`flex gap-2 ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
       {role === 'assistant' && (
-        <img src={VERA_AVATAR} alt="Vera" className="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5 border border-primary/20" />
+        <img src={VERA_AVATAR} alt="Margaret" className="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5 border border-primary/20" />
       )}
       <div
         className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
@@ -272,12 +272,12 @@ export default function VeraBot() {
             {/* Header */}
             <div className="bg-primary px-4 py-3 flex items-center gap-3 flex-shrink-0">
               <div className="relative">
-                <img src={VERA_AVATAR} alt="Vera" className="w-11 h-11 rounded-full object-cover border-2 border-white/40" />
+                <img src={VERA_AVATAR} alt="Margaret" className="w-11 h-11 rounded-full object-cover border-2 border-white/40" />
                 <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-primary-foreground font-bold text-sm">Vera ✨</p>
-                <p className="text-primary-foreground/70 text-xs">Your Age UK AI superhero helper</p>
+                <p className="text-primary-foreground font-bold text-sm">Margaret ✨</p>
+                <p className="text-primary-foreground/70 text-xs">Your Age UK AI helper</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors p-1">
                 <Minimize2 className="w-4 h-4" />
@@ -288,8 +288,8 @@ export default function VeraBot() {
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/20">
               {messages.length === 0 && !loading && (
                 <div className="text-center py-6">
-                  <img src={VERA_AVATAR} alt="Vera" className="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-primary/20" />
-                  <p className="text-sm text-muted-foreground">Hi! I'm Vera — ask me anything or tap a suggestion below.</p>
+                  <img src={VERA_AVATAR} alt="Margaret" className="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-primary/20" />
+                  <p className="text-sm text-muted-foreground">Hi! I'm Margaret — ask me anything or tap a suggestion below.</p>
                 </div>
               )}
               {messages.map((msg, i) => (
@@ -297,7 +297,7 @@ export default function VeraBot() {
               ))}
               {loading && (
                 <div className="flex gap-2 items-center">
-                  <img src={VERA_AVATAR} alt="Vera" className="w-7 h-7 rounded-full object-cover border border-primary/20" />
+                  <img src={VERA_AVATAR} alt="Margaret" className="w-7 h-7 rounded-full object-cover border border-primary/20" />
                   <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5">
                     <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -359,7 +359,7 @@ export default function VeraBot() {
               className="mb-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-lg whitespace-nowrap"
               style={{ animation: 'fadeSlideIn 0.5s ease-out' }}
             >
-              💬 Chat with Vera!
+              💬 Chat with Margaret!
             </div>
           )}
 
@@ -376,10 +376,10 @@ export default function VeraBot() {
           <button
             onClick={() => isOpen ? setIsOpen(false) : openChat()}
             className={`relative w-24 h-24 rounded-full shadow-2xl overflow-hidden border-4 border-white hover:scale-110 active:scale-95 transition-transform cursor-pointer ${!isOpen ? `vera-float vera-bounce-${bounceCount}` : ''}`}
-            title="Chat with Vera"
+            title="Chat with Margaret"
             style={{ boxShadow: '0 8px 32px rgba(120,40,180,0.35), 0 2px 8px rgba(0,0,0,0.15)' }}
           >
-            <img src={VERA_AVATAR} alt="Vera" className="w-full h-full object-cover" />
+            <img src={VERA_AVATAR} alt="Margaret" className="w-full h-full object-cover" />
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-primary/20 backdrop-blur-sm">
                 <Sparkles className="w-6 h-6 text-white animate-pulse" />

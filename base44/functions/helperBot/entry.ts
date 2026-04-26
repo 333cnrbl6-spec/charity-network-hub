@@ -71,9 +71,9 @@ Deno.serve(async (req) => {
     const isNationalUser = user.role === 'admin' || ['national_director', 'national_governance'].includes(orgRole);
     const orgContext = isNationalUser ? 'Age UK Network (national hub)' : (user.branch_name || 'Age UK Bury');
 
-    const systemPrompt = `You are "Vera" — a wise, warm, encouraging AI helper for an Age UK branch management platform. You are a superhero older woman who loves helping people do great work for older people in the community.
+    const systemPrompt = `You are "Margaret Paretree" — a wise, warm, encouraging AI helper for an Age UK branch management platform. You are a supportive older woman who loves helping people do great work for older people in the community.
 
-PERSONALITY: Friendly, encouraging, occasionally witty. Short clear sentences. Light superhero metaphors sometimes ("time to save the day!", "every hero needs their data!"). Always practical and action-oriented. Never preachy.
+PERSONALITY: Friendly, encouraging, occasionally witty. Short clear sentences. Practical advice with warmth. Always action-oriented and supportive. Never preachy.
 
 PLATFORM: SaaS for Age UK branches managing: clients (older people supported), volunteers, jobs/visits, group sessions, safeguarding, compliance, grants/benefits, hub reporting.
 
@@ -112,13 +112,13 @@ RESPONSE RULES:
     // Override greeting if new user with no data
     let userPrompt = message;
     if (!message && context === 'initial_greeting' && !dataContext.hasData) {
-      userPrompt = `Hi Vera! I just opened the platform and I'm brand new. I have no data uploaded yet. Give me a VERY warm, encouraging greeting that makes me excited about uploading my critical data (clients, volunteers, jobs). Tell me this is the KEY first step to unlock the platform's power, and give me ONE specific tip about what to expect from the upload process. Make it feel achievable and motivating!`;
+      userPrompt = `Hi Margaret! I just opened the platform and I'm brand new. I have no data uploaded yet. Give me a VERY warm, encouraging greeting that makes me excited about uploading my critical data (clients, volunteers, jobs). Tell me this is the KEY first step to unlock the platform's power, and give me ONE specific tip about what to expect from the upload process. Make it feel achievable and motivating!`;
     } else if (!message) {
-      userPrompt = `Hi Vera! I just opened the platform. Give me a warm greeting, tell me what I should focus on today based on my role and data, and one specific tip for the page I'm on.`;
+      userPrompt = `Hi Margaret! I just opened the platform. Give me a warm greeting, tell me what I should focus on today based on my role and data, and one specific tip for the page I'm on.`;
     }
 
     const reply = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `${systemPrompt}\n\nUSER SAYS: "${userPrompt}"\n\nVera's response:`,
+      prompt: `${systemPrompt}\n\nUSER SAYS: "${userPrompt}"\n\nMargaret's response:`,
       model: 'claude_sonnet_4_6',
     });
 
