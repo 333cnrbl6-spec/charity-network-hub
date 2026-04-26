@@ -52,6 +52,7 @@ import TrainingModule from './pages/TrainingModule';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
 import IncidentDetail from './pages/IncidentDetail';
 import AssetLibrary from './pages/AssetLibrary';
+import HandypersonCalendar from './pages/HandypersonCalendar';
 import PricingComparison from './pages/PricingComparison';
 import PlatformAdmin from './pages/PlatformAdmin';
 import TenantPortal from './pages/TenantPortal';
@@ -129,6 +130,7 @@ const AuthenticatedApp = () => {
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
         <Route path="/library" element={<AssetLibrary />} />
+        <Route path="/handyperson-calendar" element={<HandypersonCalendar />} />
         <Route path="/pricing" element={<PricingComparison />} />
         <Route path="/platform-admin" element={<PlatformAdmin />} />
         <Route path="/my-organisation" element={<TenantPortal />} />

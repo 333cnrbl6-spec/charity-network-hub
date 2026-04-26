@@ -43,9 +43,10 @@ const STAFF_NAV = [
 const COORDINATOR_NAV = [
   { icon: LayoutDashboard, label: 'My Dashboard',    path: '/coordinator-portal' },
   { icon: Briefcase,       label: 'Jobs',            path: '/jobs' },
+  { icon: CalendarDays,    label: 'Job Calendar',    path: '/handyperson-calendar' },
   { icon: Users,           label: 'Clients',         path: '/clients' },
   { icon: ClipboardList,   label: 'Team',            path: '/volunteers' },
-  { icon: CalendarDays,    label: 'Sessions',        path: '/sessions' },
+  { icon: Zap,             label: 'Sessions',        path: '/sessions' },
   { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
   { icon: MapPin,          label: 'Service Gap Map',  path: '/service-gaps' },
   { icon: FileText,        label: 'Asset Library',    path: '/library' },
