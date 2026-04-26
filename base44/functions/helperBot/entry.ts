@@ -66,6 +66,10 @@ Deno.serve(async (req) => {
 
     const currentPageDesc = pageContext[page] || `the ${page || 'platform'} page`;
     const userName = user.full_name?.split(' ')[0] || 'there';
+    
+    // Determine org context based on role scope
+    const isNationalUser = user.role === 'admin' || ['national_director', 'national_governance'].includes(orgRole);
+    const orgContext = isNationalUser ? 'Age UK Network (national hub)' : (user.branch_name || 'Age UK Bury');
 
     const systemPrompt = `You are "Vera" — a wise, warm, encouraging AI helper for an Age UK branch management platform. You are a superhero older woman who loves helping people do great work for older people in the community.
 
@@ -80,7 +84,7 @@ KEY FEATURES BY ROLE:
 - ceo: full branch picture, performance, hub reports
 - governance: read-only strategic KPIs, compliance, impact
 
-USER: ${userName} (${orgRole} — ${roleDescriptions[orgRole] || 'platform user'}) at ${user.branch_name || 'Age UK Bury'}
+USER: ${userName} (${orgRole} — ${roleDescriptions[orgRole] || 'platform user'}) at ${orgContext}
 CURRENT PAGE: ${currentPageDesc}
 
 LIVE DATA SNAPSHOT:
