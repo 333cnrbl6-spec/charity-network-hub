@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Bell, Clock, Upload } from 'lucide-react';
+import { User, Bell, Clock, Upload, Briefcase, CheckCircle2, Users, MapPin, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function UserProfile() {
   const queryClient = useQueryClient();
+  const { user: authUser } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [notifications, setNotifications] = useState({
-    mentions: true,
-    discussionUpdates: true,
-    commentReplies: true,
+    newJobAssigned: true,
+    safeguardingAlerts: true,
+    trainingExpiry: true,
     weeklyDigest: false
   });
 
@@ -30,12 +33,11 @@ export default function UserProfile() {
       const currentUser = await base44.auth.me();
       if (currentUser) {
         setDisplayName(currentUser.full_name || '');
-        const userData = await base44.auth.me();
-        setAvatarUrl(userData.avatar_url || '');
-        setNotifications(userData.notification_preferences || {
-          mentions: true,
-          discussionUpdates: true,
-          commentReplies: true,
+        setAvatarUrl(currentUser.avatar_url || '');
+        setNotifications(currentUser.notification_preferences || {
+          newJobAssigned: true,
+          safeguardingAlerts: true,
+          trainingExpiry: true,
           weeklyDigest: false
         });
       }
@@ -43,19 +45,22 @@ export default function UserProfile() {
     }
   });
 
-  // Fetch user activity (discussions and comments)
-  const { data: userActivity = [] } = useQuery({
-    queryKey: ['userActivity', user?.email],
-    queryFn: async () => {
-      if (!user?.email) return [];
-      const discussions = await base44.entities.Discussion.filter({ initiator: user.email }, '-created_at', 50);
-      const comments = await base44.entities.Comment.filter({ author: user.email }, '-created_at', 50);
-      return [...discussions, ...comments].sort((a, b) => 
-        new Date(b.created_at || b.created_at) - new Date(a.created_at || a.created_at)
-      ).slice(0, 20);
-    },
-    enabled: !!user?.email
+  // Fetch job stats for this user
+  const { data: myJobs = [] } = useQuery({
+    queryKey: ['profile-jobs', authUser?.full_name],
+    queryFn: () => base44.entities.Job.filter({ volunteer_name: authUser?.full_name }),
+    enabled: !!authUser?.full_name,
   });
+
+  // Fetch clients for this coordinator
+  const { data: myClients = [] } = useQuery({
+    queryKey: ['profile-clients'],
+    queryFn: () => base44.entities.Client.filter({ key_worker: authUser?.full_name }),
+    enabled: !!authUser?.full_name,
+  });
+
+  const completedJobs = myJobs.filter(j => j.status === 'completed').length;
+  const activeClients = myClients.filter(c => c.status === 'active').length;
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
@@ -122,8 +127,38 @@ export default function UserProfile() {
         <p className="text-muted-foreground">Manage your account and preferences</p>
       </div>
 
+          {/* Role & branch summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Card>
+          <CardContent className="pt-4 text-center">
+            <p className="text-2xl font-bold text-primary">{myJobs.length}</p>
+            <p className="text-xs text-muted-foreground mt-1">Total Jobs</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 text-center">
+            <p className="text-2xl font-bold text-green-600">{completedJobs}</p>
+            <p className="text-xs text-muted-foreground mt-1">Completed</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 text-center">
+            <p className="text-2xl font-bold text-blue-600">{activeClients}</p>
+            <p className="text-xs text-muted-foreground mt-1">My Clients</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 text-center">
+            <p className="text-2xl font-bold text-amber-600">
+              {myJobs.length > 0 ? Math.round((completedJobs / myJobs.length) * 100) : 0}%
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">Completion Rate</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="profile" className="flex gap-2">
             <User className="w-4 h-4" />
             Profile
@@ -131,10 +166,6 @@ export default function UserProfile() {
           <TabsTrigger value="notifications" className="flex gap-2">
             <Bell className="w-4 h-4" />
             Notifications
-          </TabsTrigger>
-          <TabsTrigger value="activity" className="flex gap-2">
-            <Clock className="w-4 h-4" />
-            Activity
           </TabsTrigger>
         </TabsList>
 
@@ -192,7 +223,6 @@ export default function UserProfile() {
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder="Your display name"
                 />
-                <p className="text-xs text-muted-foreground">This is how you'll appear in discussions and comments</p>
               </div>
 
               {/* Email (Read-only) */}
@@ -205,6 +235,31 @@ export default function UserProfile() {
                   className="bg-muted"
                 />
                 <p className="text-xs text-muted-foreground">Your email cannot be changed</p>
+              </div>
+
+              {/* Role & Branch (Read-only) */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1"><Briefcase className="w-3 h-3" /> Role</Label>
+                  <div className="flex items-center gap-2 h-9 px-3 border rounded-md bg-muted text-sm">
+                    <Badge variant="secondary" className="text-xs">{authUser?.org_role || authUser?.role || 'staff'}</Badge>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Branch</Label>
+                  <div className="flex items-center h-9 px-3 border rounded-md bg-muted text-sm text-muted-foreground">
+                    {authUser?.branch_name || 'Age UK Bury'}
+                  </div>
+                </div>
+              </div>
+
+              {/* DBS / Safeguarding reminder */}
+              <div className="flex items-start gap-3 bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-900">
+                <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5 text-green-600" />
+                <div>
+                  <p className="font-semibold">Safeguarding compliant</p>
+                  <p className="text-xs text-green-700 mt-0.5">Contact your coordinator to update your DBS or training records.</p>
+                </div>
               </div>
 
               {/* Save Button */}
@@ -227,47 +282,47 @@ export default function UserProfile() {
               <CardDescription>Control how and when you receive notifications</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* @mentions */}
+              {/* New Job Assigned */}
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
-                  <Label className="text-base font-medium">@Mentions</Label>
-                  <p className="text-sm text-muted-foreground">Notify me when someone mentions me</p>
+                  <Label className="text-base font-medium">New Job Assigned</Label>
+                  <p className="text-sm text-muted-foreground">Notify me when a new job is assigned to me</p>
                 </div>
                 <Switch
-                  checked={notifications.mentions}
-                  onCheckedChange={() => handleNotificationChange('mentions')}
+                  checked={notifications.newJobAssigned}
+                  onCheckedChange={() => handleNotificationChange('newJobAssigned')}
                 />
               </div>
 
-              {/* Discussion Updates */}
+              {/* Safeguarding Alerts */}
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
-                  <Label className="text-base font-medium">Discussion Updates</Label>
-                  <p className="text-sm text-muted-foreground">Notify me of new comments in discussions I started</p>
+                  <Label className="text-base font-medium">Safeguarding Alerts</Label>
+                  <p className="text-sm text-muted-foreground">Important safeguarding notices from your coordinator</p>
                 </div>
                 <Switch
-                  checked={notifications.discussionUpdates}
-                  onCheckedChange={() => handleNotificationChange('discussionUpdates')}
+                  checked={notifications.safeguardingAlerts}
+                  onCheckedChange={() => handleNotificationChange('safeguardingAlerts')}
                 />
               </div>
 
-              {/* Comment Replies */}
+              {/* Training Expiry */}
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
-                  <Label className="text-base font-medium">Comment Replies</Label>
-                  <p className="text-sm text-muted-foreground">Notify me when someone replies to my comments</p>
+                  <Label className="text-base font-medium">Training Expiry Reminders</Label>
+                  <p className="text-sm text-muted-foreground">Remind me when DBS or training is approaching expiry</p>
                 </div>
                 <Switch
-                  checked={notifications.commentReplies}
-                  onCheckedChange={() => handleNotificationChange('commentReplies')}
+                  checked={notifications.trainingExpiry}
+                  onCheckedChange={() => handleNotificationChange('trainingExpiry')}
                 />
               </div>
 
               {/* Weekly Digest */}
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
-                  <Label className="text-base font-medium">Weekly Digest</Label>
-                  <p className="text-sm text-muted-foreground">Send me a weekly summary of activity</p>
+                  <Label className="text-base font-medium">Weekly Summary</Label>
+                  <p className="text-sm text-muted-foreground">A weekly email summarising my jobs and upcoming schedule</p>
                 </div>
                 <Switch
                   checked={notifications.weeklyDigest}
@@ -287,54 +342,7 @@ export default function UserProfile() {
           </Card>
         </TabsContent>
 
-        {/* Activity Tab */}
-        <TabsContent value="activity" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Activity</CardTitle>
-              <CardDescription>Recent discussions and comments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {userActivity.length === 0 ? (
-                <div className="text-center py-8">
-                  <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-2 opacity-30" />
-                  <p className="text-muted-foreground">No activity yet</p>
-                </div>
-              ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {userActivity.map(item => (
-                    <div
-                      key={item.id}
-                      className="p-4 border rounded-lg hover:bg-accent transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">
-                            {item.title || item.content?.substring(0, 60)}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {item.context_type ? 'Discussion' : 'Comment'}
-                            {item.context_data && ` • ${item.context_data.report_week || item.context_data.product_name || ''}`}
-                          </p>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(item.created_at).toLocaleDateString('en-GB')}
-                          </p>
-                          {item.reply_count > 0 && (
-                            <p className="text-xs font-medium text-primary">
-                              {item.reply_count} replies
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+
       </Tabs>
     </div>
   );
