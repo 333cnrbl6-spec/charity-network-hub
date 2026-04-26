@@ -33,6 +33,7 @@ const STAFF_NAV = [
   { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
   { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
   { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
+  { icon: BarChart3,       label: 'Reporting',       path: '/analytics' },
   { icon: Upload,          label: 'Import Data',     path: '/import' },
 ];
 
@@ -47,8 +48,8 @@ const COORDINATOR_NAV = [
   { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
   { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
   { icon: AlertCircle,     label: 'Compliance',      path: '/compliance' },
+  { icon: BarChart3,       label: 'Reporting',       path: '/analytics' },
   { icon: Upload,          label: 'Import Data',     path: '/import' },
-  { icon: BarChart3,       label: 'Analytics',       path: '/charity-analytics' },
 ];
 
 const OPS_MANAGER_NAV = [
@@ -61,14 +62,14 @@ const OPS_MANAGER_NAV = [
   { icon: GraduationCap,   label: 'Training & DBS',       path: '/training' },
   { icon: AlertCircle,     label: 'Compliance',           path: '/compliance' },
   { icon: ShieldCheck,     label: 'Safeguarding',         path: '/safeguarding' },
-  { icon: BarChart3,       label: 'Branch Analytics',     path: '/charity-analytics' },
+  { icon: BarChart3,       label: 'Reporting',            path: '/analytics' },
   { icon: Upload,          label: 'Import Data',          path: '/import' },
   { icon: Network,         label: 'Sync & Reports',       path: '/sync-log' },
 ];
 
 const BRANCH_CEO_NAV = [
   { icon: LayoutDashboard, label: 'CEO Dashboard',        path: '/branch-ceo' },
-  { icon: BarChart3,       label: 'Branch Analytics',     path: '/charity-analytics' },
+  { icon: BarChart3,       label: 'Reporting',            path: '/analytics' },
   { icon: Users,           label: 'Clients',              path: '/clients' },
   { icon: Users2,          label: 'Volunteers & Staff',   path: '/volunteers' },
   { icon: Briefcase,       label: 'Jobs',                 path: '/jobs' },
@@ -91,7 +92,7 @@ const BRANCH_NAV = (branchId) => [
   { icon: Zap,             label: 'Sessions',         path: '/sessions' },
   { icon: Gift,            label: 'Grants & AI',      path: '/grants' },
   { icon: Search,          label: 'Smart Search',     path: '/search' },
-  { icon: TrendingUp,      label: 'Analytics',        path: '/charity-analytics' },
+  { icon: BarChart3,       label: 'Reporting',        path: '/analytics' },
   { icon: AlertCircle,     label: 'Compliance',       path: '/compliance' },
   { icon: Upload,          label: 'Import Data',      path: '/import' },
   { icon: Network,         label: 'Sync & Reports',   path: '/sync-log' },
@@ -106,6 +107,7 @@ const REGIONAL_NAV = (region) => [
   { icon: Gift,            label: 'All Grants',          path: '/grants' },
   { icon: MapPin,          label: 'Branch Map',          path: '/map' },
   { icon: AlertCircle,     label: 'Compliance Overview', path: '/compliance' },
+  { icon: BarChart3,       label: 'Reporting',           path: '/analytics' },
   { icon: Network,         label: 'Sync & Reports',      path: '/sync-log' },
   { icon: Upload,          label: 'Import Data',         path: '/import' },
 ];
@@ -113,6 +115,7 @@ const REGIONAL_NAV = (region) => [
 const NATIONAL_NAV = [
   { icon: LayoutDashboard, label: 'Hub Dashboard',       path: '/' },
   { icon: Heart,           label: 'Impact Dashboard',    path: '/impact' },
+  { icon: BarChart3,       label: 'Reporting',           path: '/analytics' },
   { icon: TrendingUp,      label: 'Impact Analytics',    path: '/charity-analytics' },
   { icon: Search,          label: 'Smart Search',        path: '/search' },
   { icon: Globe,           label: 'Network Overview',    path: '/network' },
