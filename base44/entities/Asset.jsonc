@@ -1,0 +1,101 @@
+{
+  "name": "Asset",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Asset title or name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the asset"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "guide",
+        "template",
+        "checklist",
+        "form",
+        "policy",
+        "training",
+        "resource",
+        "other"
+      ],
+      "description": "Type of asset"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL to the uploaded file"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Original file name"
+    },
+    "file_size_kb": {
+      "type": "number",
+      "description": "File size in kilobytes"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Search tags for categorization"
+    },
+    "applicable_job_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "home-visit",
+          "telephone-check",
+          "transport",
+          "shopping-assist",
+          "benefits-advice",
+          "digital-help",
+          "befriending",
+          "scams-advice",
+          "hospital-discharge",
+          "all"
+        ]
+      },
+      "description": "Job types this asset is relevant to"
+    },
+    "applicable_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Volunteer roles this asset is for (optional)"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Email of coordinator who uploaded"
+    },
+    "created_by_name": {
+      "type": "string",
+      "description": "Name of coordinator who uploaded"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version number of asset"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether asset is available for download"
+    },
+    "download_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times downloaded"
+    }
+  },
+  "required": [
+    "title",
+    "asset_type",
+    "file_url",
+    "file_name"
+  ]
+}

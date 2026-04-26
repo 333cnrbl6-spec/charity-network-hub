@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, Users2, Briefcase, Zap, Gift, Network, Globe,
   Map, AlertCircle, MapPin, Rocket, Upload, Heart, GitBranch, Search,
   TrendingUp, ShieldCheck, Building2, Settings, CalendarDays, ClipboardList,
-  LogOut, ChevronDown, GraduationCap, FileBarChart, BookOpen, BarChart3
+  LogOut, ChevronDown, GraduationCap, FileBarChart, BookOpen, BarChart3, FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -20,6 +20,7 @@ const VOLUNTEER_NAV = [
   { icon: LayoutDashboard, label: 'My Schedule',   path: '/staff-portal' },
   { icon: Briefcase,       label: 'My Jobs',       path: '/jobs' },
   { icon: Users,           label: 'My Clients',    path: '/clients' },
+  { icon: FileText,        label: 'Asset Library',  path: '/library' },
   { icon: ShieldCheck,     label: 'Safeguarding',  path: '/safeguarding' },
   { icon: GraduationCap,   label: 'My Training',   path: '/training' },
   { icon: Upload,          label: 'Import Data',   path: '/import' },
@@ -31,6 +32,7 @@ const STAFF_NAV = [
   { icon: Users,           label: 'Clients',         path: '/clients' },
   { icon: Zap,             label: 'Sessions',        path: '/sessions' },
   { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
+  { icon: FileText,        label: 'Asset Library',    path: '/library' },
   { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
   { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
   { icon: BarChart3,       label: 'Reporting',       path: '/analytics' },
@@ -46,6 +48,7 @@ const COORDINATOR_NAV = [
   { icon: CalendarDays,    label: 'Sessions',        path: '/sessions' },
   { icon: Gift,            label: 'Grants & Benefits', path: '/grants' },
   { icon: MapPin,          label: 'Service Gap Map',  path: '/service-gaps' },
+  { icon: FileText,        label: 'Asset Library',    path: '/library' },
   { icon: ShieldCheck,     label: 'Safeguarding',    path: '/safeguarding' },
   { icon: GraduationCap,   label: 'Training & DBS',  path: '/training' },
   { icon: AlertCircle,     label: 'Compliance',      path: '/compliance' },
