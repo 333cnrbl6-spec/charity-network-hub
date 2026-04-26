@@ -6,8 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Users, Briefcase, CalendarDays, ClipboardList,
-  CheckCircle2, Clock, AlertCircle, Phone, MapPin, TrendingUp, Gift
+  CheckCircle2, Clock, AlertCircle, Phone, MapPin, TrendingUp, Gift, Upload
 } from 'lucide-react';
+import AIFileDropZone from '@/components/import/AIFileDropZone';
 import { useAuth } from '@/lib/AuthContext';
 import { format, isToday, isTomorrow, parseISO } from 'date-fns';
 
@@ -62,6 +63,7 @@ export default function BuryCoordinatorPortal() {
     { id: 'volunteers', label: 'Team', icon: ClipboardList },
     { id: 'sessions', label: 'Sessions', icon: CalendarDays },
     { id: 'grants', label: 'Grants', icon: Gift },
+    { id: 'import', label: 'Import Data', icon: Upload },
   ];
 
   return (
@@ -173,6 +175,18 @@ export default function BuryCoordinatorPortal() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Quick import widget */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-primary" /> Quick Data Import
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AIFileDropZone compact onImportComplete={() => setActiveTab('import')} />
+              </CardContent>
+            </Card>
 
             {/* Stats row */}
             <div className="grid grid-cols-2 gap-4">
@@ -346,6 +360,17 @@ export default function BuryCoordinatorPortal() {
                 </Card>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* IMPORT */}
+        {activeTab === 'import' && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold">Import Data</h2>
+              <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word or image — and AI will read it and guide you through importing it.</p>
+            </div>
+            <AIFileDropZone onImportComplete={() => {}} />
           </div>
         )}
 

@@ -3,9 +3,10 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Upload, CheckCircle2, AlertCircle, Download, FileUp } from 'lucide-react';
+import { Upload, CheckCircle2, AlertCircle, Download, FileUp, Sparkles } from 'lucide-react';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { playSuccess, playClick } from '@/lib/audio';
+import AIFileDropZone from '@/components/import/AIFileDropZone';
 
 const IMPORT_TEMPLATES = {
   Client: {
@@ -112,6 +113,27 @@ export default function DataImport() {
       <div>
         <h1 className="text-3xl font-bold text-foreground">Data Import</h1>
         <p className="text-muted-foreground mt-1">Import real client, volunteer, and operational data</p>
+      </div>
+
+      {/* AI Drop Zone — primary method */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary" />
+            AI-Guided File Import
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">Drop any file — Excel, CSV, PDF, Word, image — and AI will read it, identify the data, and guide you through importing it.</p>
+        </CardHeader>
+        <CardContent>
+          <AIFileDropZone />
+        </CardContent>
+      </Card>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">Or import manually with JSON</span>
+        </div>
       </div>
 
       {/* Entity Selector */}
