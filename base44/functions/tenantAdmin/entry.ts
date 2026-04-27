@@ -105,6 +105,22 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, tenant });
     }
 
+    // ─── Activate (convert trial → active) ───────────────────────────────────
+    if (action === 'activate_tenant') {
+      const { id, tenant_id } = body;
+      const tenant = await base44.asServiceRole.entities.Tenant.update(id, { subscription_status: 'active' });
+
+      await base44.asServiceRole.entities.TenantAuditLog.create({
+        tenant_id,
+        actor_email: user.email,
+        actor_name: user.full_name || user.email,
+        action: 'tenant_activated',
+        new_value: { subscription_status: 'active' }
+      });
+
+      return Response.json({ success: true, tenant });
+    }
+
     // ─── Suspend / Reactivate ─────────────────────────────────────────────────
     if (action === 'suspend_tenant' || action === 'reactivate_tenant') {
       const { id, tenant_id } = body;

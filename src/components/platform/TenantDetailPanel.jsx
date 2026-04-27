@@ -19,6 +19,16 @@ export default function TenantDetailPanel({ tenant, onClose, onUpdated }) {
   const tier = TIER_LABELS[tenant.subscription_tier] || TIER_LABELS.professional;
   const status = STATUS_LABELS[tenant.subscription_status] || STATUS_LABELS.trial;
 
+  const handleActivate = async () => {
+    setSaving(true);
+    const res = await base44.functions.invoke('tenantAdmin', {
+      action: 'activate_tenant', id: tenant.id, tenant_id: tenant.tenant_id
+    });
+    if (res.data.success) { toast.success('Tenant activated — trial converted to active'); onUpdated(); }
+    else toast.error('Failed to activate tenant');
+    setSaving(false);
+  };
+
   const handleSuspend = async () => {
     setSaving(true);
     const res = await base44.functions.invoke('tenantAdmin', {
@@ -145,6 +155,15 @@ export default function TenantDetailPanel({ tenant, onClose, onUpdated }) {
               <Button onClick={handleReactivate} disabled={saving} className="gap-2 flex-1 bg-green-600 hover:bg-green-700">
                 <CheckCircle2 className="w-4 h-4" /> Reactivate
               </Button>
+            ) : tenant.subscription_status === 'trial' ? (
+              <>
+                <Button onClick={handleActivate} disabled={saving} className="gap-2 flex-1 bg-green-600 hover:bg-green-700">
+                  <CheckCircle2 className="w-4 h-4" /> Activate (Convert from Trial)
+                </Button>
+                <Button variant="destructive" onClick={handleSuspend} disabled={saving} className="gap-2 flex-1">
+                  <ShieldOff className="w-4 h-4" /> Suspend
+                </Button>
+              </>
             ) : tenant.subscription_status !== 'cancelled' && (
               <Button variant="destructive" onClick={handleSuspend} disabled={saving} className="gap-2 flex-1">
                 <ShieldOff className="w-4 h-4" /> Suspend
