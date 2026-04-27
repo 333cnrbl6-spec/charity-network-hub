@@ -118,10 +118,13 @@ export default function SubscriptionPaywall({ currentTier = 'starter', onUpgrade
         })}
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <p className="text-sm text-blue-900">
           <strong>Free trial:</strong> All plans include 14 days free access. No credit card required.
         </p>
+        <a href="mailto:hello@charityhub.co.uk?subject=Charity Discount Application" className="text-sm text-blue-700 underline shrink-0 font-medium">
+          Apply for charity discount →
+        </a>
       </div>
     </div>
   );

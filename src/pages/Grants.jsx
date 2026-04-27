@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Plus, Sparkles, Calendar, DollarSign } from 'lucide-react';
-import GrantAIAssistant from '@/components/charity/GrantAIAssistant';
+import AIWritingAssistant from '@/components/charity/AIWritingAssistant';
 
 export default function Grants() {
   const [charityId, setCharityId] = useState(null);
@@ -147,7 +147,7 @@ export default function Grants() {
                 </CardContent>
               </Card>
 
-              <GrantAIAssistant grantId={selectedGrant.id} subscriptionTier={charity?.subscription_tier || 'starter'} />
+              <AIWritingAssistant mode="grant" data={selectedGrant} charity={charity} subscriptionTier={charity?.subscription_tier || 'starter'} />
             </div>
           ) : (
             <div className="text-center py-12 text-gray-600">
