@@ -68,6 +68,9 @@ import CharityPricing from './pages/Pricing';
 import CharitySmartSearch from './pages/CharitySmartSearch';
 import CharityAnalyticsPage from './pages/CharityAnalyticsPage';
 import CharityCompliancePage from './pages/CharityCompliancePage';
+import BillingCustomer from './pages/BillingCustomer';
+import APIKeysDashboard from './pages/APIKeysDashboard';
+import WebhooksDashboard from './pages/WebhooksDashboard';
 import StatusPage from './pages/StatusPage';
 import CustomerHealthDashboard from './pages/CustomerHealthDashboard';
 import UsageAnalyticsDashboard from './pages/UsageAnalyticsDashboard';
@@ -212,8 +215,9 @@ function App() {
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/changelog" element={<Changelog />} />
             <Route path="/sla" element={<SLAPolicy />} />
-            <Route path="/api-keys" element={<APIKeyManagement />} />
-            <Route path="/webhooks" element={<WebhookManagement />} />
+            <Route path="/api-keys" element={<APIKeysDashboard />} />
+            <Route path="/webhooks" element={<WebhooksDashboard />} />
+            <Route path="/billing" element={<BillingCustomer />} />
             <Route path="/ops-monitor" element={<OperationsMonitoring />} />
             <Route path="/onboarding-checklist" element={<OnboardingChecklistPage />} />
             <Route path="/support" element={<SupportPortal />} />
