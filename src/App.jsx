@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { getDefaultPortalPath } from '@/lib/roleConfig';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -161,10 +162,11 @@ const AuthenticatedApp = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <TenantProvider>
-        <Router>
+    <ErrorBoundary>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <TenantProvider>
+          <Router>
           <Routes>
             {/* Public routes — no auth required */}
             <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
@@ -184,11 +186,12 @@ function App() {
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>
-        </Router>
-        <Toaster />
-        </TenantProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+          </Router>
+          <Toaster />
+          </TenantProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 
