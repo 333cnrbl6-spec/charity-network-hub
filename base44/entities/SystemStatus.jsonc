@@ -1,0 +1,67 @@
+{
+  "name": "SystemStatus",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "operational",
+        "degraded",
+        "down"
+      ],
+      "default": "operational",
+      "description": "Current system status"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable status message"
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "maintenance",
+        "performance",
+        "outage",
+        "none"
+      ],
+      "default": "none",
+      "description": "Type of incident (if any)"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When incident started"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When incident was resolved"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Incident severity"
+    },
+    "affected_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of affected services (e.g., API, Dashboard, Payments)"
+    },
+    "uptime_percentage": {
+      "type": "number",
+      "default": 99.9,
+      "description": "Current month uptime percentage"
+    }
+  },
+  "required": [
+    "status"
+  ]
+}
