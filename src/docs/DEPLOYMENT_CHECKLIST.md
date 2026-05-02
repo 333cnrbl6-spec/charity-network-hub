@@ -1,284 +1,221 @@
-# CharityHub Deployment Checklist
+# CharityHub Production Deployment Checklist
 
-**Use this before every production deployment.**
+## Pre-Launch (T-7 days)
 
----
-
-## 📋 Pre-Deployment (1 hour before)
-
-### Code & Database
-- [ ] All PRs merged and reviewed
-- [ ] Latest main branch pulled
-- [ ] No uncommitted changes (`git status`)
-- [ ] Database migrations tested locally (`npm run migrate`)
-- [ ] Database rollback plan documented
-- [ ] Environment variables set correctly (.env.production)
-- [ ] Secrets loaded (Stripe keys, LLM API keys, etc.)
+### Infrastructure & Security
+- [ ] SSL certificates valid (expires > 30 days)
+- [ ] Database backups tested (restore to staging, verify data)
+- [ ] CDN configured and cache rules set
+- [ ] WAF rules enabled (rate limiting, bot protection)
+- [ ] Security headers configured (CORS, CSP, X-Frame-Options)
+- [ ] Secrets rotated (API keys, DB passwords, Stripe keys)
 
 ### Testing
-- [ ] All smoke tests passed (see SMOKE_TESTS.md)
-- [ ] Regression tests passed
-- [ ] No console errors in staging
-- [ ] Performance metrics acceptable
-- [ ] Mobile tests passed
-- [ ] Accessibility check passed
+- [ ] Critical path tests passed (runCriticalPathTests function)
+- [ ] Load test completed (loadTest function at 1000 concurrent users)
+- [ ] Smoke tests pass (basic signup, login, donation, report)
+- [ ] Payment flows tested with Stripe test mode
+- [ ] Email templates tested end-to-end
+- [ ] Mobile app tested on iOS and Android
 
-### Security
-- [ ] No hardcoded secrets in code
-- [ ] API keys in environment only
-- [ ] CORS headers correct
-- [ ] Rate limiting enabled
-- [ ] DDoS protection active
-- [ ] SSL certificate valid
-- [ ] No deprecated dependencies
+### Documentation
+- [ ] Deployment runbook reviewed by 2+ team members
+- [ ] Incident response plan shared with team
+- [ ] Support playbook finalized
+- [ ] Status page created (https://status.charityhub.com)
 
-### Monitoring & Alerting
-- [ ] Error tracking (Sentry) configured
-- [ ] Logging enabled
-- [ ] Alert rules active
-- [ ] On-call engineer assigned
-- [ ] Rollback procedure documented
-- [ ] Status page updated (if applicable)
-
-### Communication
-- [ ] Team notified of deployment window
-- [ ] Customer support prepped (if major change)
-- [ ] Change log written
-- [ ] Release notes prepared
+### Operations
+- [ ] On-call schedule set up (24/7 coverage Week 1)
+- [ ] Monitoring alerts configured and tested
+- [ ] Support ticket system live and staffed
+- [ ] Database failover procedure practiced
+- [ ] Rollback procedure documented and practiced
 
 ---
 
-## 🚀 Deployment (During)
+## Launch Day (T-0)
 
-### Pre-Deployment Tasks
-```bash
-# 1. Create deployment branch
-git checkout -b deploy/production-$(date +%Y%m%d-%H%M%S)
+### Morning (6 AM - 10 AM)
+- [ ] Final production backup taken
+- [ ] Health checks pass (database, API, frontend)
+- [ ] Team gathered in war room (Slack/Zoom)
+- [ ] All team members briefed on deployment plan
+- [ ] Rollback decision criteria defined
 
-# 2. Run final checks
-npm run lint
-npm run test
-npm run build
+### Deployment (10 AM - 12 PM)
+1. [ ] **Enable feature flag** `launch_soft_mode` = true
+   - Disables new signups, redirects to waitlist
+   - Only invited users can access
 
-# 3. Verify bundle size hasn't ballooned
-ls -lh dist/
-```
+2. [ ] **Deploy code** to production
+   - Backend functions deployed
+   - Frontend assets deployed
+   - Database migrations run
 
-### Database Migrations
-```bash
-# 1. Backup production database
-pg_dump $DATABASE_URL > backups/pre-deployment-$(date +%s).sql
+3. [ ] **Run smoke tests**
+   - Login works
+   - Donations process
+   - Emails send
+   - API responds
+   - Reports generate
 
-# 2. Run migrations
-npm run migrate:up
+4. [ ] **Verify monitoring**
+   - Error rate < 0.1%
+   - Response times < 500ms
+   - Database queries < 200ms
+   - CPU/Memory normal
 
-# 3. Verify data integrity
-npm run verify:data
-```
+5. [ ] **Test payment processing**
+   - Test charge succeeds
+   - Webhook received
+   - Invoice generated
+   - Email sent
 
-### Deploy to Production
-```bash
-# 1. Deploy (using your CD/CI pipeline)
-git push origin deploy/production-...
-# Trigger deployment in CI/CD (GitHub Actions, Vercel, etc.)
+### Launch Validation (12 PM - 2 PM)
+- [ ] Invite 10 test charities
+- [ ] Test signup flow
+- [ ] Test onboarding flow
+- [ ] Monitor error logs (should be clean)
+- [ ] Monitor performance (no spikes)
 
-# 2. Verify deployment
-curl https://charityhub.co.uk/api/health
-# Expected: { "status": "ok", "timestamp": "..." }
-
-# 3. Check error logs
-# Monitor Sentry, CloudWatch, or your logging service
-```
-
-### Smoke Tests Post-Deployment
-- [ ] Health check endpoint responds (200 OK)
-- [ ] Critical user flows work (signup, login, create campaign)
-- [ ] No spike in errors (check monitoring)
-- [ ] Database queries performing normally
-- [ ] Stripe integration functional
-- [ ] Email notifications working
-- [ ] PDF export functional
-- [ ] Analytics charts rendering
-
----
-
-## 🔍 Post-Deployment (First 24 hours)
-
-### Monitoring
-- [ ] Error rate normal (<0.1%)
-- [ ] Response times normal (<2s p95)
-- [ ] Database performance normal
-- [ ] Memory usage stable
-- [ ] No unusual traffic patterns
-- [ ] All critical alerts not firing
-
-### User Feedback
-- [ ] Monitor support channel for issues
-- [ ] Check customer email for problems
-- [ ] Monitor social media mentions
-- [ ] Check analytics for adoption (if new feature)
-
-### Verification
-- [ ] A few real users can complete signup
-- [ ] Donations processing correctly
-- [ ] Reports generating without errors
-- [ ] Compliance alerts triggering
-- [ ] No data inconsistencies
+### Post-Launch (2 PM onwards)
+- [ ] Announce launch to early access list
+- [ ] Monitor support tickets (should be < 5)
+- [ ] Monitor system health every 15 minutes
+- [ ] Keep on-call team in war room for 2 hours
+- [ ] Stand down escalation after 4 hours if stable
 
 ---
 
-## ⚠️ Rollback Plan (If Issues Found)
+## Post-Launch (T+1 to T+7)
 
-### Immediate Rollback (If Critical Issue)
-```bash
-# 1. Identify issue
-# - Check Sentry for error spike
-# - Check CloudWatch logs
-# - Verify user reports
+### Daily (Every Morning)
+- [ ] Run health checks (dailySystemHealthCheck)
+- [ ] Review error logs (should be near zero)
+- [ ] Check support tickets (respond within 2 hours)
+- [ ] Monitor performance baselines
+- [ ] Verify backups completed
 
-# 2. Decide to rollback
-# - If >1% error rate: ROLLBACK
-# - If core flow broken: ROLLBACK
-# - If data corruption: ROLLBACK IMMEDIATELY
+### Day 2-7
+- [ ] Gradually increase user access (disable soft_mode for 50 users/day)
+- [ ] Monitor churn (should be 0%)
+- [ ] Verify trial expiration logic (send emails)
+- [ ] Test payment retry logic
+- [ ] Monitor database growth
 
-# 3. Execute rollback
-git revert <commit-hash>
-git push origin main
-# Trigger deployment of previous version in CI/CD
-
-# 4. Verify rollback successful
-curl https://charityhub.co.uk/api/health
-# Check error rate returns to normal
-```
-
-### Database Rollback (If Migration Failed)
-```bash
-# If migration corrupted data:
-psql $DATABASE_URL < backups/pre-deployment-<timestamp>.sql
-
-# Revert to previous code version
-git checkout <previous-tag>
-npm run build
-# Redeploy
-```
-
-### Partial Rollback (Feature Flag)
-If only one feature is broken:
-```bash
-# Disable feature via environment variable
-# Redeploy with FEATURE_AI_GRANTS=false
-# Users experience graceful "Feature unavailable" message
-```
+### End of Week 1
+- [ ] Retrospective meeting (what went well, what to improve)
+- [ ] Performance report (uptime %, response times, errors)
+- [ ] Customer feedback review
+- [ ] Plan for scaling if demand exceeds expectations
 
 ---
 
-## 🔔 Communication During Incident
+## Rollback Procedure
 
-### If Rollback Needed
-1. Post to #incidents channel (or equivalent)
-   - **What:** Brief description of issue
-   - **When:** Time of rollback start
-   - **ETA:** Estimated time to resolve
-   - **Status:** Updates every 15 minutes
+### If Launch Fails (Before 100 Users)
 
-2. Notify affected customers (if major feature)
-   - Email template prepared
-   - Apology + ETA for fix
-   - Link to status page
+1. **Immediate** (within 5 minutes)
+   - [ ] Toggle feature flag `launch_soft_mode` = true (blocks new signups)
+   - [ ] Post status update to status page
+   - [ ] Notify all early access users
 
-3. Post-incident report (within 24 hours)
-   - Root cause
-   - What went wrong
-   - Steps to prevent future occurrence
-   - Action items assigned
+2. **Within 30 minutes**
+   - [ ] Revert code to last known good version
+   - [ ] Restore database from pre-launch backup
+   - [ ] Clear all caches
+   - [ ] Run smoke tests to verify rollback
+
+3. **Post-Rollback**
+   - [ ] Debug root cause (check error logs, deployment logs)
+   - [ ] Fix issue in staging
+   - [ ] Re-run full test suite
+   - [ ] Schedule new launch window (minimum 24 hours later)
+
+### If Service Degrades After Launch
+
+**Response time > 1 second:**
+- Scale up database connections
+- Clear cache
+- Monitor for 5 minutes
+- If persists: enable read-only mode for non-critical features
+
+**Error rate > 1%:**
+- Page errors in real-time
+- Alert team immediately
+- Investigate root cause
+- Deploy hotfix if identified
+- If not identified within 1 hour: consider rollback
+
+**Downtime > 15 minutes:**
+- Declare incident (Level 2 or 3 based on user impact)
+- Notify all users via status page
+- Initiate incident response procedure
+- See INCIDENT_RESPONSE.md
 
 ---
 
-## 📊 Deployment Report Template
+## Success Criteria
+
+Launch is considered successful if:
+- ✅ 100+ users signed up
+- ✅ > 10 donations processed
+- ✅ 0 downtime (99.99% uptime)
+- ✅ Average response time < 500ms
+- ✅ Error rate < 0.1%
+- ✅ 0 critical bugs
+- ✅ All monitoring alerts working
+
+---
+
+## Rollback Decision Tree
 
 ```
-DEPLOYMENT REPORT
-═══════════════════════════════════════════
+Is the system down?
+├─ YES: Rollback immediately
+└─ NO: Continue
 
-Date: [date]
-Version: [version/tag]
-Deployed By: [name]
-Duration: [X minutes]
+Is error rate > 5%?
+├─ YES: Rollback
+└─ NO: Continue
 
-PRE-DEPLOYMENT CHECKS:
-✅ All smoke tests passed
-✅ Code reviewed
-✅ Database backups created
-✅ Monitoring configured
+Is payment processing broken?
+├─ YES: Rollback (revenue impact)
+└─ NO: Continue
 
-DEPLOYMENT STATUS:
-✅ Code deployed
-✅ Migrations successful
-✅ No data corruption
-✅ Health checks passing
+Is data integrity compromised?
+├─ YES: Rollback immediately (restore from backup)
+└─ NO: Continue
 
-POST-DEPLOYMENT TESTS:
-✅ Critical flows working
-✅ Error rate normal
-✅ Performance acceptable
-✅ No alerts firing
-
-ISSUES FOUND:
-- None
-
-ROLLBACK REQUIRED:
-- No
-
-APPROVED FOR PRODUCTION:
-✅ Yes
-
-Signed by: [Engineer name]
+Has issue persisted > 30 minutes?
+├─ YES: Investigate hotfix vs rollback (team decision)
+└─ NO: Monitor for 10 more minutes
 ```
 
 ---
 
-## 🆘 Emergency Contacts
+## Post-Launch Monitoring
 
-- **On-Call Engineer:** [Name] ([Phone]) ([Email])
-- **Platform Lead:** [Name] ([Email])
-- **Stripe Support:** [Stripe support portal]
-- **Hosting Support:** [Hosting provider support]
-- **AWS Support:** [AWS support channel]
+### Every 15 minutes (Week 1)
+- Check error logs
+- Verify database health
+- Monitor response times
+- Check payment processing
 
----
+### Every Hour (Week 1)
+- Review support tickets
+- Monitor user growth
+- Check backup status
+- Verify email delivery
 
-## 📚 Useful Commands
+### Daily (Week 2+)
+- Run health check function
+- Review error logs
+- Monitor SLAs
+- Customer health scores
 
-```bash
-# View deployment history
-git log --oneline --graph main
-
-# Check which version is deployed
-curl https://charityhub.co.uk/api/version
-# Expected: { "version": "1.2.3", "commit": "abc123..." }
-
-# View error logs
-tail -f logs/production.log | grep ERROR
-
-# Check database health
-psql $DATABASE_URL -c "SELECT NOW();"
-
-# View active deployments
-# Use your CI/CD dashboard (GitHub Actions, Vercel, etc.)
-```
-
----
-
-## ✅ Sign-Off
-
-Before deploying:
-
-- [ ] I have read and understood this checklist
-- [ ] I have run all smoke tests locally
-- [ ] I understand the rollback procedure
-- [ ] I am prepared to monitor for 24 hours
-- [ ] I have the emergency contacts saved
-
-**Engineer:** ________________  **Date/Time:** ________________
-
-**Approval:** ________________  **Date/Time:** ________________
+### Weekly
+- Performance report
+- Security audit
+- Database optimization
+- Feature flag review
