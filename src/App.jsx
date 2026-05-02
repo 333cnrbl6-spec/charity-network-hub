@@ -78,6 +78,10 @@ import HelpCenter from './pages/HelpCenter';
 import BillingManagement from './pages/BillingManagement';
 import Changelog from './pages/Changelog';
 import SLAPolicy from './pages/SLAPolicy';
+import APIKeyManagement from './pages/APIKeyManagement';
+import WebhookManagement from './pages/WebhookManagement';
+import OperationsMonitoring from './pages/OperationsMonitoring';
+import OnboardingChecklistPage from './pages/OnboardingChecklistPage';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -203,6 +207,10 @@ function App() {
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/changelog" element={<Changelog />} />
             <Route path="/sla" element={<SLAPolicy />} />
+            <Route path="/api-keys" element={<APIKeyManagement />} />
+            <Route path="/webhooks" element={<WebhookManagement />} />
+            <Route path="/ops-monitor" element={<OperationsMonitoring />} />
+            <Route path="/onboarding-checklist" element={<OnboardingChecklistPage />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
             {/* Authenticated billing route */}

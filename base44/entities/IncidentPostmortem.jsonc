@@ -1,0 +1,75 @@
+{
+  "name": "IncidentPostmortem",
+  "type": "object",
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "description": "Reference to SystemStatus incident"
+    },
+    "title": {
+      "type": "string",
+      "description": "Incident title"
+    },
+    "summary": {
+      "type": "string",
+      "description": "High-level summary of what happened"
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "event": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Detailed incident timeline"
+    },
+    "root_cause": {
+      "type": "string",
+      "description": "Root cause analysis"
+    },
+    "impact": {
+      "type": "string",
+      "description": "Customer and business impact"
+    },
+    "action_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "description": "Preventive actions with owners"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether postmortem is publicly shared"
+    },
+    "public_url": {
+      "type": "string",
+      "description": "Public link to postmortem"
+    }
+  },
+  "required": [
+    "incident_id",
+    "title",
+    "summary"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "DataRetentionPolicy",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "description": "Entity type subject to retention (e.g., AuditLog, Message)"
+    },
+    "retention_days": {
+      "type": "number",
+      "description": "Number of days to retain records before deletion"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether policy is active"
+    },
+    "last_cleanup": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time cleanup was executed"
+    },
+    "next_cleanup": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Next scheduled cleanup"
+    },
+    "records_deleted": {
+      "type": "number",
+      "default": 0,
+      "description": "Total records deleted by this policy"
+    }
+  },
+  "required": [
+    "entity_type",
+    "retention_days"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "WebhookConfig",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "endpoint_url": {
+      "type": "string",
+      "description": "Webhook destination URL"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Events to subscribe to (e.g., invoice.created, customer.churned)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "failed"
+      ],
+      "default": "active"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Shared secret for HMAC signature verification"
+    },
+    "last_delivery": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful webhook delivery"
+    },
+    "failed_attempts": {
+      "type": "number",
+      "default": 0,
+      "description": "Consecutive failed delivery attempts"
+    }
+  },
+  "required": [
+    "charity_id",
+    "endpoint_url",
+    "events",
+    "secret"
+  ]
+}

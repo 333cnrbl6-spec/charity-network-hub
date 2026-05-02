@@ -1,0 +1,58 @@
+{
+  "name": "OnboardingChecklist",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "billing_info_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Billing details provided"
+    },
+    "compliance_review_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Compliance checklist reviewed"
+    },
+    "team_invited": {
+      "type": "boolean",
+      "default": false,
+      "description": "At least one team member invited"
+    },
+    "api_keys_generated": {
+      "type": "boolean",
+      "default": false,
+      "description": "API keys generated for integrations"
+    },
+    "training_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Team completed platform training"
+    },
+    "data_imported": {
+      "type": "boolean",
+      "default": false,
+      "description": "Initial data imported or created"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "complete"
+      ],
+      "default": "not_started"
+    },
+    "completion_percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Percentage of checklist completed"
+    }
+  },
+  "required": [
+    "charity_id"
+  ]
+}
