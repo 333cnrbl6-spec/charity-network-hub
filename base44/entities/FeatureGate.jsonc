@@ -1,0 +1,42 @@
+{
+  "name": "FeatureGate",
+  "type": "object",
+  "properties": {
+    "feature_name": {
+      "type": "string",
+      "description": "Feature identifier (e.g., api_calls, data_export, ai_generation)"
+    },
+    "tier_limits": {
+      "type": "object",
+      "description": "Rate limits by tier",
+      "properties": {
+        "starter": {
+          "type": "number"
+        },
+        "professional": {
+          "type": "number"
+        },
+        "enterprise": {
+          "type": "number"
+        }
+      }
+    },
+    "enabled_tiers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Which tiers have access (starter, professional, enterprise)"
+    },
+    "billing_impact": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether exceeding limit requires upgrade"
+    }
+  },
+  "required": [
+    "feature_name",
+    "tier_limits",
+    "enabled_tiers"
+  ]
+}

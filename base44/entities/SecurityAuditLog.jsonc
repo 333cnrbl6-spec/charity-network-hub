@@ -1,0 +1,60 @@
+{
+  "name": "SecurityAuditLog",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "data_isolation_breach",
+        "unauthorized_access_attempt",
+        "api_abuse",
+        "cors_violation",
+        "rate_limit_exceeded"
+      ],
+      "description": "Type of security event"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Event severity level"
+    },
+    "charity_id": {
+      "type": "string",
+      "description": "Affected charity (if applicable)"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User involved (if applicable)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Source IP address"
+    },
+    "request_path": {
+      "type": "string",
+      "description": "API endpoint accessed"
+    },
+    "details": {
+      "type": "string",
+      "description": "Detailed description of incident"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "event_type",
+    "severity",
+    "timestamp"
+  ]
+}

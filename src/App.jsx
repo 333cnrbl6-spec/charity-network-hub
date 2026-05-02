@@ -82,6 +82,9 @@ import APIKeyManagement from './pages/APIKeyManagement';
 import WebhookManagement from './pages/WebhookManagement';
 import OperationsMonitoring from './pages/OperationsMonitoring';
 import OnboardingChecklistPage from './pages/OnboardingChecklistPage';
+import SupportPortal from './pages/SupportPortal';
+import SaaSMetricsDashboard from './pages/SaaSMetricsDashboard';
+import PublicLandingPage from './pages/PublicLandingPage';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -183,6 +186,8 @@ function App() {
           <TenantProvider>
           <Router>
           <Routes>
+            {/* Public landing page */}
+            <Route path="/landing" element={<PublicLandingPage />} />
             {/* Public routes — no auth required */}
             <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
@@ -211,6 +216,8 @@ function App() {
             <Route path="/webhooks" element={<WebhookManagement />} />
             <Route path="/ops-monitor" element={<OperationsMonitoring />} />
             <Route path="/onboarding-checklist" element={<OnboardingChecklistPage />} />
+            <Route path="/support" element={<SupportPortal />} />
+            <Route path="/metrics" element={<SaaSMetricsDashboard />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
             {/* Authenticated billing route */}

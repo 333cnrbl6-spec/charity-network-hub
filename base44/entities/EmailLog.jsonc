@@ -1,0 +1,64 @@
+{
+  "name": "EmailLog",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "recipient_email": {
+      "type": "string",
+      "description": "Email recipient address"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject line"
+    },
+    "email_type": {
+      "type": "string",
+      "enum": [
+        "invoice",
+        "trial_expiring",
+        "onboarding",
+        "alert",
+        "support",
+        "payment_failed",
+        "payment_retry"
+      ],
+      "description": "Email category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed",
+        "bounced",
+        "opened",
+        "clicked"
+      ],
+      "default": "sent"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if failed"
+    },
+    "retry_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "charity_id",
+    "recipient_email",
+    "subject",
+    "email_type"
+  ]
+}

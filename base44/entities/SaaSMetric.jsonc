@@ -1,0 +1,54 @@
+{
+  "name": "SaaSMetric",
+  "type": "object",
+  "properties": {
+    "metric_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of metric calculation"
+    },
+    "mrr": {
+      "type": "number",
+      "description": "Monthly Recurring Revenue in GBP"
+    },
+    "arr": {
+      "type": "number",
+      "description": "Annual Recurring Revenue in GBP"
+    },
+    "active_customers": {
+      "type": "number",
+      "description": "Number of active paid subscriptions"
+    },
+    "trial_customers": {
+      "type": "number",
+      "description": "Customers in trial period"
+    },
+    "churn_rate": {
+      "type": "number",
+      "description": "Monthly churn percentage"
+    },
+    "new_customers": {
+      "type": "number",
+      "description": "New customers this month"
+    },
+    "customer_retention_rate": {
+      "type": "number",
+      "description": "Percentage of customers retained"
+    },
+    "failed_payments": {
+      "type": "number",
+      "description": "Failed payment attempts"
+    },
+    "cac": {
+      "type": "number",
+      "description": "Customer Acquisition Cost (calculated)"
+    },
+    "ltv": {
+      "type": "number",
+      "description": "Lifetime Value (calculated)"
+    }
+  },
+  "required": [
+    "metric_date"
+  ]
+}
