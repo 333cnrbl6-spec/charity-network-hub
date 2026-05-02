@@ -1,0 +1,81 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "Unique invoice identifier"
+    },
+    "stripe_invoice_id": {
+      "type": "string",
+      "description": "Stripe invoice ID for reference"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Invoice amount in GBP"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP",
+      "description": "Currency code"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "draft",
+      "description": "Invoice status"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When invoice was issued"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When payment is due"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When invoice was paid"
+    },
+    "description": {
+      "type": "string",
+      "description": "Invoice line item description"
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "URL to PDF invoice"
+    },
+    "subscription_period": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  },
+  "required": [
+    "charity_id",
+    "invoice_number",
+    "amount",
+    "issued_date"
+  ]
+}

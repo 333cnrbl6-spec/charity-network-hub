@@ -72,6 +72,12 @@ import StatusPage from './pages/StatusPage';
 import CustomerHealthDashboard from './pages/CustomerHealthDashboard';
 import UsageAnalyticsDashboard from './pages/UsageAnalyticsDashboard';
 import APIDocumentation from './pages/APIDocumentation';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import HelpCenter from './pages/HelpCenter';
+import BillingManagement from './pages/BillingManagement';
+import Changelog from './pages/Changelog';
+import SLAPolicy from './pages/SLAPolicy';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -150,6 +156,7 @@ const AuthenticatedApp = () => {
         <Route path="/library" element={<AssetLibrary />} />
         <Route path="/handyperson-calendar" element={<HandypersonCalendar />} />
         <Route path="/pricing" element={<PricingComparison />} />
+        <Route path="/billing" element={<BillingManagement />} />
         <Route path="/platform-admin" element={<PlatformAdmin />} />
         <Route path="/my-organisation" element={<TenantPortal />} />
         {/* Role-based portals — inside AppLayout so they get the sidebar */}
@@ -191,8 +198,15 @@ function App() {
             <Route path="/admin/customer-health" element={<CustomerHealthDashboard />} />
             <Route path="/admin/usage" element={<UsageAnalyticsDashboard />} />
             <Route path="/api-docs" element={<APIDocumentation />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/changelog" element={<Changelog />} />
+            <Route path="/sla" element={<SLAPolicy />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
+            {/* Authenticated billing route */}
+            <Route path="/billing" element={<AuthenticatedApp />} />
           </Routes>
           </Router>
           <Toaster />

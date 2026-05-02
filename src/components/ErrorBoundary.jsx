@@ -38,11 +38,7 @@ class ErrorBoundary extends React.Component {
   };
 
   isDevelopment = () => {
-    try {
-      return typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
-    } catch {
-      return false;
-    }
+    return import.meta.env.DEV;
   };
 
   handleHome = () => {

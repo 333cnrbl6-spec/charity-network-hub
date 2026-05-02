@@ -1,0 +1,55 @@
+{
+  "name": "HelpArticle",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Article title"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "getting-started",
+        "billing",
+        "security",
+        "integrations",
+        "troubleshooting",
+        "faq"
+      ],
+      "description": "Help category"
+    },
+    "content": {
+      "type": "string",
+      "description": "Article content (markdown)"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author name/email"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is article published"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of views"
+    },
+    "helpful_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Marked as helpful count"
+    }
+  },
+  "required": [
+    "title",
+    "slug",
+    "category",
+    "content"
+  ]
+}
