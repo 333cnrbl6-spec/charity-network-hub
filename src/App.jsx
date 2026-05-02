@@ -69,6 +69,9 @@ import CharitySmartSearch from './pages/CharitySmartSearch';
 import CharityAnalyticsPage from './pages/CharityAnalyticsPage';
 import CharityCompliancePage from './pages/CharityCompliancePage';
 import StatusPage from './pages/StatusPage';
+import CustomerHealthDashboard from './pages/CustomerHealthDashboard';
+import UsageAnalyticsDashboard from './pages/UsageAnalyticsDashboard';
+import APIDocumentation from './pages/APIDocumentation';
 
 const AdminOnly = ({ children }) => {
   const { user } = useAuth();
@@ -185,6 +188,9 @@ function App() {
             <Route path="/charity-analytics" element={<CharityAnalyticsPage />} />
             <Route path="/charity-compliance" element={<CharityCompliancePage />} />
             <Route path="/status" element={<StatusPage />} />
+            <Route path="/admin/customer-health" element={<CustomerHealthDashboard />} />
+            <Route path="/admin/usage" element={<UsageAnalyticsDashboard />} />
+            <Route path="/api-docs" element={<APIDocumentation />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>

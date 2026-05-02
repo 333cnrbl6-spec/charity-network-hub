@@ -37,6 +37,14 @@ class ErrorBoundary extends React.Component {
     this.setState({ hasError: false, error: null, errorInfo: null });
   };
 
+  isDevelopment = () => {
+    try {
+      return typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
+    } catch {
+      return false;
+    }
+  };
+
   handleHome = () => {
     window.location.href = '/';
   };
@@ -64,7 +72,7 @@ class ErrorBoundary extends React.Component {
               </p>
             </div>
 
-            {typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.NODE_ENV === 'development' && this.state.error && (
+            {this.isDevelopment() && this.state.error && (
               <div className="bg-muted p-3 rounded-lg text-left max-h-32 overflow-y-auto">
                 <p className="text-xs font-mono text-destructive whitespace-pre-wrap break-words">
                   {this.state.error.toString()}

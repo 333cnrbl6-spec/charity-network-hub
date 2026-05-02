@@ -1,0 +1,42 @@
+{
+  "name": "FeatureFlag",
+  "type": "object",
+  "properties": {
+    "feature_name": {
+      "type": "string",
+      "description": "Feature identifier"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable feature name"
+    },
+    "tiers": {
+      "type": "object",
+      "description": "Which tiers have access",
+      "properties": {
+        "starter": {
+          "type": "boolean"
+        },
+        "professional": {
+          "type": "boolean"
+        },
+        "enterprise": {
+          "type": "boolean"
+        }
+      }
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Feature enabled globally"
+    },
+    "description": {
+      "type": "string",
+      "description": "Feature description"
+    }
+  },
+  "required": [
+    "feature_name",
+    "tiers"
+  ]
+}

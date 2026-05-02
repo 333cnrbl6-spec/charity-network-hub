@@ -1,0 +1,45 @@
+{
+  "name": "UsageMetric",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User email or ID"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "page_view",
+        "ai_generation",
+        "report_download",
+        "data_export",
+        "api_call",
+        "login",
+        "feature_access"
+      ],
+      "description": "Type of metric"
+    },
+    "feature_name": {
+      "type": "string",
+      "description": "Feature accessed (if applicable)"
+    },
+    "value": {
+      "type": "number",
+      "description": "Metric value"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When metric occurred"
+    }
+  },
+  "required": [
+    "charity_id",
+    "metric_type",
+    "timestamp"
+  ]
+}

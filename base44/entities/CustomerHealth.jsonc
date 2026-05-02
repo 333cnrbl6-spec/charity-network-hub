@@ -1,0 +1,109 @@
+{
+  "name": "CustomerHealth",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "org_name": {
+      "type": "string",
+      "description": "Organization name"
+    },
+    "health_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Overall health score (0-100)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "at_risk",
+        "churning"
+      ],
+      "description": "Health status"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last user activity"
+    },
+    "days_since_login": {
+      "type": "number",
+      "description": "Days since last login"
+    },
+    "active_users": {
+      "type": "number",
+      "description": "Number of active users this month"
+    },
+    "feature_usage": {
+      "type": "object",
+      "description": "Feature usage metrics",
+      "properties": {
+        "ai_generations": {
+          "type": "number"
+        },
+        "reports_generated": {
+          "type": "number"
+        },
+        "data_exports": {
+          "type": "number"
+        },
+        "api_calls": {
+          "type": "number"
+        }
+      }
+    },
+    "data_volume": {
+      "type": "number",
+      "description": "Number of records in customer account"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has completed onboarding"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Subscription tier"
+    },
+    "monthly_revenue": {
+      "type": "number",
+      "description": "Monthly revenue from this customer"
+    },
+    "churn_risk": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Likelihood of churn"
+    },
+    "churn_reason": {
+      "type": "string",
+      "description": "Predicted reason for churn (if applicable)"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When score was last calculated"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal sales notes"
+    }
+  },
+  "required": [
+    "charity_id",
+    "org_name",
+    "health_score"
+  ]
+}

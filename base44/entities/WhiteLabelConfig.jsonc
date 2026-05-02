@@ -1,0 +1,61 @@
+{
+  "name": "WhiteLabelConfig",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity (Enterprise customers)"
+    },
+    "org_name": {
+      "type": "string",
+      "description": "Organization name"
+    },
+    "primary_color": {
+      "type": "string",
+      "description": "Hex color code for branding"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL to custom logo"
+    },
+    "favicon_url": {
+      "type": "string",
+      "description": "URL to custom favicon"
+    },
+    "custom_domain": {
+      "type": "string",
+      "description": "e.g., app.myCharity.org"
+    },
+    "footer_text": {
+      "type": "string",
+      "description": "Custom footer text"
+    },
+    "enable_powered_by": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show 'Powered by CharityHub' footer"
+    },
+    "custom_css": {
+      "type": "string",
+      "description": "Additional CSS for customization"
+    },
+    "email_branding": {
+      "type": "object",
+      "properties": {
+        "from_name": {
+          "type": "string"
+        },
+        "logo_url": {
+          "type": "string"
+        },
+        "accent_color": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "charity_id",
+    "org_name"
+  ]
+}
