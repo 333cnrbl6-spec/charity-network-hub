@@ -15,14 +15,14 @@ export default function PricingPage() {
       description: 'Perfect for small branches',
       users: 3,
       features: [
-        { name: 'Volunteer management', included: true },
-        { name: 'Basic reporting', included: true },
+        { name: 'Volunteer registration & profiles', included: true },
+        { name: 'DBS expiry monitoring', included: true },
+        { name: 'Basic impact dashboard', included: true },
         { name: 'Email support', included: true },
-        { name: 'Mobile access', included: false },
+        { name: 'Smart job matching', included: false },
+        { name: 'Advanced safeguarding', included: false },
         { name: 'AI grant writing', included: false },
-        { name: 'Advanced analytics', included: false },
-        { name: 'Custom integrations', included: false },
-        { name: 'White-label option', included: false }
+        { name: 'Multi-region network', included: false }
       ]
     },
     {
@@ -34,13 +34,13 @@ export default function PricingPage() {
       popular: true,
       features: [
         { name: 'Everything in Starter', included: true },
-        { name: 'Mobile access', included: true },
-        { name: 'AI grant writing', included: true },
-        { name: 'Advanced analytics', included: true },
+        { name: 'Smart volunteer-to-job matching AI', included: true },
+        { name: 'Advanced safeguarding incidents & alerts', included: true },
+        { name: 'Automated 48-hour follow-up reminders', included: true },
+        { name: 'AI grant writing & report generation', included: true },
         { name: 'Priority support', included: true },
-        { name: 'Custom integrations', included: false },
-        { name: 'White-label option', included: false },
-        { name: 'Dedicated manager', included: false }
+        { name: 'Public impact dashboard & PDF exports', included: true },
+        { name: 'Custom integrations', included: false }
       ]
     },
     {
@@ -51,13 +51,13 @@ export default function PricingPage() {
       users: 'Unlimited',
       features: [
         { name: 'Everything in Professional', included: true },
-        { name: 'Custom integrations', included: true },
-        { name: 'White-label option', included: true },
+        { name: 'Multi-region network sync & coordination', included: true },
+        { name: 'White-label & custom branding', included: true },
+        { name: 'Custom OAuth integrations', included: true },
         { name: 'Dedicated account manager', included: true },
-        { name: 'SLA guarantee (99.9%)', included: true },
-        { name: 'Custom training', included: true },
-        { name: 'API access', included: true },
-        { name: 'Multi-regional setup', included: true }
+        { name: '99.9% SLA guarantee', included: true },
+        { name: 'Advanced API & webhooks', included: true },
+        { name: 'Custom training & onboarding', included: true }
       ]
     }
   ];

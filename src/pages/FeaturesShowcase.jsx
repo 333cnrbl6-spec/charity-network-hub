@@ -7,39 +7,39 @@ export default function FeaturesShowcase() {
   const features = [
     {
       icon: Users,
-      title: 'Volunteer Management',
-      description: 'Schedule volunteers, track hours, manage availability and skills. Automated reminders and performance tracking.',
-      highlights: ['Drag-drop scheduling', 'Auto reminders', 'Skills database', 'Performance tracking']
+      title: 'Volunteer Management & Registration',
+      description: 'Public volunteer signup with skills, availability, and DBS document uploads. Approval workflows with automated lead notifications.',
+      highlights: ['Public signup portal', 'Skills database', 'DBS tracking', 'Approval dashboard']
     },
     {
       icon: BarChart3,
-      title: 'Impact Analytics',
-      description: 'Real-time dashboards tracking volunteer hours, client outcomes, and community impact with visual reports.',
-      highlights: ['Real-time metrics', 'Custom dashboards', 'Exportable reports', 'Trend analysis']
+      title: 'Real-Time Impact Analytics',
+      description: 'Live dashboards tracking volunteer hours, beneficiaries supported, grant funding, and community outcomes. Public shareable impact reports.',
+      highlights: ['Live metrics', 'Public impact dashboard', 'PDF exports', 'Donor insights']
     },
     {
       icon: FileText,
-      title: 'AI-Powered Reports',
-      description: 'Auto-generate grant applications, impact reports, and government submissions in minutes, not days.',
-      highlights: ['Grant writing AI', 'Compliance reports', 'Template library', 'One-click export']
+      title: 'AI Grant & Report Writing',
+      description: 'Auto-generate grant applications, impact reports, and thank-you letters in minutes. Templates powered by LLM.',
+      highlights: ['Grant writing AI', 'Impact reports', 'Letter generation', 'One-click PDF']
     },
     {
       icon: Lock,
-      title: 'Enterprise Security',
-      description: 'SOC 2 certified, GDPR compliant, safeguarding tools, and audit logs for full compliance.',
-      highlights: ['GDPR compliant', 'DBS verification', 'Audit logs', 'Role-based access']
+      title: 'Advanced Safeguarding Suite',
+      description: 'Complete incident tracking, DBS expiry monitoring, automated 48-hour follow-up reminders, and audit trails.',
+      highlights: ['Incident dashboard', 'DBS automation', '48-hr reminders', 'Audit logs']
     },
     {
       icon: Zap,
-      title: 'Automation & Workflows',
-      description: 'Automate repetitive tasks, send bulk emails, schedule reports, and trigger workflows based on events.',
-      highlights: ['Email automation', 'Task workflows', 'Bulk actions', 'Scheduled reports']
+      title: 'Smart Volunteer Matching',
+      description: 'AI engine automatically matches volunteers to jobs based on skills, location, and availability. Scoring algorithm with top 5 recommendations.',
+      highlights: ['AI matching', 'Skills-based', 'Location aware', 'Availability scoring']
     },
     {
       icon: Globe,
-      title: 'Multi-Branch Coordination',
-      description: 'Manage multiple branches, sync data across regions, and get network-wide insights in one dashboard.',
-      highlights: ['Regional hubs', 'Data sync', 'Network reports', 'Branch messaging']
+      title: 'Multi-Branch Network Sync',
+      description: 'Manage unlimited branches, sync data across regions, coordinate resources, and get network-wide intelligence.',
+      highlights: ['Regional hubs', 'Real-time sync', 'Network reports', 'Coordinator portal']
     }
   ];
 
@@ -114,12 +114,14 @@ export default function FeaturesShowcase() {
             <div>
               <h3 className="font-bold text-lg mb-4 text-green-600">✓ CharityHub</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Centralized, organized database</li>
-                <li>Real-time collaboration</li>
-                <li>Live dashboards & alerts</li>
-                <li>AI-generated reports in minutes</li>
-                <li>Built-in compliance tools</li>
-                <li>Advanced analytics & insights</li>
+                <li>Centralized volunteer & client database</li>
+                <li>Public volunteer registration portal</li>
+                <li>AI-powered job matching (skills + location)</li>
+                <li>Automated DBS & training monitoring</li>
+                <li>Safeguarding incident tracking & alerts</li>
+                <li>Real-time impact metrics & public dashboards</li>
+                <li>AI grant writing & report generation</li>
+                <li>48-hour follow-up automation</li>
               </ul>
             </div>
           </div>

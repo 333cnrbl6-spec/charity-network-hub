@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 export default function MarketingLanding() {
   const features = [
-    { icon: Users, title: 'Volunteer Management', desc: 'Track, schedule & engage volunteers effortlessly' },
-    { icon: TrendingUp, title: 'Impact Analytics', desc: 'Real-time dashboards showing community outcomes' },
-    { icon: Shield, title: 'Enterprise Security', desc: 'GDPR, safeguarding, compliance built-in' },
-    { icon: Zap, title: 'AI-Powered Reports', desc: 'Auto-generate grant applications and insights' }
+    { icon: Users, title: 'Smart Volunteer Matching', desc: 'Auto-match volunteers to jobs by skills, location, and availability' },
+    { icon: TrendingUp, title: 'Real-Time Impact Analytics', desc: 'Live dashboards with volunteer hours, beneficiary metrics, and grant outcomes' },
+    { icon: Shield, title: 'Advanced Safeguarding', desc: 'DBS monitoring, 48-hr follow-up automation, incident tracking, compliance audit logs' },
+    { icon: Zap, title: 'AI Grant & Report Writer', desc: 'Auto-generate grant applications, impact reports, and exportable PDFs' }
   ];
 
   const testimonials = [
@@ -29,9 +29,9 @@ export default function MarketingLanding() {
   ];
 
   const pricing = [
-    { tier: 'Starter', price: '£99', users: 3, features: ['Basic volunteer tracking', 'Monthly reports', 'Email support'] },
-    { tier: 'Professional', price: '£299', users: 10, features: ['Everything in Starter', 'AI grant writing', 'Advanced analytics', 'Priority support'] },
-    { tier: 'Enterprise', price: 'Custom', users: 'Unlimited', features: ['White-label solution', 'Custom integrations', 'Dedicated manager', 'SLA guarantee'] }
+    { tier: 'Starter', price: '£99', users: 3, features: ['Volunteer registration & DBS tracking', 'Basic impact dashboard', 'Email support', 'Monthly reports'] },
+    { tier: 'Professional', price: '£299', users: 10, features: ['Everything in Starter', 'Smart job matching AI', 'Advanced safeguarding tools', 'AI grant writing', 'Full analytics', 'Priority support'] },
+    { tier: 'Enterprise', price: 'Custom', users: 'Unlimited', features: ['Everything in Professional', 'Multi-region network sync', 'White-label customization', 'Custom integrations', 'Dedicated account manager', '99.9% SLA guarantee'] }
   ];
 
   return (
