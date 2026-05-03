@@ -67,6 +67,7 @@ import LaunchReadinessDashboard from './pages/LaunchReadinessDashboard';
 import ReportingCenter from './pages/ReportingCenter';
 import SafeguardingComplianceDashboard from './pages/SafeguardingComplianceDashboard';
 import GrantManagement from './pages/GrantManagement';
+import FeedbackCollection from './pages/FeedbackCollection';
 import { TenantProvider } from '@/lib/tenantContext.jsx';
 import CharityDashboard from './pages/CharityDashboard';
 import CharityGrants from './pages/Grants';
@@ -239,6 +240,7 @@ function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/help" element={<HelpCenter />} />
+            <Route path="/feedback/:token" element={<FeedbackCollection />} />
             <Route path="/changelog" element={<Changelog />} />
             <Route path="/sla" element={<SLAPolicy />} />
             <Route path="/api-keys" element={<APIKeysDashboard />} />
