@@ -50,6 +50,7 @@ import CharityOnboarding from './pages/CharityOnboarding';
 import ComplianceHub from './pages/ComplianceHub';
 import NetworkIntelligence from './pages/NetworkIntelligence';
 import SafeguardingHub from './pages/SafeguardingHub';
+import SafeguardingDashboard from './pages/SafeguardingDashboard';
 import ReferralDashboard from './pages/ReferralDashboard';
 import TrainingModule from './pages/TrainingModule';
 import VolunteerFieldLog from './pages/VolunteerFieldLog';
@@ -164,6 +165,7 @@ const AuthenticatedApp = () => {
         <Route path="/charity-analytics" element={<CharityAnalytics />} />
         <Route path="/compliance-hub" element={<ComplianceHub />} />
         <Route path="/safeguarding" element={<SafeguardingHub />} />
+        <Route path="/safeguarding-dashboard" element={<SafeguardingDashboard />} />
         <Route path="/referrals" element={<ReferralDashboard />} />
         <Route path="/safeguarding/analytics" element={<SafeguardingAnalytics />} />
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
