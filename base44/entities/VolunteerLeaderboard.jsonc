@@ -1,0 +1,63 @@
+{
+  "name": "VolunteerLeaderboard",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string",
+      "description": "Reference to Volunteer"
+    },
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to Branch"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Volunteer's full name"
+    },
+    "total_hours": {
+      "type": "number",
+      "default": 0,
+      "description": "Total volunteer hours"
+    },
+    "impact_score": {
+      "type": "number",
+      "default": 0,
+      "description": "Calculated impact score (hours \u00d7 impact multiplier)"
+    },
+    "sessions_completed": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of completed sessions"
+    },
+    "badges_earned": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of badge IDs earned"
+    },
+    "badges_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total badges earned"
+    },
+    "rank": {
+      "type": "number",
+      "description": "Leaderboard rank for charity"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When leaderboard was last updated"
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "charity_id",
+    "volunteer_name"
+  ]
+}

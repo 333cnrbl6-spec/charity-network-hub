@@ -9,6 +9,8 @@ import StatusLight from '@/components/ui/StatusLight';
 import { playLoading, playSuccess } from '@/lib/audio';
 import CharityAlerts from '@/components/alerts/CharityAlerts';
 import PDFExporter from '@/components/reports/PDFExporter';
+import VolunteerLeaderboard from '@/components/gamification/VolunteerLeaderboard';
+import CommunityImpactBar from '@/components/gamification/CommunityImpactBar';
 import { useClients, useVolunteers, useJobs, useSessions, useGrants, useCompliance, useBranches, useBranchReports, useSyncLogs } from '@/hooks/useEntityQueries';
 
 export default function Dashboard() {
@@ -259,6 +261,11 @@ export default function Dashboard() {
 
       <CharityAlerts />
       <PDFExporter />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CommunityImpactBar charityId={selectedBranch?.charity_id} targetImpactScore={5000} />
+        <VolunteerLeaderboard charityId={selectedBranch?.charity_id} limit={5} />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>

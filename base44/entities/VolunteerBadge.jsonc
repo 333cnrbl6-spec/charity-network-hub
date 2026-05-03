@@ -1,0 +1,71 @@
+{
+  "name": "VolunteerBadge",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string",
+      "description": "Reference to Volunteer"
+    },
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to Branch"
+    },
+    "badge_type": {
+      "type": "string",
+      "enum": [
+        "hours_25",
+        "hours_50",
+        "hours_100",
+        "hours_250",
+        "impact_hero",
+        "streak_10",
+        "streak_30",
+        "top_contributor",
+        "community_champion"
+      ],
+      "description": "Type of badge earned"
+    },
+    "badge_name": {
+      "type": "string",
+      "description": "Display name for badge (e.g., 'Quarter Century')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Badge description"
+    },
+    "icon_emoji": {
+      "type": "string",
+      "description": "Emoji icon for the badge"
+    },
+    "earned_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When badge was earned"
+    },
+    "milestone_type": {
+      "type": "string",
+      "enum": [
+        "hours",
+        "impact",
+        "streak",
+        "rank"
+      ],
+      "description": "Type of milestone that triggered badge"
+    },
+    "milestone_value": {
+      "type": "number",
+      "description": "Value of milestone (e.g., 100 hours)"
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "charity_id",
+    "badge_type",
+    "badge_name",
+    "icon_emoji"
+  ]
+}
