@@ -1,0 +1,88 @@
+{
+  "name": "ReportScheduleConfig",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "schedule_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether monthly reports are enabled"
+    },
+    "report_frequency": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual"
+      ],
+      "default": "monthly",
+      "description": "How often to send reports"
+    },
+    "send_day_of_month": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 28,
+      "default": 1,
+      "description": "Day of month to send (1-28 to avoid month-end issues)"
+    },
+    "stakeholder_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Email list of stakeholders (trustees, donors, etc)"
+    },
+    "include_sections": {
+      "type": "object",
+      "properties": {
+        "volunteer_hours": {
+          "type": "boolean",
+          "default": true
+        },
+        "grant_milestones": {
+          "type": "boolean",
+          "default": true
+        },
+        "activity_summary": {
+          "type": "boolean",
+          "default": true
+        },
+        "financial_impact": {
+          "type": "boolean",
+          "default": true
+        },
+        "client_outcomes": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "description": "Which sections to include in report"
+    },
+    "last_sent": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the last report was sent"
+    },
+    "next_scheduled": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the next report will be sent"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "error"
+      ],
+      "default": "active",
+      "description": "Current status of schedule"
+    }
+  },
+  "required": [
+    "charity_id"
+  ]
+}
