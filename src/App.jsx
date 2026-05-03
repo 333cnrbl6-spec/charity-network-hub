@@ -69,7 +69,10 @@ import SafeguardingComplianceDashboard from './pages/SafeguardingComplianceDashb
 import GrantManagement from './pages/GrantManagement';
 import FeedbackCollection from './pages/FeedbackCollection';
 import { TenantProvider } from '@/lib/tenantContext.jsx';
+import { PermissionProvider } from '@/lib/PermissionContext';
 import CharityDashboard from './pages/CharityDashboard';
+import SubscriberView from './pages/SubscriberView';
+import DeveloperPortal from './pages/DeveloperPortal';
 import CharityGrants from './pages/Grants';
 import CharityHubOnboarding from './pages/Onboarding';
 import CharityPricing from './pages/Pricing';
@@ -207,8 +210,9 @@ function App() {
     <ErrorBoundary>
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
-          <TenantProvider>
-          <Router>
+          <PermissionProvider>
+            <TenantProvider>
+            <Router>
           <Routes>
             {/* Public landing page */}
             <Route path="/landing" element={<PublicLandingPage />} />
@@ -250,6 +254,8 @@ function App() {
             <Route path="/onboarding-checklist" element={<OnboardingChecklistPage />} />
             <Route path="/support" element={<SupportPortal />} />
             <Route path="/metrics" element={<SaaSMetricsDashboard />} />
+            <Route path="/subscription" element={<SubscriberView />} />
+            <Route path="/developer-portal" element={<DeveloperPortal />} />
             {/* All other routes go through auth guard (includes role portals with sidebar) */}
             <Route path="*" element={<AuthenticatedApp />} />
             {/* Authenticated billing route */}
@@ -257,7 +263,8 @@ function App() {
           </Routes>
           </Router>
           <Toaster />
-          </TenantProvider>
+            </TenantProvider>
+          </PermissionProvider>
         </QueryClientProvider>
       </AuthProvider>
     </ErrorBoundary>
