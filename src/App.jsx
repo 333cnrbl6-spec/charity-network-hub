@@ -71,6 +71,8 @@ import MarketingLanding from './pages/MarketingLanding';
 import PricingPage from './pages/PricingPage';
 import FeaturesShowcase from './pages/FeaturesShowcase';
 import PublicImpactDashboard from './pages/PublicImpactDashboard';
+import PublicVolunteerRegistration from './pages/PublicVolunteerRegistration';
+import VolunteerApprovalDashboard from './pages/VolunteerApprovalDashboard';
 import CharityCompliancePage from './pages/CharityCompliancePage';
 import BillingCustomer from './pages/BillingCustomer';
 import APIKeysDashboard from './pages/APIKeysDashboard';
@@ -179,6 +181,7 @@ const AuthenticatedApp = () => {
         <Route path="/branch-ops" element={<BranchOpsPortal />} />
         <Route path="/branch-ceo" element={<BranchCEOPortal />} />
         <Route path="/governance-portal" element={<GovernancePortal />} />
+        <Route path="/volunteer-approvals" element={<VolunteerApprovalDashboard />} />
         </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -199,6 +202,7 @@ function App() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/features" element={<FeaturesShowcase />} />
             <Route path="/impact" element={<PublicImpactDashboard />} />
+            <Route path="/volunteer-signup" element={<PublicVolunteerRegistration />} />
             {/* Public routes — no auth required */}
             <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
