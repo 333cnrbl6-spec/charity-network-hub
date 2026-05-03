@@ -52,6 +52,7 @@ import NetworkIntelligence from './pages/NetworkIntelligence';
 import SafeguardingHub from './pages/SafeguardingHub';
 import SafeguardingDashboard from './pages/SafeguardingDashboard';
 import ReferralDashboard from './pages/ReferralDashboard';
+import CreditManagement from './pages/CreditManagement';
 import TrainingModule from './pages/TrainingModule';
 import VolunteerFieldLog from './pages/VolunteerFieldLog';
 import SafeguardingAnalytics from './pages/SafeguardingAnalytics';
@@ -170,6 +171,7 @@ const AuthenticatedApp = () => {
         <Route path="/safeguarding/analytics" element={<SafeguardingAnalytics />} />
         <Route path="/safeguarding/incident/:incidentId" element={<IncidentDetail />} />
         <Route path="/training" element={<TrainingModule />} />
+        <Route path="/credits" element={<CreditManagement />} />
         <Route path="/field-log" element={<VolunteerFieldLog />} />
         <Route path="/library" element={<AssetLibrary />} />
         <Route path="/handyperson-calendar" element={<HandypersonCalendar />} />

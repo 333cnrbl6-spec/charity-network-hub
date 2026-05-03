@@ -22,6 +22,30 @@ Deno.serve(async (req) => {
     const charity = await base44.entities.Charity.filter({ id: grantData.charity_id });
     const charityData = charity[0];
 
+    // CHECK CREDITS FIRST
+    const charityCredits = await base44.asServiceRole.entities.CharityCredits.filter(
+      { charity_id: grantData.charity_id }
+    );
+    
+    if (!charityCredits || charityCredits.length === 0) {
+      return Response.json(
+        { error: 'No credit account found. Please contact support.' },
+        { status: 404 }
+      );
+    }
+
+    const credits = charityCredits[0];
+    const operation_cost = 75; // ai_grant_writing costs 75 credits
+    
+    if (credits.credits_available < operation_cost) {
+      return Response.json({
+        error: 'Insufficient credits',
+        required_credits: operation_cost,
+        available_credits: credits.credits_available,
+        message: `This operation requires ${operation_cost} credits. You have ${credits.credits_available} available.`
+      }, { status: 402 });
+    }
+
     // Generate AI application
     const response = await base44.integrations.Core.InvokeLLM({
       prompt: `You are an experienced UK charity fundraising professional. Write a compelling grant application for:
@@ -51,7 +75,29 @@ Write in sections: Executive Summary, Need Statement, Project Description, Outco
       ai_draft_application: response
     });
 
-    return Response.json({ draft: response });
+    // DEBIT CREDITS
+    await base44.asServiceRole.entities.CharityCredits.update(credits.id, {
+      credits_available: credits.credits_available - operation_cost,
+      credits_used_month: credits.credits_used_month + operation_cost
+    });
+
+    // Log consumption
+    await base44.asServiceRole.entities.CreditConsumption.create({
+      charity_id: grantData.charity_id,
+      user_email: user.email,
+      operation_type: 'ai_grant_writing',
+      credits_consumed: operation_cost,
+      charity_tier: credits.subscription_tier,
+      timestamp: new Date().toISOString(),
+      status: 'success',
+      metadata: { grant_id: grantId, grant_name: grantData.grant_name }
+    });
+
+    return Response.json({
+      draft: response,
+      credits_consumed: operation_cost,
+      credits_remaining: credits.credits_available - operation_cost
+    });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

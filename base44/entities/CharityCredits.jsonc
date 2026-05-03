@@ -1,0 +1,64 @@
+{
+  "name": "CharityCredits",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "credits_available": {
+      "type": "number",
+      "default": 0,
+      "description": "Current available credits"
+    },
+    "credits_used_month": {
+      "type": "number",
+      "default": 0,
+      "description": "Credits consumed this calendar month"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise",
+        "trial"
+      ],
+      "default": "trial",
+      "description": "Current subscription tier"
+    },
+    "trial_ends": {
+      "type": "string",
+      "format": "date",
+      "description": "When 30-day free trial ends"
+    },
+    "monthly_credit_allowance": {
+      "type": "number",
+      "description": "Base credits allocated per month by tier"
+    },
+    "last_credit_reset": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time monthly credits were reset"
+    },
+    "overage_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether organization can overage (Enterprise only)"
+    },
+    "credit_alerts_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send alerts when usage is high"
+    },
+    "alert_threshold_percent": {
+      "type": "number",
+      "default": 75,
+      "description": "Alert when this % of monthly credits used"
+    }
+  },
+  "required": [
+    "charity_id",
+    "subscription_tier"
+  ]
+}

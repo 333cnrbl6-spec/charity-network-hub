@@ -1,0 +1,70 @@
+{
+  "name": "CreditConsumption",
+  "type": "object",
+  "properties": {
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who triggered consumption"
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "ai_grant_writing",
+        "ai_report_generation",
+        "ai_thank_you_letter",
+        "pdf_export",
+        "api_call",
+        "ai_job_matching",
+        "ai_insights",
+        "data_export_bulk",
+        "email_campaign"
+      ],
+      "description": "Type of credit-consuming operation"
+    },
+    "credits_consumed": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of credits used"
+    },
+    "charity_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Subscription tier at time of consumption"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consumption occurred"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "blocked_limit_exceeded",
+        "blocked_trial"
+      ],
+      "default": "success",
+      "description": "Whether operation was allowed"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (document title, email count, etc)",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "charity_id",
+    "operation_type",
+    "credits_consumed",
+    "charity_tier",
+    "timestamp"
+  ]
+}

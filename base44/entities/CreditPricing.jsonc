@@ -1,0 +1,54 @@
+{
+  "name": "CreditPricing",
+  "type": "object",
+  "properties": {
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "ai_grant_writing",
+        "ai_report_generation",
+        "ai_thank_you_letter",
+        "pdf_export",
+        "api_call",
+        "ai_job_matching",
+        "ai_insights",
+        "data_export_bulk",
+        "email_campaign"
+      ],
+      "description": "Type of operation"
+    },
+    "base_cost_credits": {
+      "type": "number",
+      "description": "Standard credit cost (1 credit \u2248 \u00a30.01)"
+    },
+    "starter_monthly_allowance": {
+      "type": "number",
+      "description": "Free credits in Starter tier per month"
+    },
+    "professional_monthly_allowance": {
+      "type": "number",
+      "description": "Free credits in Professional tier per month"
+    },
+    "enterprise_monthly_allowance": {
+      "type": "number",
+      "description": "Free credits in Enterprise tier per month"
+    },
+    "trial_allowance": {
+      "type": "number",
+      "description": "Free credits during 30-day trial"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable operation description"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether pricing is currently active"
+    }
+  },
+  "required": [
+    "operation_type",
+    "base_cost_credits"
+  ]
+}

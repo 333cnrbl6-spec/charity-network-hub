@@ -3,12 +3,37 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { job_id } = await req.json();
+    const user = await base44.auth.me();
+    const { job_id, charity_id } = await req.json();
 
     // Fetch job details
     const job = await base44.asServiceRole.entities.Job.get(job_id);
     if (!job) {
       return Response.json({ error: 'Job not found' }, { status: 404 });
+    }
+
+    // CHECK CREDITS FIRST (matching costs 10 credits)
+    if (!charity_id) {
+      return Response.json({ error: 'Missing charity_id' }, { status: 400 });
+    }
+
+    const charityCredits = await base44.asServiceRole.entities.CharityCredits.filter(
+      { charity_id }
+    );
+
+    if (!charityCredits || charityCredits.length === 0) {
+      return Response.json({ error: 'No credit account found' }, { status: 404 });
+    }
+
+    const credits = charityCredits[0];
+    const operation_cost = 10; // ai_job_matching costs 10 credits
+
+    if (credits.credits_available < operation_cost) {
+      return Response.json({
+        error: 'Insufficient credits for matching',
+        required: operation_cost,
+        available: credits.credits_available
+      }, { status: 402 });
     }
 
     // Fetch all active volunteers
@@ -94,7 +119,7 @@ Deno.serve(async (req) => {
 
     // Log the matching process
     await base44.asServiceRole.entities.AuditLog.create({
-      user_email: 'system@charityhub.org',
+      user_email: user?.email || 'system@charityhub.org',
       action: 'volunteer_matching_executed',
       entity_type: 'Job',
       entity_id: job_id,
@@ -105,6 +130,24 @@ Deno.serve(async (req) => {
       },
       timestamp: new Date().toISOString(),
       status: 'success'
+    });
+
+    // DEBIT CREDITS
+    await base44.asServiceRole.entities.CharityCredits.update(credits.id, {
+      credits_available: credits.credits_available - operation_cost,
+      credits_used_month: credits.credits_used_month + operation_cost
+    });
+
+    // Log credit consumption
+    await base44.asServiceRole.entities.CreditConsumption.create({
+      charity_id,
+      user_email: user?.email || 'system',
+      operation_type: 'ai_job_matching',
+      credits_consumed: operation_cost,
+      charity_tier: credits.subscription_tier,
+      timestamp: new Date().toISOString(),
+      status: 'success',
+      metadata: { job_id, matches_found: topMatches.length }
     });
 
     return Response.json({
@@ -118,7 +161,9 @@ Deno.serve(async (req) => {
         scheduled_time: job.scheduled_time
       },
       recommendations: topMatches,
-      total_matches: matches.length
+      total_matches: matches.length,
+      credits_consumed: operation_cost,
+      credits_remaining: credits.credits_available - operation_cost
     });
   } catch (error) {
     console.error('Volunteer matching error:', error);
