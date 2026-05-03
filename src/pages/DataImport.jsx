@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Upload, CheckCircle2, AlertCircle, Download, FileUp, Sparkles } from 'lucide-react';
-import LoadingIndicator from '@/components/ui/LoadingIndicator';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 import { playSuccess, playClick } from '@/lib/audio';
 import AIFileDropZone from '@/components/import/AIFileDropZone';
 import BuryAssistCSVImporter from '@/components/import/BuryAssistCSVImporter';
@@ -109,7 +109,17 @@ export default function DataImport() {
 
   return (
     <div className="p-6 space-y-6">
-      <LoadingIndicator isLoading={uploading} message="Importing data..." />
+      {uploading && (
+        <ProcessingFeedback
+          label="Importing data…"
+          detail="Validating records and adding them to your database."
+          tips={[
+            'Larger imports may take a minute or two depending on file size.',
+            'You can continue using other sections while import is in progress.',
+            "You'll be notified once the import completes.",
+          ]}
+        />
+      )}
 
       <div>
         <h1 className="text-3xl font-bold text-foreground">Data Import</h1>

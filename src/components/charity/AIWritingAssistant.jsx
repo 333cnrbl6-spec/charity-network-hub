@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, RefreshCw, AlertCircle, Copy, CheckCircle2 } from 'lucide-react';
+import { Sparkles, RefreshCw, AlertCircle, Copy, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 
 /**
  * Generic AI writing assistant.
@@ -143,9 +144,19 @@ Write in formal but accessible UK English. Include: Executive Summary, Statement
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!result ? (
+        {loading ? (
+          <ProcessingFeedback
+            label="Generating content…"
+            detail="Our AI is crafting personalized content for you."
+            tips={[
+              'Generation typically takes 15-30 seconds.',
+              'You can edit and refine the generated content.',
+              'Regenerate anytime to get alternative versions.',
+            ]}
+          />
+        ) : !result ? (
           <Button onClick={generate} disabled={loading} className="w-full bg-purple-600 hover:bg-purple-700">
-            {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />{config.label}</>}
+            <Sparkles className="w-4 h-4 mr-2" />{config.label}
           </Button>
         ) : (
           <div className="space-y-4">

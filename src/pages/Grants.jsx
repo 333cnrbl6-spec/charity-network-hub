@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Plus, Sparkles, Calendar, DollarSign } from 'lucide-react';
+import { Plus, Sparkles, Calendar, DollarSign } from 'lucide-react';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 import AIWritingAssistant from '@/components/charity/AIWritingAssistant';
 
 export default function Grants() {
@@ -46,7 +47,18 @@ export default function Grants() {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ProcessingFeedback
+          label="Loading grants…"
+          detail="Fetching grant applications from your database."
+          tips={[
+            'Grant data is cached for fast loading on future visits.',
+            'Use the search feature to quickly find grants by name or funder.',
+          ]}
+        />
+      </div>
+    );
   }
 
   return (
@@ -88,7 +100,6 @@ export default function Grants() {
             />
             <div className="flex gap-2">
               <Button onClick={handleCreateGrant} disabled={createGrantMutation.isPending} className="flex-1">
-                {createGrantMutation.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 Create
               </Button>
               <Button variant="outline" onClick={() => setShowNewGrant(false)}>Cancel</Button>
