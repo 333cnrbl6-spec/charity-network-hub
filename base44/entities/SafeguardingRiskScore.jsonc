@@ -1,0 +1,100 @@
+{
+  "name": "SafeguardingRiskScore",
+  "type": "object",
+  "properties": {
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to Branch"
+    },
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "overall_risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Overall risk classification"
+    },
+    "overall_risk_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Overall risk score (0-100)"
+    },
+    "dbs_risk_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "DBS expiry risk component"
+    },
+    "dbs_expired_count": {
+      "type": "number",
+      "description": "Number of expired DBS checks"
+    },
+    "dbs_expiring_soon_count": {
+      "type": "number",
+      "description": "Number of DBS checks expiring within 30 days"
+    },
+    "training_risk_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Training compliance risk component"
+    },
+    "training_expired_count": {
+      "type": "number",
+      "description": "Number of expired trainings"
+    },
+    "training_expiring_soon_count": {
+      "type": "number",
+      "description": "Number of trainings expiring within 30 days"
+    },
+    "incident_risk_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Recent incident activity risk"
+    },
+    "incidents_last_30_days": {
+      "type": "number",
+      "description": "Count of safeguarding incidents in last 30 days"
+    },
+    "high_priority_incidents": {
+      "type": "number",
+      "description": "Count of unresolved high-priority incidents"
+    },
+    "alert_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether an alert was sent for this risk score"
+    },
+    "alert_sent_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails that were alerted"
+    },
+    "last_calculated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the score was last calculated"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recommended actions to reduce risk"
+    }
+  },
+  "required": [
+    "branch_id",
+    "charity_id"
+  ]
+}

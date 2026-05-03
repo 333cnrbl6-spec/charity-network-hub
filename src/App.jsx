@@ -65,6 +65,7 @@ import PlatformAdmin from './pages/PlatformAdmin';
 import TenantPortal from './pages/TenantPortal';
 import LaunchReadinessDashboard from './pages/LaunchReadinessDashboard';
 import ReportingCenter from './pages/ReportingCenter';
+import SafeguardingComplianceDashboard from './pages/SafeguardingComplianceDashboard';
 import { TenantProvider } from '@/lib/tenantContext.jsx';
 import CharityDashboard from './pages/CharityDashboard';
 import CharityGrants from './pages/Grants';
@@ -184,6 +185,7 @@ const AuthenticatedApp = () => {
         <Route path="/my-organisation" element={<TenantPortal />} />
         <Route path="/launch-readiness" element={<LaunchReadinessDashboard />} />
         <Route path="/reporting" element={<ReportingCenter />} />
+        <Route path="/safeguarding-compliance" element={<SafeguardingComplianceDashboard />} />
         {/* Role-based portals — inside AppLayout so they get the sidebar */}
         <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
         <Route path="/staff-portal" element={<StaffPortal />} />
