@@ -25,6 +25,25 @@ export default function WizardStep3VolunteerReg({ charityId, onComplete }) {
     setError(null);
   };
 
+  const validateEmail = (emailStr) => {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return emailRegex.test(emailStr.trim());
+  };
+
+  const validatePostcode = (postcode) => {
+    if (!postcode) return true; // optional field
+    const postcodeRegex = /^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/i;
+    return postcodeRegex.test(postcode.trim());
+  };
+
+  const validateSkills = (skillsStr) => {
+    if (!skillsStr) return [];
+    return skillsStr
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => s.length > 0 && s.length <= 50); // max 50 chars per skill
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,29 +52,70 @@ export default function WizardStep3VolunteerReg({ charityId, onComplete }) {
       return;
     }
 
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Validate location/postcode format if provided
+    if (!validatePostcode(formData.location)) {
+      setError('Please enter a valid UK postcode (e.g., M1 1AE)');
+      return;
+    }
+
+    // Validate skills format
+    const validatedSkills = validateSkills(formData.skills);
+    if (validatedSkills.length > 10) {
+      setError('Maximum 10 skills allowed');
+      return;
+    }
+
     setLoading(true);
     try {
-      // Create volunteer
-      const volunteer = await base44.entities.Volunteer.create({
+      // Check for duplicate volunteer email within charity
+      const existingVolunteer = await base44.entities.Volunteer.filter({
         charity_id: charityId,
-        full_name: formData.full_name,
-        email: formData.email,
-        phone: formData.phone,
-        location: formData.location,
-        skills: formData.skills ? formData.skills.split(',').map(s => s.trim()) : [],
-        status: 'active',
-        dbs_checked: false,
-        dbs_expiry: null,
-        hours_contributed: 0,
-        availability: {},
-        created_date: new Date().toISOString()
+        email: formData.email.trim().toLowerCase()
       });
 
-      // Send welcome email
-      await base44.integrations.Core.SendEmail({
-        to: formData.email,
-        subject: 'Welcome to CharityHub - Your Volunteer Account',
-        body: `Hi ${formData.full_name},
+      if (existingVolunteer && existingVolunteer.length > 0) {
+        setError('A volunteer with this email already exists in your charity');
+        setLoading(false);
+        return;
+      }
+
+      // Set 10-second timeout for volunteer creation
+      const createTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout - please try again')), 10000)
+      );
+
+      // Create volunteer
+      const volunteer = await Promise.race([
+        base44.entities.Volunteer.create({
+          charity_id: charityId,
+          full_name: formData.full_name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone.trim(),
+          location: formData.location.trim().toUpperCase(),
+          skills: validatedSkills,
+          status: 'active',
+          dbs_checked: false,
+          dbs_expiry: null,
+          hours_contributed: 0,
+          availability: {},
+          created_date: new Date().toISOString()
+        }),
+        createTimeout
+      ]);
+
+      // Send welcome email (don't block if fails)
+      try {
+        await Promise.race([
+          base44.integrations.Core.SendEmail({
+            to: formData.email.trim().toLowerCase(),
+            subject: 'Welcome to CharityHub - Your Volunteer Account',
+            body: `Hi ${formData.full_name.trim()},
 
 Welcome to the CharityHub volunteer management platform! We're excited to have you on board.
 
@@ -69,26 +129,40 @@ Log in to get started: https://app.charityhub.org/login
 
 Best regards,
 The CharityHub Team`
-      });
+          }),
+          createTimeout
+        ]);
+      } catch (emailErr) {
+        console.warn('Welcome email failed:', emailErr);
+        // Continue - email failure shouldn't block registration
+      }
 
       // Log the registration
-      await base44.functions.invoke('logAuditEvent', {
-        charity_id: charityId,
-        action: 'first_volunteer_registered_onboarding',
-        entity_type: 'Volunteer',
-        entity_id: volunteer.id,
-        changes: {
-          volunteer_name: formData.full_name,
-          status: 'aha_moment_triggered'
-        }
-      });
+      await Promise.race([
+        base44.functions.invoke('logAuditEvent', {
+          charity_id: charityId,
+          action: 'first_volunteer_registered_onboarding',
+          entity_type: 'Volunteer',
+          entity_id: volunteer.id,
+          changes: {
+            volunteer_name: formData.full_name.trim(),
+            volunteer_email: formData.email.trim().toLowerCase(),
+            status: 'aha_moment_triggered'
+          }
+        }),
+        createTimeout
+      ]);
 
       setCompleted(true);
       setTimeout(() => {
         onComplete();
       }, 1500);
     } catch (err) {
-      setError(err.message || 'Failed to register volunteer');
+      if (err.message.includes('timeout')) {
+        setError('Request took too long. Please check your connection and try again.');
+      } else {
+        setError(err.message || 'Failed to register volunteer');
+      }
     } finally {
       setLoading(false);
     }

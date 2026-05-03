@@ -13,6 +13,12 @@ export default function WizardStep2TeamInvites({ charityId, onComplete }) {
   const [error, setError] = useState(null);
   const [completed, setCompleted] = useState(false);
 
+  const validateEmail = (emailStr) => {
+    // RFC 5322 simplified regex (covers 99% of valid emails)
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return emailRegex.test(emailStr.trim());
+  };
+
   const addInvite = (e) => {
     e.preventDefault();
     
@@ -21,18 +27,27 @@ export default function WizardStep2TeamInvites({ charityId, onComplete }) {
       return;
     }
 
-    // Basic email validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Please enter a valid email');
+    const emailTrimmed = email.trim().toLowerCase();
+
+    // Validate email format
+    if (!validateEmail(emailTrimmed)) {
+      setError('Please enter a valid email address');
       return;
     }
 
-    if (invites.some(inv => inv.email === email)) {
+    // Check for duplicates (case-insensitive)
+    if (invites.some(inv => inv.email.toLowerCase() === emailTrimmed)) {
       setError('This email is already added');
       return;
     }
 
-    setInvites([...invites, { email, status: 'pending' }]);
+    // Rate limit: max 20 invites per session (prevent spam)
+    if (invites.length >= 20) {
+      setError('Maximum 20 team members can be invited at once');
+      return;
+    }
+
+    setInvites([...invites, { email: emailTrimmed, status: 'pending' }]);
     setEmail('');
     setError(null);
   };
@@ -53,30 +68,62 @@ export default function WizardStep2TeamInvites({ charityId, onComplete }) {
 
     setLoading(true);
     try {
-      // Send invites for each email
-      const invitePromises = invites.map(invite =>
-        base44.users.inviteUser(invite.email, 'user')
+      // Set 15-second timeout for invite batch
+      const inviteTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Invite timeout - please try again')), 15000)
       );
 
-      await Promise.all(invitePromises);
+      // Send invites sequentially with error handling per invite
+      const inviteResults = [];
+      for (const invite of invites) {
+        try {
+          await Promise.race([
+            base44.users.inviteUser(invite.email, 'user'),
+            inviteTimeout
+          ]);
+          inviteResults.push({ email: invite.email, success: true });
+        } catch (inviteErr) {
+          // Log which email failed but continue with others
+          console.warn(`Failed to invite ${invite.email}:`, inviteErr);
+          inviteResults.push({ email: invite.email, success: false, error: inviteErr.message });
+        }
+      }
 
-      // Log the invites in audit
+      const successCount = inviteResults.filter(r => r.success).length;
+
+      if (successCount === 0) {
+        setError('Failed to send any invites. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Log the invites in audit (record success and failures)
       await base44.functions.invoke('logAuditEvent', {
         charity_id: charityId,
         action: 'team_members_invited_onboarding',
         entity_type: 'User',
         changes: {
-          invites_sent: invites.length,
-          emails: invites.map(i => i.email)
+          invites_sent: successCount,
+          invites_failed: inviteResults.filter(r => !r.success).length,
+          emails: inviteResults.map(r => ({ email: r.email, sent: r.success }))
         }
       });
+
+      // Show partial success message if some failed
+      if (successCount < invites.length) {
+        setError(`Sent ${successCount} of ${invites.length} invites. Some failed.`);
+      }
 
       setCompleted(true);
       setTimeout(() => {
         onComplete();
       }, 1000);
     } catch (err) {
-      setError(err.message || 'Failed to send invites');
+      if (err.message.includes('timeout')) {
+        setError('Request took too long. Please try again.');
+      } else {
+        setError(err.message || 'Failed to send invites');
+      }
     } finally {
       setLoading(false);
     }

@@ -25,45 +25,94 @@ export default function WizardStep1BranchSetup({ charityId, onComplete }) {
     setError(null);
   };
 
+  const validatePostcode = (postcode) => {
+    // Basic UK postcode format validation (e.g., M1 1AE, B33 8TH)
+    const postcodeRegex = /^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/i;
+    return postcodeRegex.test(postcode.trim());
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return !email || emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate
+    // Validate required fields
     if (!formData.branch_name.trim() || !formData.location_postcode.trim()) {
       setError('Branch name and postcode are required');
       return;
     }
 
+    // Validate postcode format
+    if (!validatePostcode(formData.location_postcode)) {
+      setError('Please enter a valid UK postcode (e.g., M1 1AE)');
+      return;
+    }
+
+    // Validate email if provided
+    if (!validateEmail(formData.contact_email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     setLoading(true);
     try {
-      // Create branch config
-      const branchConfig = await base44.entities.BranchConfig.create({
+      // Check for duplicate branch name within charity (prevent accidental duplicates)
+      const existingBranches = await base44.entities.BranchConfig.filter({
         charity_id: charityId,
-        branch_name: formData.branch_name,
-        location_city: formData.location_city,
-        location_postcode: formData.location_postcode,
-        contact_email: formData.contact_email,
-        contact_phone: formData.contact_phone,
-        status: 'active',
-        created_date: new Date().toISOString()
+        branch_name: formData.branch_name.trim()
       });
 
+      if (existingBranches && existingBranches.length > 0) {
+        setError('A branch with this name already exists for your charity');
+        setLoading(false);
+        return;
+      }
+
+      // Set 10-second timeout for branch creation
+      const createTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout - please try again')), 10000)
+      );
+
+      const branchConfig = await Promise.race([
+        base44.entities.BranchConfig.create({
+          charity_id: charityId,
+          branch_name: formData.branch_name.trim(),
+          location_city: formData.location_city.trim(),
+          location_postcode: formData.location_postcode.trim().toUpperCase(),
+          contact_email: formData.contact_email.trim(),
+          contact_phone: formData.contact_phone.trim(),
+          status: 'active',
+          created_date: new Date().toISOString()
+        }),
+        createTimeout
+      ]);
+
       // Initialize location config for the branch
-      await base44.entities.LocationConfig.create({
-        branch_id: branchConfig.id,
-        charity_id: charityId,
-        location_name: formData.branch_name,
-        postcode: formData.location_postcode,
-        city: formData.location_city,
-        timezone: 'Europe/London'
-      });
+      await Promise.race([
+        base44.entities.LocationConfig.create({
+          branch_id: branchConfig.id,
+          charity_id: charityId,
+          location_name: formData.branch_name.trim(),
+          postcode: formData.location_postcode.trim().toUpperCase(),
+          city: formData.location_city.trim(),
+          timezone: 'Europe/London'
+        }),
+        createTimeout
+      ]);
 
       setCompleted(true);
       setTimeout(() => {
         onComplete();
       }, 1000);
     } catch (err) {
-      setError(err.message || 'Failed to create branch');
+      if (err.message.includes('timeout')) {
+        setError('Request took too long. Please check your connection and try again.');
+      } else {
+        setError(err.message || 'Failed to create branch');
+      }
     } finally {
       setLoading(false);
     }

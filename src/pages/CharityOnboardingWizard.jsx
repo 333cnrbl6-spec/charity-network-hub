@@ -33,28 +33,42 @@ export default function CharityOnboardingWizard() {
         }
         setUser(currentUser);
 
-        // Get user's charity (filter by created_by)
-        const charities = await base44.entities.Charity.list();
-        const userCharity = charities.find(c => c.created_by === currentUser.email);
+        // Get user's charity (filter by created_by, get most recent)
+        const charities = await base44.entities.Charity.filter({
+          created_by: currentUser.email
+        }, '-created_date', 1);
         
-        if (!userCharity) {
+        if (!charities || charities.length === 0) {
           setError('No charity found. Please create a charity first.');
           setLoading(false);
           return;
         }
 
+        const userCharity = charities[0];
         setCharity(userCharity);
         
-        // Initialize credits if not already done
-        const credits = await base44.entities.CharityCredits.filter({
-          charity_id: userCharity.id
-        });
+        // Initialize credits with timeout protection (5s max)
+        const creditCheckTimeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Credit initialization timeout')), 5000)
+        );
         
-        if (!credits || credits.length === 0) {
-          await base44.functions.invoke('initializeCharityCredits', {
-            charity_id: userCharity.id,
-            subscription_tier: 'trial'
-          });
+        try {
+          const credits = await Promise.race([
+            base44.entities.CharityCredits.filter({
+              charity_id: userCharity.id
+            }),
+            creditCheckTimeout
+          ]);
+          
+          if (!credits || credits.length === 0) {
+            await base44.functions.invoke('initializeCharityCredits', {
+              charity_id: userCharity.id,
+              subscription_tier: 'trial'
+            });
+          }
+        } catch (creditErr) {
+          // Don't block wizard if credit init fails
+          console.warn('Credit initialization issue:', creditErr);
         }
 
         setLoading(false);
