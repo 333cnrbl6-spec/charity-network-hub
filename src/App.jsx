@@ -47,6 +47,7 @@ import SmartOnboarding from './pages/SmartOnboarding';
 import CharitySearch from './pages/CharitySearch';
 import CharityAnalytics from './pages/CharityAnalytics';
 import CharityOnboarding from './pages/CharityOnboarding';
+import CharityOnboardingWizard from './pages/CharityOnboardingWizard';
 import ComplianceHub from './pages/ComplianceHub';
 import NetworkIntelligence from './pages/NetworkIntelligence';
 import SafeguardingHub from './pages/SafeguardingHub';
@@ -214,6 +215,7 @@ function App() {
             {/* Smart onboarding — open to all */}
             <Route path="/onboard" element={<SmartOnboarding />} />
             <Route path="/charity-onboarding" element={<CharityOnboarding />} />
+            <Route path="/charity-wizard" element={<CharityOnboardingWizard />} />
             {/* CharityHub standalone routes */}
             <Route path="/charity-dashboard" element={<CharityDashboard />} />
             <Route path="/charity-grants" element={<CharityGrants />} />

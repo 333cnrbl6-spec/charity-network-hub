@@ -38,8 +38,9 @@ export default function CharityOnboarding() {
       onboarding_complete: true,
     });
     setLoading(false);
-    toast.success('Welcome! Your charity workspace is ready.');
-    window.location.href = '/dashboard';
+    toast.success('Profile created! Moving to setup wizard...');
+    // Redirect to the guided wizard for branch/volunteer setup
+    window.location.href = '/charity-wizard';
   };
 
   const handleInvite = async () => {
