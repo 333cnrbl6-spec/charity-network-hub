@@ -70,6 +70,7 @@ import CharityAnalyticsPage from './pages/CharityAnalyticsPage';
 import MarketingLanding from './pages/MarketingLanding';
 import PricingPage from './pages/PricingPage';
 import FeaturesShowcase from './pages/FeaturesShowcase';
+import PublicImpactDashboard from './pages/PublicImpactDashboard';
 import CharityCompliancePage from './pages/CharityCompliancePage';
 import BillingCustomer from './pages/BillingCustomer';
 import APIKeysDashboard from './pages/APIKeysDashboard';
@@ -197,6 +198,7 @@ function App() {
             <Route path="/" element={<MarketingLanding />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/features" element={<FeaturesShowcase />} />
+            <Route path="/impact" element={<PublicImpactDashboard />} />
             {/* Public routes — no auth required */}
             <Route path="/sue-bradley-onboarding" element={<SueBradleyOnboarding />} />
             <Route path="/role-onboarding" element={<RoleOnboarding />} />
