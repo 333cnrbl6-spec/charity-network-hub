@@ -63,6 +63,7 @@ import HandypersonCalendar from './pages/HandypersonCalendar';
 import PricingComparison from './pages/PricingComparison';
 import PlatformAdmin from './pages/PlatformAdmin';
 import TenantPortal from './pages/TenantPortal';
+import LaunchReadinessDashboard from './pages/LaunchReadinessDashboard';
 import { TenantProvider } from '@/lib/tenantContext.jsx';
 import CharityDashboard from './pages/CharityDashboard';
 import CharityGrants from './pages/Grants';
@@ -180,6 +181,7 @@ const AuthenticatedApp = () => {
         <Route path="/billing" element={<BillingManagement />} />
         <Route path="/platform-admin" element={<PlatformAdmin />} />
         <Route path="/my-organisation" element={<TenantPortal />} />
+        <Route path="/launch-readiness" element={<LaunchReadinessDashboard />} />
         {/* Role-based portals — inside AppLayout so they get the sidebar */}
         <Route path="/coordinator-portal" element={<BuryCoordinatorPortal />} />
         <Route path="/staff-portal" element={<StaffPortal />} />
