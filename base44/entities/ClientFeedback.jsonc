@@ -1,0 +1,78 @@
+{
+  "name": "ClientFeedback",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Reference to Session"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Reference to Client"
+    },
+    "charity_id": {
+      "type": "string",
+      "description": "Reference to Charity"
+    },
+    "branch_id": {
+      "type": "string",
+      "description": "Reference to Branch"
+    },
+    "feedback_token": {
+      "type": "string",
+      "description": "Secure token for feedback collection link"
+    },
+    "satisfaction_rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Overall satisfaction (1-5 stars)"
+    },
+    "support_quality_rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Quality of support provided"
+    },
+    "volunteer_rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Rating of volunteer/staff member"
+    },
+    "would_recommend": {
+      "type": "boolean",
+      "description": "Would recommend service to others"
+    },
+    "feedback_text": {
+      "type": "string",
+      "description": "Open-ended feedback from client"
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When feedback was submitted"
+    },
+    "email_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When feedback request email was sent"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "collected",
+        "expired"
+      ],
+      "default": "pending",
+      "description": "Feedback collection status"
+    }
+  },
+  "required": [
+    "session_id",
+    "client_id",
+    "charity_id",
+    "feedback_token"
+  ]
+}
