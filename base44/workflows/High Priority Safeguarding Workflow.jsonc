@@ -1,0 +1,38 @@
+{
+  "name": "High Priority Safeguarding Workflow",
+  "description": "Automatically send email notifications and create risk assessment tasks when incidents are marked high/critical severity",
+  "trigger": {
+    "condition": "${ ((.trigger.data.ai_severity_classification == \"high\") or (.trigger.data.ai_severity_classification == \"critical\")) }",
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create",
+        "update"
+      ],
+      "entity_name": "SafeguardingIncident"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "high_priority_safeguarding_workflow",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "highPrioritySafeguardingWorkflow",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "highPrioritySafeguardingWorkflow"
+  }
+}

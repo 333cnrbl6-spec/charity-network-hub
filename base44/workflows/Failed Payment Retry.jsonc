@@ -1,0 +1,47 @@
+{
+  "name": "Failed Payment Retry",
+  "description": "Auto-retry failed payments up to 3 times over 9 days",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": 3,
+      "interval_unit": "days",
+      "interval_anchor": "2026-05-02T17:56:18.192000",
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "failed_payment_retry",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "retryFailedPayments",
+            "args": {
+              "max_retries": 3,
+              "retry_interval_days": 3
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "retryFailedPayments"
+  }
+}

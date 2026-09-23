@@ -1,0 +1,44 @@
+{
+  "name": "Monthly Sync to Age UK Network Hub",
+  "description": "Runs on the 1st of every month at 08:00 to sync Manchester branch statistics to the Age UK Network Hub",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 1 * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "monthly_sync_to_age_uk_network_hub",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncToHub",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "syncToHub"
+  }
+}

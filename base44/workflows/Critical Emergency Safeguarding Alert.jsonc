@@ -1,0 +1,37 @@
+{
+  "name": "Critical Emergency Safeguarding Alert",
+  "description": "Send urgent emergency alerts for critical incidents with immediate danger",
+  "trigger": {
+    "condition": "${ ((.trigger.data.ai_severity_classification == \"critical\") and (.trigger.data.vulnerable_adult_details.immediate_danger == true)) }",
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "SafeguardingIncident"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "critical_emergency_safeguarding_alert",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "criticalEmergencySafeguardingWorkflow",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "criticalEmergencySafeguardingWorkflow"
+  }
+}

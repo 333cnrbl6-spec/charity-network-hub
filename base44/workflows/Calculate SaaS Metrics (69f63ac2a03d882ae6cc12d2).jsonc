@@ -1,0 +1,44 @@
+{
+  "name": "Calculate SaaS Metrics (69f63ac2a03d882ae6cc12d2)",
+  "description": "Calculate MRR, ARR, churn rate, CAC, LTV daily",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 0 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "calculate_saas_metrics_69f63ac2a03d882ae6cc12d2",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "calculateSaaSMetrics",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "calculateSaaSMetrics"
+  }
+}
